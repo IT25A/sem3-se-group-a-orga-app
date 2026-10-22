@@ -12,7 +12,8 @@ import 'fullcalendar/themes/monarch/palettes/purple.css';
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
 // 1. Unsere Webseite erstellen
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <h1> Meine OrgaAPP</h1>
+<div class="app">  
+<h1> Meine OrgaAPP</h1>
   <p>Ziehe deine Aufgaben mit der Maus!</p>
 
   <h2> Studium</h2>
@@ -31,6 +32,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   
  <h2> Mein Kalender</h2>
 <div id="calendar"></div>
+
+</div>
 `
 
 // 2. Studium-Liste verschiebbar machen
@@ -81,20 +84,6 @@ const calendar = new Calendar(calendarEl, {
 
 // 3. Kalender anzeigen
 calendar.render()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

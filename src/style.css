@@ -1,7 +1,15 @@
-body {
+.mainDesign {
   font-family: Arial, sans-serif;
   background-color: #f8f5ff;
+  display: flex;
+  min-height: 100vh;
+  margin: -20px;
+}
+
+.app {
   padding: 30px;
+  margin: 0px;
+  width: 95%;
 }
 
 h1 {
@@ -13,13 +21,62 @@ ul {
   padding: 15px;
   border-radius: 10px;
   list-style: none;
+  margin: 0px;
+}
+
+.navbar {
+  width: 170px;
+  min-width: 170px;
+  background-color: #7952b3;
+  padding: 2rem 1.2rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar ul {
+  background-color: transparent;
+  margin: 0px;
+  padding: 25px;
+  list-style: none;
 }
 
 li {
   background-color: white;
   padding: 15px;
-  margin: 10px 0;
+  margin: 10px;
   border-radius: 8px;
   cursor: grab;
   box-shadow: 0 2px 5px #ccc;
+}
+
+.navbar li {
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0px;
+  margin: 0px;
+  border-radius: 6px;
+  cursor: default;
+}
+
+.navbar li a {
+  display: block;
+  padding: 10px 14px;
+  color: #eee5ff;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.navbar li a:hover {
+  background-color: #433863;
+  color: #ffffff;
+}
+
+/* Rechter Inhaltsbereich */
+main,
+.content-area {
+  flex: 1;
+  box-sizing: border-box;
 }
