@@ -1,5 +1,6 @@
+//Das ist ein Testkommentar von Charlotte, der ignoriert werden kann.
 import './style.css'
-//import {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
+//inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 import Sortable from 'sortablejs'
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
