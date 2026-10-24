@@ -22,7 +22,7 @@ describe('Adding tasks to lists', () => {
 
     addTaskToList(task.id, list.id);
 
-    expect(list.tasks).toContainEqual(task);
+    expect(list.tasks).toContainEqual(task.id);
   });
 
   it('adds the list ID to the task lists array', () => {
@@ -71,7 +71,7 @@ describe('Adding tasks to lists', () => {
     addTaskToList(backlog.tasks[1].id, list.id);
 
     expect(list.tasks).toHaveLength(2);
-    expect(list.tasks.map(task => task.title)).toEqual([
+    expect(list.tasks.map(task => (backlog.tasks.find(t => t.id === task))?.title)).toEqual([
       'Task A',
       'Task B',
     ]);
@@ -90,8 +90,8 @@ describe('Adding tasks to lists', () => {
 
     expect(task.lists).toContain(work.id);
     expect(task.lists).toContain(personal.id);
-    expect(work.tasks).toContainEqual(task);
-    expect(personal.tasks).toContainEqual(task);
+    expect(work.tasks).toContainEqual(task.id);
+    expect(personal.tasks).toContainEqual(task.id);
   });
 
   it('does not add the same task to the same list twice', () => {
@@ -105,7 +105,7 @@ describe('Adding tasks to lists', () => {
     addTaskToList(task.id, list.id);
 
     expect(task.lists.filter(id => id === list.id)).toHaveLength(1);
-    expect(list.tasks.filter(item => item.id === task.id)).toHaveLength(1);
+    expect(list.tasks.filter(item => item === task.id)).toHaveLength(1);
   });
 
   it('does not modify data when the task does not exist', () => {

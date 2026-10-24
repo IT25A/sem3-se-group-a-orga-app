@@ -1,5 +1,18 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { lists, addList, deleteList } from '../create';
+import { 
+  describe, 
+  it, 
+  expect, 
+  beforeEach 
+} from 'vitest';
+
+import { 
+  backlog,
+  lists,
+  createTask,
+  addList,
+  addTaskToList,
+  deleteList,
+} from '../create';
 
 describe('Deleting lists', () => {
   beforeEach(() => {
@@ -70,5 +83,133 @@ describe('Deleting lists', () => {
     deleteList(lists[0].id);
 
     expect(lists).toHaveLength(0);
+  });
+});
+
+//Weitere Tests die sich mit Aufgaben befassen wenn listen gelöscht werden
+describe('Deleting lists', () => {
+  beforeEach(() => {
+    backlog.tasks.length = 0;
+    lists.length = 0;
+  });
+
+  it('removes the list from the lists array', () => {
+    addList('Work', 'Tasks related to work');
+    const list = lists[0];
+
+    deleteList(list.id);
+
+    expect(lists).not.toContain(list);
+    expect(lists.some(item => item.id === list.id)).toBe(false);
+  });
+
+  it('removes the deleted list ID from task references', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Work', 'Tasks related to work');
+
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    addTaskToList(task.id, list.id);
+    deleteList(list.id);
+
+    expect(task.lists).not.toContain(list.id);
+  });
+
+  it('keeps tasks in the backlog after deleting a list', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Work', 'Tasks related to work');
+
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    addTaskToList(task.id, list.id);
+    deleteList(list.id);
+
+    expect(backlog.tasks).toContain(task);
+    expect(backlog.tasks).toHaveLength(1);
+  });
+
+  it('removes the deleted list ID from every task assigned to it', () => {
+    createTask({ title: 'Task A', description: '' });
+    createTask({ title: 'Task B', description: '' });
+    addList('Work', 'Tasks related to work');
+
+    const list = lists[0];
+
+    addTaskToList(backlog.tasks[0].id, list.id);
+    addTaskToList(backlog.tasks[1].id, list.id);
+
+    deleteList(list.id);
+
+    for (const task of backlog.tasks) {
+      expect(task.lists).not.toContain(list.id);
+    }
+  });
+
+  it('preserves tasks in other lists', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Work', 'Tasks related to work');
+    addList('Personal', 'Tasks related to personal life');
+
+    const task = backlog.tasks[0];
+    const [work, personal] = lists;
+
+    addTaskToList(task.id, work.id);
+    addTaskToList(task.id, personal.id);
+
+    deleteList(work.id);
+
+    expect(task.lists).not.toContain(work.id);
+    expect(task.lists).toContain(personal.id);
+    expect(lists).toContain(personal);
+    expect(personal.tasks.some(item => item === task.id)).toBe(true);
+  });
+
+  it('deletes an empty list without affecting tasks', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Empty list', 'An empty list');
+
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    deleteList(list.id);
+
+    expect(lists).not.toContain(list);
+    expect(backlog.tasks).toContain(task);
+    expect(task.lists).toEqual([backlog.id]);
+  });
+
+  it('does not change data when the list does not exist', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Work', 'Tasks related to work');
+
+    const task = backlog.tasks[0];
+    const list = lists[0];
+    const originalLists = [...lists];
+    const originalTaskLists = [...task.lists];
+
+    deleteList('nonexistent-list');
+
+    expect(lists).toEqual(originalLists);
+    expect(task.lists).toEqual(originalTaskLists);
+    expect(backlog.tasks).toContain(task);
+    expect(list.id).toBe(originalLists[0].id);
+  });
+
+  it('does not remove references to unrelated lists', () => {
+    createTask({ title: 'Task A', description: '' });
+    addList('Work', 'Tasks related to work');
+    addList('Personal', 'Tasks related to personal life');
+
+    const task = backlog.tasks[0];
+    const [work, personal] = lists;
+
+    addTaskToList(task.id, work.id);
+    addTaskToList(task.id, personal.id);
+
+    deleteList(work.id);
+
+    expect(task.lists).toEqual([backlog.id, personal.id]);
   });
 });
