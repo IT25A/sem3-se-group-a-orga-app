@@ -4,7 +4,7 @@ import {
   addList,
   renameList,
   changeListDescription,
-} from '../create';
+} from '../taskAndListLogik';
 
 describe('Editing lists', () => {
   beforeEach(() => {

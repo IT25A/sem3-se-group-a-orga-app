@@ -12,7 +12,7 @@ import {
   addList,
   addTaskToList,
   deleteList,
-} from '../create';
+} from '../taskAndListLogik';
 
 describe('Deleting lists', () => {
   beforeEach(() => {

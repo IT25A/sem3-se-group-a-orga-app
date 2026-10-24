@@ -14,9 +14,9 @@ import {
   editTaskCompleted,
   addTaskToList,
   removeTaskFromList,
-} from '../create';
+} from '../taskAndListLogik';
 
-import type { Priority, Complexity, TimeEstimate } from '../create';
+import type { Priority, Complexity, TimeEstimate } from '../taskAndListLogik';
 
 // Replace these example values with valid values from your types.
 const priorityA = 'Low' as Priority;

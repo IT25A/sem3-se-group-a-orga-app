@@ -5,7 +5,7 @@ import {
   createTask,
   addList,
   addTaskToList,
-} from '../create';
+} from '../taskAndListLogik';
 
 describe('Adding tasks to lists', () => {
   beforeEach(() => {

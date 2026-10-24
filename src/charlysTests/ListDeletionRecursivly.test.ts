@@ -7,7 +7,7 @@ import {
   addList,
   addTaskToList,
   deleteListsRecursivly,
-} from '../create';
+} from '../taskAndListLogik';
 
 describe('deleteListsRecursivly', () => {
   beforeEach(() => {

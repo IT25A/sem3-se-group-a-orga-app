@@ -10,7 +10,7 @@ export let backlog: Backlog = {
   tasks: []
 };
 
-type Backlog = {
+export type Backlog = {
   id: string;
   title: string;
   description: string;
@@ -19,13 +19,13 @@ type Backlog = {
 }
 
 
-function generateUniqueId(): string {
+export function generateUniqueId(): string {
   return crypto.randomUUID();
 }
 
 // Hier folgt alles zu Listen
 
-type List = {
+export type List = {
   id: string;
   title: string;
   description: string;
@@ -104,7 +104,7 @@ export function deleteListsRecursivly(listId: string): void {
 
 //Jetzt folgt alles zu Aufgaben
 
-type Task = {
+export type Task = {
   id: string;
   title: string;
   description: string;
@@ -120,17 +120,17 @@ type Task = {
 export function createTask({
   title,
   description,
-  dueDate,
   priority,
   complexity,
-  timeEstimate
+  timeEstimate,
+  dueDate
 }: {
   title: string;
   description: string;
-  dueDate?: Date;
   priority?: Priority;
   complexity?: Complexity;
   timeEstimate?: TimeEstimate;
+  dueDate?: Date;
 }): Task {
   const newTask: Task = {
     id: generateUniqueId(),

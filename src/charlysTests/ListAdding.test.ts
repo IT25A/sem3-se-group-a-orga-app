@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { lists, addList } from '../create';
+import { lists, addList } from '../taskAndListLogik';
 
 describe('Adding lists', () => {
   beforeEach(() => {

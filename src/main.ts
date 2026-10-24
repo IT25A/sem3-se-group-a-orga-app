@@ -10,8 +10,12 @@ import listPlugin from 'fullcalendar/list';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
+import { displayListPage } from './displayEditingLists';
+import { showDialogNewTask } from './dialogs'; 
+
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
-// 1. Unsere Webseite erstellen
+
+    // 1. Unsere Webseite erstellen
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <h1> Meine OrgaAPP</h1>
   <p>Ziehe deine Aufgaben mit der Maus!</p>
@@ -81,17 +85,12 @@ const calendar = new Calendar(calendarEl, {
 })
 
 // 3. Kalender anzeigen
-calendar.render()
+calendar.render();
 
 
 
 
-
-
-
-
-
-
+displayListPage();
 
 
 
