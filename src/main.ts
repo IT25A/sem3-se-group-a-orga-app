@@ -1,5 +1,5 @@
 import './style.css'
-//import {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
+//inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 import Sortable from 'sortablejs'
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
@@ -9,8 +9,12 @@ import listPlugin from 'fullcalendar/list';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
+import { displayListPage } from './displayEditingLists';
+import { showDialogNewTask } from './dialogs'; 
+
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
-// 1. Unsere Webseite erstellen
+
+    // 1. Unsere Webseite erstellen
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <h1> Meine OrgaAPP</h1>
   <p>Ziehe deine Aufgaben mit der Maus!</p>
@@ -80,17 +84,12 @@ const calendar = new Calendar(calendarEl, {
 })
 
 // 3. Kalender anzeigen
-calendar.render()
+calendar.render();
 
 
 
 
-
-
-
-
-
-
+//displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
 
 
 
