@@ -98,6 +98,9 @@ const calendar = new Calendar(calendarEl, {
 // 3. Kalender anzeigen
 calendar.render()
 
+document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
+    displayListPage()
+})
 
 document.getElementById("timer-link")?.addEventListener("click", () => {
     document.getElementById("app")!.innerHTML = renderTimer();

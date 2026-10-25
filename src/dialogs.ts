@@ -124,7 +124,7 @@ export function showDialogNewList(
     const addingTaskDialog = document.createElement('dialog');
 
     addingTaskDialog.innerHTML = `
-        <h2>Neue Aufgabe</h2>
+        <h2>Neue Liste</h2>
 
         <form>
             <label for="task-title">Titel</label>
