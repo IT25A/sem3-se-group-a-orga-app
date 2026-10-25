@@ -120,6 +120,12 @@
     font-weight: bold;
 }
 
+/* Checkbox Hover */
+#app .task-checkbox:hover {
+    border-color: #7952b3;
+    box-shadow: 0 0 0 3px #eee5ff;
+}
+
 /* Aufgabentext */
 #app .task-title {
     flex: 1;
