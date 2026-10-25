@@ -17,88 +17,27 @@ import {
     startTimer3, stoppTimer3, resetTimer3,
     startTimer4, stoppTimer4, resetTimer4,
 } from "./timer";
+import { lists } from './taskAndListLogik';
+import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
+import { populateTestData } from './charlysTests/TestFictures'
 
-import { displayListPage } from './displayEditingLists';
-import { showDialogNewTask } from './dialogs'; 
-
+export let currentPage = "home-page";
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
 
-    // 1. Unsere Webseite erstellen
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<div class="app">  
-<h1> Meine OrgaAPP</h1>
-  <p>Ziehe deine Aufgaben mit der Maus!</p>
+// 1. Unsere Webseite erstellen
 
-  <h2> Studium</h2>
-  <ul id="studium">
-    <li>Java lernen</li>
-    <li>Hausaufgaben machen</li>
-    <li>Prüfung vorbereiten</li>
-  </ul>
+populateTestData(); //Wie der Name sagt, zum Laden von Testdaten (decken eine Auswahl verschiedener  Fälle ab, das ganze ist grob beschrieben in TestFictures über die Namen der Vars und so)
+const app = document.querySelector<HTMLDivElement>('#app')!;
 
-  <h2>🏠 Privat</h2>
-  <ul id="privat">
-    <li>Einkaufen</li>
-    <li>Sport machen</li>
-    <li>Zimmer aufräumen</li>
-  </ul>
-  
- <h2> Mein Kalender</h2>
-<div id="calendar"></div>
+renderHomePage();
 
-</div>
-`
 
-// 2. Studium-Liste verschiebbar machen
-Sortable.create(document.getElementById('studium')!, {
-    group: 'aufgaben',
-    animation: 150
-})
-
-// 3. Privat-Liste verschiebbar machen
-Sortable.create(document.getElementById('privat')!, {
-    group: 'aufgaben',
-    animation: 150
-})
-// 1. Platz für den Kalender suchen
-const calendarEl = document.getElementById('calendar')!
-
-// 2. Kalender erstellen
-const calendar = new Calendar(calendarEl, {
-
-    plugins: [
-        dayGridPlugin,
-        timeGridPlugin,
-        listPlugin,
-        themePlugin
-    ],
-
-    // Monatsansicht
-    initialView: 'dayGridMonth',
-
-    headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,listWeek'
-    },
-
-    // Beispielaufgaben- ihr könnt weitere ergänzen
-    events: [
-        {
-            title: 'Java lernen',
-            start: '2026-10-20'
-        },
-        {
-            title: 'Sport machen',
-            start: '2026-10-22'
-        }
-    ]
-})
-
-// 3. Kalender anzeigen
-calendar.render()
+/*
+Hier werden die Funktionen für die Nav-Bar aufgerufen
+*/
 
 document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
+    currentPage = "list-page";
     displayListPage()
 })
 
@@ -142,5 +81,72 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
 //displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
 
 });
+
+export function renderHomePage():void{
+    app.replaceChildren();
+    const generalContent = document.createElement('div');
+    generalContent.className = 'app';
+
+    generalContent.innerHTML = `
+    <h1>Meine OrgaAPP</h1>
+    <p>Ziehe deine Aufgaben mit der Maus!</p>
+    `;
+    app.append(generalContent)
+    renderListByIdInContainer(lists[0].id, app)
+
+    // Kalenderbereich
+    const calenderSection = document.createElement('section');
+    calenderSection.className = 'calender-card';
+
+    const calenderHeading = document.createElement('h2');
+    calenderHeading.textContent = 'Mein Kalender';
+
+    const calenderElement = document.createElement('div');
+    calenderElement.id = 'calendar';
+
+    calenderSection.append(calenderHeading, calenderElement);
+
+    // Alles an #app anhängen
+    app.append(calenderSection);
+
+
+    // 1. Platz für den Kalender suchen
+    const calendarEl = document.getElementById('calendar')!
+
+    // 2. Kalender erstellen
+    const calendar = new Calendar(calendarEl, {
+
+        plugins: [
+            dayGridPlugin,
+            timeGridPlugin,
+            listPlugin,
+            themePlugin
+        ],
+
+        // Monatsansicht
+        initialView: 'dayGridMonth',
+
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+
+        // Beispielaufgaben- ihr könnt weitere ergänzen
+        events: [
+            {
+                title: 'Java lernen',
+                start: '2026-10-20'
+            },
+            {
+                title: 'Sport machen',
+                start: '2026-10-22'
+            }
+        ]
+    })
+
+    // 3. Kalender anzeigen
+    calendar.render()
+}
 //document.querySelector<HTMLDivElement>("#app")!.innerHTML = renderTimer();
 

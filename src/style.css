@@ -14,6 +14,10 @@
 
 h1 {
   color: #7952b3;
+  padding-left: 2.5%;
+}
+p{
+  padding-left: 2.5%;
 }
 
 ul, #neue-liste-erstellen-feld {
