@@ -1,4 +1,3 @@
-//Das ist ein Testkommentar von Charlotte, der ignoriert werden kann.
 import './style.css'
 //inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 import Sortable from 'sortablejs'
@@ -90,7 +89,7 @@ calendar.render();
 
 
 
-displayListPage();
+//displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
 
 
 
