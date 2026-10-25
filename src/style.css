@@ -20,6 +20,7 @@ p{
   padding-left: 2.5%;
 }
 
+
 ul, #neue-liste-erstellen-feld {
   background-color: #eee5ff;
   padding: 15px;
@@ -157,4 +158,8 @@ main,
 .timer-container button:disabled {
   cursor: auto;
   color: grey;
+}
+
+#calendar-card {
+  width: 95%;
 }

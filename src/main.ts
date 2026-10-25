@@ -77,9 +77,6 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
 
     document.getElementById("reseten-btn4")
         ?.addEventListener("click", resetTimer4);
-
-//displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
-
 });
 
 export function renderHomePage():void{
@@ -96,7 +93,8 @@ export function renderHomePage():void{
 
     // Kalenderbereich
     const calenderSection = document.createElement('section');
-    calenderSection.className = 'calender-card';
+    calenderSection.className = 'calendar-card';
+    calenderSection.style = `width: 90%`
 
     const calenderHeading = document.createElement('h2');
     calenderHeading.textContent = 'Mein Kalender';
