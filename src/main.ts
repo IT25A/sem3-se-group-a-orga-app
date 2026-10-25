@@ -9,6 +9,15 @@ import listPlugin from 'fullcalendar/list';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
+import {renderTimer, resetTimer1, resetTimer2, stoppTimer1, stoppTimer2} from "./timer";
+import { zeigeDatum } from "./timer";
+import {startTimer1} from "./timer";
+import {startTimer2} from "./timer";
+import {
+    startTimer3, stoppTimer3, resetTimer3,
+    startTimer4, stoppTimer4, resetTimer4,
+} from "./timer";
+
 import { displayListPage } from './displayEditingLists';
 import { showDialogNewTask } from './dialogs'; 
 
@@ -16,7 +25,8 @@ import { showDialogNewTask } from './dialogs';
 
     // 1. Unsere Webseite erstellen
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <h1> Meine OrgaAPP</h1>
+<div class="app">  
+<h1> Meine OrgaAPP</h1>
   <p>Ziehe deine Aufgaben mit der Maus!</p>
 
   <h2> Studium</h2>
@@ -35,6 +45,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   
  <h2> Mein Kalender</h2>
 <div id="calendar"></div>
+
+</div>
 `
 
 // 2. Studium-Liste verschiebbar machen
@@ -84,79 +96,48 @@ const calendar = new Calendar(calendarEl, {
 })
 
 // 3. Kalender anzeigen
-calendar.render();
+calendar.render()
 
 
+document.getElementById("timer-link")?.addEventListener("click", () => {
+    document.getElementById("app")!.innerHTML = renderTimer();
+    zeigeDatum()
+    document.getElementById("starten-btn1")
+        ?.addEventListener("click", startTimer1);
+    document.getElementById("stoppen-btn1")
+        ?.addEventListener("click", stoppTimer1);
 
+    document.getElementById("starten-btn2")
+        ?.addEventListener("click", startTimer2);
+    document.getElementById("stoppen-btn2")
+        ?.addEventListener("click", stoppTimer2);
+    document.getElementById("reseten-btn2")
+        ?.addEventListener("click", resetTimer2);
+    document.getElementById("reseten-btn1")
+        ?.addEventListener("click", resetTimer1);
+    // TIMER 3: 60 Minuten
+    document.getElementById("starten-btn3")
+        ?.addEventListener("click", startTimer3);
+
+    document.getElementById("stoppen-btn3")
+        ?.addEventListener("click", stoppTimer3);
+
+    document.getElementById("reseten-btn3")
+        ?.addEventListener("click", resetTimer3);
+
+
+// TIMER 4: 5 Sekunden
+    document.getElementById("starten-btn4")
+        ?.addEventListener("click", startTimer4);
+
+    document.getElementById("stoppen-btn4")
+        ?.addEventListener("click", stoppTimer4);
+
+    document.getElementById("reseten-btn4")
+        ?.addEventListener("click", resetTimer4);
 
 //displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
 
+});
+//document.querySelector<HTMLDivElement>("#app")!.innerHTML = renderTimer();
 
-
-
-
-
-
-
-
-
-//"import './style.css'
-// import heroImg from './assets/hero.png'
-// import typescriptLogo from './assets/typescript.svg'
-// import viteLogo from './assets/vite.svg'
-// import { setupCounter } from './counter.ts'
-//
-// document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-// <section id="center">
-//   <div class="hero">
-//     <img src="${heroImg}" class="base" width="170" height="179">
-//     <img src="${typescriptLogo}" class="framework" alt="TypeScript logo"/>
-//     <img src="${viteLogo}" class="vite" alt="Vite logo" />
-//   </div>
-//   <div>
-//     <h1>Get started</h1>
-//     <p>Edit <code>src/main.ts</code> and save to test <code>HMR</code></p>
-//   </div>
-//   <button id="counter" type="button" class="counter"></button>
-// </section>
-//
-// <div class="ticks"></div>
-//
-// <section id="next-steps">
-//   <div id="docs">
-//     <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-//     <h2>Documentation</h2>
-//     <p>Your questions, answered</p>
-//     <ul>
-//       <li>
-//         <a href="https://vite.dev/" target="_blank">
-//           <img class="logo" src="${viteLogo}" alt="" />
-//           Explore Vite
-//         </a>
-//       </li>
-//       <li>
-//         <a href="https://www.typescriptlang.org" target="_blank">
-//           <img class="button-icon" src="${typescriptLogo}" alt="">
-//           Learn more
-//         </a>
-//       </li>
-//     </ul>
-//   </div>
-//   <div id="social">
-//     <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-//     <h2>Connect with us</h2>
-//     <p>Join the Vite community</p>
-//     <ul>
-//       <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-//       <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-//       <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-//       <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-//     </ul>
-//   </div>
-// </section>
-//
-// <div class="ticks"></div>
-// <section id="spacer"></section>
-// `
-//
-// setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)"
