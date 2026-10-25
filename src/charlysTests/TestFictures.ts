@@ -39,7 +39,6 @@ export function populateTestData() {
   const studyList = getList('Lernen');
   const emptyList = getList('Leere Liste');
 
-  // Create tasks. Assumes createTask returns the created Task.
   const backlogOnlyTask = createTask({
     title: 'Buch lesen',
     description: '20 Seiten lesen',

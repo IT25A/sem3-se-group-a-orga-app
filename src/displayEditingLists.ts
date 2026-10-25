@@ -7,7 +7,7 @@ import { lists, backlog, createTask, addTaskToList, editTaskCompleted, createLis
 import { showDialogNewTask, showDialogNewList } from './dialogs';
 
 export function displayListPage():void{
-  populateTestData();
+  populateTestData(); //Wie der Name sagt, zum Laden von Testdaten (decken eine Auswahl verschiedener  Fälle ab, das ganze ist grob beschrieben in TestFictures über die Namen der Vars und so)
   renderLists();
 }
 
