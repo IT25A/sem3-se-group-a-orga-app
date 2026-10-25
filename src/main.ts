@@ -1,5 +1,5 @@
 import './style.css'
-//import {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
+//inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 import Sortable from 'sortablejs'
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
@@ -18,9 +18,12 @@ import {
     startTimer4, stoppTimer4, resetTimer4,
 } from "./timer";
 
+import { displayListPage } from './displayEditingLists';
+import { showDialogNewTask } from './dialogs'; 
 
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
-// 1. Unsere Webseite erstellen
+
+    // 1. Unsere Webseite erstellen
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <div class="app">  
 <h1> Meine OrgaAPP</h1>
@@ -133,6 +136,7 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
     document.getElementById("reseten-btn4")
         ?.addEventListener("click", resetTimer4);
 
+//displayListPage(); Testkommentar von Charlotte um ihre Seite anzuzeigen (Kann weg wenn Seite in Nav verlinkt ist)
 
 });
 //document.querySelector<HTMLDivElement>("#app")!.innerHTML = renderTimer();

@@ -1,0 +1,146 @@
+dialog {
+  width: min(480px, calc(100% - 40px));
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px;
+  border: 1px solid #e5d9fa;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #35264a;
+  box-shadow: 0 20px 60px rgba(67, 39, 105, 0.2);
+  box-sizing: border-box;
+}
+
+dialog::backdrop {
+  background: rgba(43, 29, 63, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+dialog h2 {
+  margin: 0 0 26px;
+  color: #7952b3;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+dialog label {
+  margin-top: 8px;
+  color: #59466f;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+dialog input,
+dialog textarea,
+dialog select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #e2d8f0;
+  border-radius: 10px;
+  background-color: #faf8ff;
+  color: #35264a;
+  font: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+dialog textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+dialog input:focus,
+dialog textarea:focus,
+dialog select:focus {
+  outline: none;
+  border-color: #9670d2;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(121, 82, 179, 0.12);
+}
+
+dialog input::placeholder,
+dialog textarea::placeholder {
+  color: #a99bbd;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #eee7f7;
+}
+
+.dialog-actions button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dialog-actions button:hover {
+  transform: translateY(-2px);
+}
+
+.dialog-actions button:active {
+  transform: translateY(0);
+}
+
+/* Cancel button */
+#cancel-task {
+  background-color: #f0eafa;
+  color: #674b8b;
+}
+
+#cancel-task:hover {
+  background-color: #e6daf8;
+}
+
+/* Create button */
+.dialog-actions button[type="submit"] {
+  background: linear-gradient(135deg, #8962c4, #7952b3);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(121, 82, 179, 0.22);
+}
+
+.dialog-actions button[type="submit"]:hover {
+  background: linear-gradient(135deg, #7952b3, #67409f);
+  box-shadow: 0 6px 14px rgba(121, 82, 179, 0.3);
+}
+
+/* Smaller screens */
+@media (max-width: 520px) {
+  dialog {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  dialog h2 {
+    font-size: 1.45rem;
+  }
+
+  .dialog-actions button {
+    flex: 1;
+    padding: 12px;
+  }
+}

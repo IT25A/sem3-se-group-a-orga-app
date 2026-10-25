@@ -16,7 +16,7 @@ h1 {
   color: #7952b3;
 }
 
-ul {
+ul, #neue-liste-erstellen-feld {
   background-color: #eee5ff;
   padding: 15px;
   border-radius: 10px;
