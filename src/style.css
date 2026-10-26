@@ -99,6 +99,7 @@ main,
   text-align: center;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  color: #f3e2e7;
   background-size: cover ;
   background-position: center;
   display: flex;
@@ -115,11 +116,7 @@ main,
 }
 
 .timebody {
-
-
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./assets/time_timer_large_jac5000_1.jpg');
-
-
     background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -129,10 +126,11 @@ main,
 }
 /* Timer-Buttons */
 .timer-container button {
-  background-color: #eee;
+  background-color: #f1dede;
   border: none;
   padding: 1rem;
   font-size: 1rem;
+  font-weight: bold;
   width: 10em;
   border-radius: 1rem;
   color: lightcoral;
@@ -162,4 +160,7 @@ main,
 
 #calendar-card {
   width: 95%;
+}
+.ueberschrift{
+  color: palevioletred;
 }

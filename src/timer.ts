@@ -3,7 +3,7 @@ export function renderTimer() {
     return `
         <div class="timebody">
             <div class="hero">
-                <h1>Now ⏱️</h1>
+                <h1 class="ueberschrift">Now ⏱️</h1>
 
                 <div class="timebox">
                     <div class="time">
@@ -36,7 +36,7 @@ export function renderTimer() {
 
 
                 <div class="timer-container">
-                    <h1>Countdown starten</h1>
+                    <h1 class="ueberschrift">Countdown starten</h1>
 
                     <!-- Hier wird die verbleibende Zeit angezeigt -->
                     <h2 id="countdown-display1">05:00</h2>
