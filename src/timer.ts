@@ -70,14 +70,13 @@ export function renderTimer() {
                         <button id="starten-btn4">Starten</button>
                         <button id="stoppen-btn4">Stoppen</button>
                         <button id="reseten-btn4">Resetten</button>
-                    </div>
-                    
-             
-                    
-                    
-                    
+                    </div> 
                 </div>
-            </div>
+                    <div class="wecker" id="wecker">
+                    <h2> Wecker anlegen? </h2> 
+                    <button id="weckereinstellen">Ja ? </button>
+                    </div>
+            </div>                   
         </div>
     `;
 }
@@ -147,7 +146,18 @@ let intervall4: ReturnType<typeof setInterval> | null = null;
             if (restSekunden1 <= 0) {
                 clearInterval(intervall1!);
                 intervall1 = null;
-                alert("⏰ Dein 5-Minuten-Timer ist abgelaufen!");
+                console.log("Timer ist abgelaufen!");
+
+                const audio = new Audio("/audio1.mp3");
+
+                audio.play()
+                    .then(() => console.log("Audio gestartet!"))
+                    .catch(error => console.error("Audiofehler:", error));
+
+                setTimeout(()=> {
+                    alert( "Dein Timer ist abgelaufen!⏰");
+                },1500);
+
 
             }
 
@@ -183,8 +193,19 @@ export function stoppTimer1() {
         if (restSekunden2 <= 0) {
             clearInterval(intervall2!);
             intervall2 = null;
-            alert("⏰ Dein 30-Minuten-Timer ist abgelaufen!");
+            console.log("Timer ist abgelaufen!");
 
+            const audio = new Audio("/audio1.mp3");
+
+            audio.play()
+                .then(() => console.log("Audio gestartet!"))
+                .catch(error => console.error("Audiofehler:", error));
+
+            setTimeout(()=> {
+                alert( "Dein Timer ist abgelaufen!⏰");
+            },1500);
+
+            //alert("⏰ Dein 30-Minuten-Timer ist abgelaufen!");
         }
 
     }, 1000);
@@ -228,8 +249,19 @@ export function startTimer3() {
         if (restSekunden3 <= 0) {
             clearInterval(intervall3!);
             intervall3 = null;
+            console.log("Timer ist abgelaufen!");
 
-            alert("⏰ Dein 60-Minuten-Timer ist abgelaufen!");
+            const audio = new Audio("/audio1.mp3");
+
+            audio.play()
+                .then(() => console.log("Audio gestartet!"))
+                .catch(error => console.error("Audiofehler:", error));
+
+            setTimeout(()=> {
+                alert( "Dein Timer ist abgelaufen!⏰");
+            },1500);
+
+
         }
 
     }, 1000);
@@ -251,6 +283,7 @@ export function resetTimer3() {
 
     document.getElementById("countdown-display3")!.textContent = "60:00";
 }
+//5 sek
 export function startTimer4() {
 
     if (intervall4 !== null || restSekunden4 <= 0) {
@@ -270,8 +303,17 @@ export function startTimer4() {
         if (restSekunden4 <= 0) {
             clearInterval(intervall4!);
             intervall4 = null;
+            console.log("Timer ist abgelaufen!");
 
-            alert("⏰ Dein 5-Sekunden-Timer ist abgelaufen!");
+            const audio = new Audio("/audio1.mp3");
+
+            audio.play()
+                .then(() => console.log("Audio gestartet!"))
+                .catch(error => console.error("Audiofehler:", error));
+
+            setTimeout(()=> {
+                alert( "Dein Timer ist abgelaufen!⏰");
+            },1500);
         }
 
     }, 1000);
@@ -293,6 +335,35 @@ export function resetTimer4() {
 
     document.getElementById("countdown-display4")!.textContent = "00:05";
 }
+
+//let eingegeberresetsekunden = 0;
+// let eigenerintervall: ReturnType<typeof setInterval> | null = null;
+//export function eigenerwecker() {
+// if (eigenerintervall !== null || eingegeberresetsekunden <= 0) {
+   //     return;
+    //}
+
+    //eigenerintervall = setInterval(() => {
+
+       // eingegeberresetsekunden--;
+
+        //const minuten = Math.floor(eingegeberresetsekunden / 60);
+        //const sekunden = eingegeberresetsekunden % 60;
+
+        //document.getElementById("countdown-display2")!.textContent =
+            //`${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+
+        // Bei 0 stoppen
+        //if (restSekunden2 <= 0) {
+         //   clearInterval(eigenerintervall);
+           // eigenerintervall = null;
+            //alert("⏰ Dein Timer ist abgelaufen!");
+
+        //}}, 1000);
+//}
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 import './style.css'
 //inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
-import Sortable from 'sortablejs'
+//import Sortable from 'sortablejs'
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
 import dayGridPlugin from 'fullcalendar/daygrid';
@@ -77,6 +77,7 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
 
     document.getElementById("reseten-btn4")
         ?.addEventListener("click", resetTimer4);
+    //document.getElementById("weckereinstellen").addEventListener("click", --);
 });
 
 export function renderHomePage():void{
