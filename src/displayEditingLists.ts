@@ -2,7 +2,7 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList } from './taskAndListLogik'
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList } from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
@@ -20,10 +20,24 @@ function destroySortables(): void {
 function initializeSortables(): void {
   document.querySelectorAll<HTMLElement>('.sortable-list').forEach(element => {
     const sortable = Sortable.create(element, {
-      group: 'aufgaben',
-      animation: 150,
-      filter: '.add-task-item',
-      preventOnFilter: false
+        group: 'aufgaben',
+        animation: 150,
+        filter: '.add-task-item',
+        preventOnFilter: false,
+
+        onEnd: (event) => { 
+          const oldListId = event.from.id;
+          const newListId = event.to.id;
+          const item = event.item as HTMLElement;
+          const taskId = item.id;
+
+          if(oldListId != newListId){
+            addTaskToList(taskId, newListId);
+            removeTaskFromList(taskId, oldListId);
+          }
+
+          renderLists();
+      }
     });
 
     sortableInstances.push(sortable);

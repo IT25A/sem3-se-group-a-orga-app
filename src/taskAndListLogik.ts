@@ -188,7 +188,7 @@ export function removeTaskFromList(taskId: string, listId: string): void {
   if(list && task){
       const taskIndex = list.tasks.findIndex(task => task === taskId);
       const listIndex = task.lists.findIndex(list => list === listId);
-      if(taskIndex !== -1 || taskIndex !== -1){
+      if(taskIndex !== -1 && listIndex !== -1){
         list.tasks.splice(taskIndex, 1);
         task.lists.splice(listIndex, 1)
       }

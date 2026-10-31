@@ -75,6 +75,11 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
         ?.addEventListener("click", resetTimer3);
 
 
+// TIMER 4: 5 Sekunden
+    document.getElementById("starten-btn4")
+        ?.addEventListener("click", startTimer4);
+    document.getElementById("stoppen-btn4")
+        ?.addEventListener("click", stoppTimer4);
 
     document.getElementById("stoppeneiegner")
     ?.addEventListener("click", stoppeiegener);
