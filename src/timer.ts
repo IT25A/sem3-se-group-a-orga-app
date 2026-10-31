@@ -31,9 +31,13 @@ export function renderTimer() {
                         <p>Sekunden</p>
                     </div>
                  </div>
-
-
-
+                 <div class="wecker" id="wecker">
+                    <h2> Wecker anlegen? </h2> 
+                    <input type="datetime-local" id="selbstdefiniert" placeholder="dein Timer">
+                    <button class="btn-65" id="btn">Bestätigen</button>
+                    <button class="btn-65" id="stoppeneiegner">Stoppen</button>
+                    <h2 id="countdown-display-eigen">00:00</h2>
+                    </div>
 
                 <div class="timer-container">
                     <h1 class="ueberschrift">Countdown starten</h1>
@@ -63,19 +67,9 @@ export function renderTimer() {
                     </div>
                     
                     
-                    <!-- 5-Sekunden-Timer -->
-                    <h2 id="countdown-display4">00:05</h2>
                     
-                    <div class="timer-display4">
-                        <button id="starten-btn4">Starten</button>
-                        <button id="stoppen-btn4">Stoppen</button>
-                        <button id="reseten-btn4">Resetten</button>
-                    </div> 
                 </div>
-                    <div class="wecker" id="wecker">
-                    <h2> Wecker anlegen? </h2> 
-                    <button id="weckereinstellen">Ja ? </button>
-                    </div>
+                    
             </div>                   
         </div>
     `;
@@ -119,9 +113,7 @@ let intervall2: ReturnType<typeof setInterval> | null = null;
 let restSekunden3 = 60 * 60;
 let intervall3: ReturnType<typeof setInterval> | null = null;
 
-// 5 Sekunden
-let restSekunden4 = 5;
-let intervall4: ReturnType<typeof setInterval> | null = null;
+
 
 
 
@@ -283,84 +275,75 @@ export function resetTimer3() {
 
     document.getElementById("countdown-display3")!.textContent = "60:00";
 }
-//5 sek
-export function startTimer4() {
 
-    if (intervall4 !== null || restSekunden4 <= 0) {
+
+
+
+
+
+
+export function initEigenerWecker() {
+
+    const button = document.getElementById("btn") as HTMLButtonElement;
+    button.addEventListener("click", ()=>{
+        const input = document.getElementById("selbstdefiniert") as HTMLInputElement;
+        const zeit = input.value;
+        const time= new Date(zeit).getTime();
+        const differenz = time - Date.now();
+        const restsekunden = Math.floor(differenz / 1000);
+        // Wecker starten und Sekunden übergeben
+        if (Number.isFinite(time) && restsekunden > 0) {
+            eigenerwecker(restsekunden);
+        } else {
+            alert("Bitte eine gültige Uhrzeit in der Zukunft auswählen!");
+        }
+    });
+    }
+
+let eigenerintervall: ReturnType<typeof setInterval> | null = null;
+
+export function eigenerwecker(restsekunden: number) {
+
+    if (eigenerintervall !== null || restsekunden <= 0) {
         return;
     }
 
-    intervall4 = setInterval(() => {
+    eigenerintervall = setInterval(() => {
 
-        restSekunden4--;
+        restsekunden--;
 
-        const minuten = Math.floor(restSekunden4 / 60);
-        const sekunden = restSekunden4 % 60;
+        const uebrigeminuten = Math.floor(restsekunden / 60);
+        const uebrigesekunden = restsekunden % 60;
 
-        document.getElementById("countdown-display4")!.textContent =
-            `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+        // Countdown-Anzeige
+        document.getElementById("countdown-display-eigen")!.textContent =
+            `${String(uebrigeminuten).padStart(2, "0")}:${String(uebrigesekunden).padStart(2, "0")}`;
 
-        if (restSekunden4 <= 0) {
-            clearInterval(intervall4!);
-            intervall4 = null;
-            console.log("Timer ist abgelaufen!");
+        // Wecker stoppen
+        if (restsekunden <= 0) {
+
+            clearInterval(eigenerintervall!);
+            eigenerintervall = null;
+
+            console.log("Wecker ist abgelaufen!");
 
             const audio = new Audio("/audio1.mp3");
 
             audio.play()
-                .then(() => console.log("Audio gestartet!"))
                 .catch(error => console.error("Audiofehler:", error));
 
-            setTimeout(()=> {
-                alert( "Dein Timer ist abgelaufen!⏰");
-            },1500);
+            setTimeout(() => {
+                alert("Dein Wecker ist abgelaufen! ⏰");
+            }, 1500);
         }
 
     }, 1000);
 }
-
-
-// 5-Sekunden-Timer stoppen
-export function stoppTimer4() {
-    clearInterval(intervall4!);
-    intervall4 = null;
+export function stoppeiegener() {
+    clearInterval(eigenerintervall!);
+    eigenerintervall = null;
 }
 
-
-// 5-Sekunden-Timer zurücksetzen
-export function resetTimer4() {
-    stoppTimer4();
-
-    restSekunden4 = 5;
-
-    document.getElementById("countdown-display4")!.textContent = "00:05";
-}
-
-//let eingegeberresetsekunden = 0;
-// let eigenerintervall: ReturnType<typeof setInterval> | null = null;
-//export function eigenerwecker() {
-// if (eigenerintervall !== null || eingegeberresetsekunden <= 0) {
-   //     return;
-    //}
-
-    //eigenerintervall = setInterval(() => {
-
-       // eingegeberresetsekunden--;
-
-        //const minuten = Math.floor(eingegeberresetsekunden / 60);
-        //const sekunden = eingegeberresetsekunden % 60;
-
-        //document.getElementById("countdown-display2")!.textContent =
-            //`${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
-
-        // Bei 0 stoppen
-        //if (restSekunden2 <= 0) {
-         //   clearInterval(eigenerintervall);
-           // eigenerintervall = null;
-            //alert("⏰ Dein Timer ist abgelaufen!");
-
-        //}}, 1000);
-//}
 
 
 

@@ -9,18 +9,25 @@ import listPlugin from 'fullcalendar/list';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
-import {renderTimer, resetTimer1, resetTimer2, stoppTimer1, stoppTimer2} from "./timer";
+import {
+    renderTimer,
+    resetTimer1,
+    resetTimer2,
+    stoppTimer1,
+    stoppTimer2,
+    initEigenerWecker,
+    stoppeiegener
+} from "./timer";
 import { zeigeDatum } from "./timer";
 import {startTimer1} from "./timer";
 import {startTimer2} from "./timer";
 import {
     startTimer3, stoppTimer3, resetTimer3,
-    startTimer4, stoppTimer4, resetTimer4,
+
 } from "./timer";
 import { lists } from './taskAndListLogik';
 import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
 import { populateTestData } from './charlysTests/TestFictures'
-
 export let currentPage = "home-page";
 //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
 
@@ -74,8 +81,11 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
     document.getElementById("stoppen-btn4")
         ?.addEventListener("click", stoppTimer4);
 
-    document.getElementById("reseten-btn4")
-        ?.addEventListener("click", resetTimer4);
+    document.getElementById("stoppeneiegner")
+    ?.addEventListener("click", stoppeiegener);
+
+    initEigenerWecker();
+
     //document.getElementById("weckereinstellen").addEventListener("click", --);
 });
 

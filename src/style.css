@@ -102,6 +102,7 @@ main,
   color: #f3e2e7;
   background-size: cover ;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -122,8 +123,128 @@ main,
   background-repeat: no-repeat;
   min-height: 100vh;
   width: 100%;
+  box-sizing: border-box;
 
 }
+html, body {
+  margin: 0;
+  padding: 0;
+}
+#wecker {
+  background: rgba(20, 20, 30, 0.65);
+
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255, 200, 210, 0.5);
+  border-radius: 25px;
+
+  padding: 35px;
+
+  width: 650px;
+  max-width: 90%;
+  box-sizing: border-box;
+
+  margin: 50px auto;
+
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+#selbstdefiniert {
+  background-color: #f3e2e7;
+  color: #333;
+
+  padding: 15px;
+
+  border: none;
+  border-radius: 15px;
+
+  font-size: 16px;
+}
+#countdown-display-eigen {
+  font-size: 45px;
+  font-weight: bold;
+  color: #0dc89c;
+
+  margin-top: 25px;
+  margin-bottom: 0;
+}
+
+.btn-65 {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 32px;
+  font-size: 17px;
+  font-weight: bold;
+  color: #6a70e8;
+  background-color: #E9B8C8;
+  border-radius: 50px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  border: solid 1px #E9B8C8;
+
+}
+
+.btn-65:before,
+.btn-65:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  opacity: 0.3;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-65:before {
+  left: -100%;
+  background: linear-gradient(90deg, rgba(0, 136, 255, 0.8), rgba(255, 0, 170, 0.8), rgba(0, 136, 255, 0.8));
+  z-index: -1;
+}
+
+.btn-65:hover:before {
+  left: 0;
+}
+
+.btn-65:after {
+  right: -100%;
+  background: linear-gradient(270deg, rgba(0, 136, 255, 0.8), rgba(255, 0, 170, 0.8), rgba(0, 136, 255, 0.8));
+  z-index: -1;
+}
+
+.btn-65:hover:after {
+  right: 0;
+}
+
+.btn-65:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-65:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.btn-65:disabled {
+  pointer-events: none;
+  opacity: .65;
+  color: #7e7e7e;
+  background: #dcdcdc;
+  box-shadow: none;
+}
+.wecker{
+  color: #0dc89c;
+}
+
 /* Timer-Buttons */
 .timer-container button {
   background-color: #f1dede;
