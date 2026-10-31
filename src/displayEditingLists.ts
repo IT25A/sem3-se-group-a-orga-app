@@ -3,9 +3,8 @@ import './listStyle.css'
 
 import Sortable from 'sortablejs'
 import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
-import { showDialogNewTask, showDialogNewList } from './dialogs';
+import { showDialogNewTask, showDialogNewList, showDialogDeleteTask } from './dialogs';
 import { currentPage, renderHomePage } from './main';
-import C from 'fullcalendar';
 
 export function displayListPage():void{
   renderLists();
@@ -134,12 +133,30 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           title.className = 'task-title';
           title.textContent = task.title;
 
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = '-';
+
           const toggle = document.createElement('button');
           toggle.textContent = '+';
 
           if (task.completed) {
               taskItem.classList.add('completed');
           }
+
+          deleteButton.addEventListener('click', () => {
+              showDialogDeleteTask(task.id, list.id, ()=>{
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
 
           checkbox.addEventListener('change', () => {
               editTaskCompleted(task.id, checkbox.checked)
@@ -185,7 +202,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
             toggle.textContent = details.hidden ? '+' : '-';
           });
 
-          taskHeader.append(checkbox, title, toggle);
+          taskHeader.append(checkbox, title, deleteButton, toggle);
 
           taskItem.append(taskHeader, details);
           taskList.appendChild(taskItem);
