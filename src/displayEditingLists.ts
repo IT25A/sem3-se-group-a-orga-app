@@ -2,7 +2,7 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, createList, addList } from './taskAndListLogik'
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList } from './dialogs';
 import { currentPage, renderHomePage } from './main';
 

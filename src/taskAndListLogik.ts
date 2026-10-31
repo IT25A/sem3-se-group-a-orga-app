@@ -38,7 +38,7 @@ export type Complexity = 'einfach' | 'mittel' | 'schwierig';
 export type TimeEstimate = 'kurz' | 'mittel' | 'lang';
 
 
-export function createList(title: string, description: string): List {
+function createList(title: string, description: string): List {
   let newList: List = {
     id: generateUniqueId(),
     title,
