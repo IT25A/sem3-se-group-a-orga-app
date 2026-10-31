@@ -1,4 +1,7 @@
 import './dialogStyle.css';
+import { removeTaskFromList, deleteTask } from './taskAndListLogik';
+
+
 
 export function showDialogNewTask(
     listId: string,
@@ -175,4 +178,66 @@ export function showDialogNewList(
     });
 
     addingTaskDialog.showModal();
+}
+
+
+//------------------------------------------------------------------------------
+
+export function showDialogDeleteTask(
+    taskId: string,
+    listId: string,
+    onCreate: (    
+
+    ) => void
+): void {
+    const deletingTaskDialog = document.createElement('dialog');
+
+    deletingTaskDialog.innerHTML = `
+        <h2>Soll diese Aufgabe wirklich gelöscht werden?</h2>
+            <div class="dialog-actions">
+                <button type="button" id="cancel-task">
+                <button type="button" id="delete-task-here">
+                    Aufgabe aus dieser Liste entfernen
+                </button>
+                <button type="button" id="delete-task-everywhere">Aufgabe aus allen Listen entfernen</button>
+            </div>
+    `;
+
+    document.body.appendChild(deletingTaskDialog);
+
+    const form = deletingTaskDialog.querySelector('form')!;
+    const cancelButton =
+        deletingTaskDialog.querySelector<HTMLButtonElement>(
+            '#cancel-task'
+        )!;
+
+    const deleteHereButton =
+        deletingTaskDialog.querySelector<HTMLButtonElement>(
+            '#delete-task-here'
+        )!;
+    const deleteEverywhereButton =
+        deletingTaskDialog.querySelector<HTMLButtonElement>(
+            '#delete-task-everywhere'
+        )!;
+
+    cancelButton.addEventListener('click', () => {
+        deletingTaskDialog.close();
+        deletingTaskDialog.remove();
+    });
+
+    deleteHereButton.addEventListener('click', () => {
+        removeTaskFromList(taskId, listId);
+        onCreate();
+        deletingTaskDialog.close();
+        deletingTaskDialog.remove();
+    })
+
+    deleteEverywhereButton.addEventListener('click', () => {
+        deleteTask(taskId)
+        onCreate();
+        deletingTaskDialog.close();
+        deletingTaskDialog.remove();
+    });
+    deletingTaskDialog.showModal();
+
 }

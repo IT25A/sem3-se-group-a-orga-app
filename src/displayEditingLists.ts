@@ -2,8 +2,8 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList } from './taskAndListLogik'
-import { showDialogNewTask, showDialogNewList } from './dialogs';
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
+import { showDialogNewTask, showDialogNewList, showDialogDeleteTask } from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
 export function displayListPage():void{
@@ -102,6 +102,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     const taskCount = document.createElement('p');
     taskCount.textContent = `Tasks: ${list.tasks.length}`;
 
+    const taskProgress = document.createElement('p');
+    taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+    
+
     const taskList = document.createElement('ul');
     taskList.className = "sortable-list";
     taskList.id = list.id;
@@ -129,12 +133,30 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           title.className = 'task-title';
           title.textContent = task.title;
 
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = '-';
+
           const toggle = document.createElement('button');
           toggle.textContent = '+';
 
           if (task.completed) {
               taskItem.classList.add('completed');
           }
+
+          deleteButton.addEventListener('click', () => {
+              showDialogDeleteTask(task.id, list.id, ()=>{
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
 
           checkbox.addEventListener('change', () => {
               editTaskCompleted(task.id, checkbox.checked)
@@ -180,7 +202,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
             toggle.textContent = details.hidden ? '+' : '-';
           });
 
-          taskHeader.append(checkbox, title, toggle);
+          taskHeader.append(checkbox, title, deleteButton, toggle);
 
           taskItem.append(taskHeader, details);
           taskList.appendChild(taskItem);
@@ -213,7 +235,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         );
     });
 
-    listElement.append(title, description, taskCount, taskList);
+    listElement.append(title, description, taskCount,taskProgress, taskList);
     container.appendChild(listElement);
     if(clear){
       initializeSortables();
