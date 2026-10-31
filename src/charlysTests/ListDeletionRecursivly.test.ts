@@ -15,6 +15,18 @@ describe('deleteListsRecursivly', () => {
     lists.length = 0;
   });
 
+  it('handles task IDs that are missing from the backlog', () => {
+  addList('Work', 'Tasks related to work');
+
+  const work = lists[0];
+
+  work.tasks.push('nonexistent-task');
+
+  expect(() => deleteListsRecursivly(work.id)).not.toThrow();
+
+  expect(lists).not.toContain(work);
+  });
+
   it('deletes all tasks belonging to the specified list', () => {
     createTask({ title: 'Task A', description: '' });
     createTask({ title: 'Task B', description: '' });

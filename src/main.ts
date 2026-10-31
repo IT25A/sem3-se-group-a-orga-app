@@ -90,7 +90,7 @@ export function renderHomePage():void{
     <p>Ziehe deine Aufgaben mit der Maus!</p>
     `;
     app.append(generalContent)
-    renderListByIdInContainer(lists[0].id, app)
+    renderListByIdInContainer(lists[0].id, app, true)
 
     // Kalenderbereich
     const calenderSection = document.createElement('section');
