@@ -2,9 +2,10 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList } from './taskAndListLogik'
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList } from './dialogs';
 import { currentPage, renderHomePage } from './main';
+import C from 'fullcalendar';
 
 export function displayListPage():void{
   renderLists();
@@ -101,6 +102,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
     const taskCount = document.createElement('p');
     taskCount.textContent = `Tasks: ${list.tasks.length}`;
+
+    const taskProgress = document.createElement('p');
+    taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+    
 
     const taskList = document.createElement('ul');
     taskList.className = "sortable-list";
@@ -213,7 +218,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         );
     });
 
-    listElement.append(title, description, taskCount, taskList);
+    listElement.append(title, description, taskCount,taskProgress, taskList);
     container.appendChild(listElement);
     if(clear){
       initializeSortables();

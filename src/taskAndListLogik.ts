@@ -104,6 +104,24 @@ export function deleteListsRecursivly(listId: string): void {
     lists.splice(listIndex, 1);
   }
 } 
+//[start]
+export function calculateProgress(listId: string){
+  let done: number = 0;
+  const listIndex = lists.findIndex(list => list.id === listId);
+  const list = lists[listIndex]
+  const total= list.tasks.length;
+  if (!list || list.tasks.length === 0) {
+    return 0;
+  }
+
+  for(const taskId of list.tasks){
+    const task = backlog.tasks.find(task => task.id === taskId);
+    if(task && task.completed){
+      done++;
+    }
+  }
+  return Math.round((done / total) * 100);
+}
 
 //Jetzt folgt alles zu Aufgaben
 
