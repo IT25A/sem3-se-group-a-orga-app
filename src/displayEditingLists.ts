@@ -24,12 +24,12 @@ function initializeSortables(): void {
         animation: 150,
         filter: '.add-task-item',
         preventOnFilter: false,
-        
+
         onEnd: (event) => { 
           const oldListId = event.from.id;
           const newListId = event.to.id;
           const item = event.item as HTMLElement;
-          const taskId = item.dataset.id;
+          const taskId = item.id;
 
           if(oldListId != newListId){
             addTaskToList(taskId, newListId);
