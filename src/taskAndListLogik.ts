@@ -38,7 +38,7 @@ export type Complexity = 'einfach' | 'mittel' | 'schwierig';
 export type TimeEstimate = 'kurz' | 'mittel' | 'lang';
 
 
-export function createList(title: string, description: string): List {
+function createList(title: string, description: string): List {
   let newList: List = {
     id: generateUniqueId(),
     title,
@@ -91,10 +91,13 @@ export function deleteListsRecursivly(listId: string): void {
       const list = lists[listIndex];
       for (const task of [...list.tasks]) { //hier wird über eine Kopie iteriert, weil sonst Tasks übersprungen werden...
         const taskIndexBacklog = backlog.tasks.findIndex(tasks => tasks.id === task);
-        if (backlog.tasks[taskIndexBacklog].lists.length == 2) {
-          deleteTask(task);
-        }else {
-          backlog.tasks[taskIndexBacklog].lists = backlog.tasks[taskIndexBacklog].lists.filter(id => id !== listId);
+        if (taskIndexBacklog !== -1) {
+          if (backlog.tasks[taskIndexBacklog].lists.length === 2) {
+            deleteTask(task);
+          } else {
+            backlog.tasks[taskIndexBacklog].lists =
+              backlog.tasks[taskIndexBacklog].lists.filter(id => id !== listId);
+          }
         }
       }
     }
@@ -185,7 +188,7 @@ export function removeTaskFromList(taskId: string, listId: string): void {
   if(list && task){
       const taskIndex = list.tasks.findIndex(task => task === taskId);
       const listIndex = task.lists.findIndex(list => list === listId);
-      if(taskIndex || taskIndex === 0){
+      if(taskIndex !== -1 || taskIndex !== -1){
         list.tasks.splice(taskIndex, 1);
         task.lists.splice(listIndex, 1)
       }
