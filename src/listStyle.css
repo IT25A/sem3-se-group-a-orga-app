@@ -39,7 +39,7 @@
 }
 
 /* Beschreibung und Task-Anzahl */
-#app .list-card p {
+#app .list-card > p {
     margin: 0;
     color: #6f647c;
     line-height: 1.5;
@@ -65,14 +65,14 @@
 /* Einzelne Aufgabe */
 #app .list-card ul.sortable-list li.task-item {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 0;
 
     width: 100%;
     box-sizing: border-box;
 
     margin: 0;
-    padding: 14px 16px;
+    padding: 0;
 
     background-color: #ffffff;
     border: 1px solid #e4d8f7;
@@ -86,6 +86,19 @@
 
 #app .list-card ul.sortable-list li.task-item:hover {
     box-shadow: 0 3px 8px rgba(121, 82, 179, 0.15);
+}
+
+/* Kopfbereich der Aufgabe */
+#app .task-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 50px;
+    box-sizing: border-box;
+
+    padding: 14px 16px;
 }
 
 /* Checkbox */
@@ -132,6 +145,97 @@
     min-width: 0;
     color: #443653;
     font-size: 0.95rem;
+    overflow-wrap: anywhere;
+}
+
+/* Ausklapp-Button */
+#app .task-header button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border: 1px solid #e4d8f7;
+    border-radius: 6px;
+
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease,
+                transform 0.2s ease;
+}
+
+#app .task-header button:hover {
+    background-color: #e4d8f7;
+}
+
+/* Ausklappbarer Detailbereich */
+#app .task-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    margin: 0 16px;
+    padding: 14px 4px;
+
+    border-top: 1px solid #eee5ff;
+}
+
+/* Versteckte Details */
+#app .task-details[hidden] {
+    display: none;
+}
+
+/* Beschreibung */
+#app .task-details p {
+    margin: 0;
+    color: #6f647c;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* Informationsbereich: Priorität, Komplexität usw. */
+#app .task-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+/* Einzelne Information */
+#app .task-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    min-width: 0;
+    padding: 10px;
+
+    background-color: #f8f5fc;
+    border: 1px solid #eee5ff;
+    border-radius: 7px;
+}
+
+/* Bezeichnung der Information */
+#app .task-info-label {
+    color: #9585a8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Wert der Information */
+#app .task-info-value {
+    color: #443653;
+    font-size: 0.9rem;
+    font-weight: 500;
     overflow-wrap: anywhere;
 }
 
@@ -197,6 +301,16 @@
     background-color: #e4d8f7;
 }
 
+/* Drag & Drop */
+#app .sortable-ghost {
+    opacity: 0.4;
+    background-color: #e4d8f7 !important;
+}
+
+#app .sortable-chosen {
+    box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2) !important;
+}
+
 /* Schmale Bildschirme */
 @media (max-width: 600px) {
     #app {
@@ -205,10 +319,28 @@
     }
 
     #app .list-card {
+        max-width: 100%;
         padding: 14px;
     }
 
     #app .list-card ul.sortable-list {
+        padding: 8px;
+    }
+
+    #app .task-header {
+        padding: 12px;
+    }
+
+    #app .task-details {
+        margin: 0 12px;
+    }
+
+    #app .task-info {
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+    }
+
+    #app .task-info-item {
         padding: 8px;
     }
 }

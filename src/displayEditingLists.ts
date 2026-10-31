@@ -35,8 +35,16 @@ function initializeSortables(): void {
             addTaskToList(taskId, newListId);
             removeTaskFromList(taskId, oldListId);
           }
-
-          renderLists();
+          switch( currentPage){
+                  case "home-page":
+                    renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
       }
     });
 
@@ -73,7 +81,7 @@ function renderLists(): void {
   initializeSortables();
 }
 
-//Funktion um Listen woanders anzuszeigen
+//Funktion um Listen (woanders) anzuszeigen
 
 export function renderListByIdInContainer(id: string, container: HTMLDivElement, clear: boolean):void{
   if(clear){
@@ -101,12 +109,15 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     for (const taskId of list.tasks) {
       const taskItem = document.createElement('li');
       taskItem.id = taskId;
+      taskItem.classList.add('task-item');
 
       const task = backlog.tasks.find(t => t.id === taskId);
       
       if (task) {
 
-          taskItem.classList.add('task-item');
+          // Kopfbereich
+          const taskHeader = document.createElement('div');
+          taskHeader.className = 'task-header';
 
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
@@ -117,6 +128,9 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           const title = document.createElement('span');
           title.className = 'task-title';
           title.textContent = task.title;
+
+          const toggle = document.createElement('button');
+          toggle.textContent = '+';
 
           if (task.completed) {
               taskItem.classList.add('completed');
@@ -137,7 +151,38 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                 }
           });
 
-          taskItem.append(checkbox, title);
+          // Detailbereich
+          const details = document.createElement('div');
+          details.className = 'task-details';
+          details.hidden = true;
+
+          const description = document.createElement('p');
+          description.textContent = task.description;
+
+          const priority = document.createElement('p');
+          priority.textContent = `Priorität: ${task.priority}`;
+
+          const complexity = document.createElement('p');
+          complexity.textContent = `Komplexität: ${task.complexity}`;
+
+          const timeEstimate = document.createElement('p');
+          timeEstimate.textContent = `Zeitaufwand: ${task.timeEstimate}`;
+
+          details.append(
+            description,
+            priority,
+            complexity,
+            timeEstimate
+          );
+
+          toggle.addEventListener('click', () => {
+            details.hidden = !details.hidden;
+            toggle.textContent = details.hidden ? '+' : '-';
+          });
+
+          taskHeader.append(checkbox, title, toggle);
+
+          taskItem.append(taskHeader, details);
           taskList.appendChild(taskItem);
       }
 
