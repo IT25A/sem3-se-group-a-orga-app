@@ -310,37 +310,3 @@
 #app .sortable-chosen {
     box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2) !important;
 }
-
-/* Schmale Bildschirme */
-@media (max-width: 600px) {
-    #app {
-        padding: 12px;
-        gap: 14px;
-    }
-
-    #app .list-card {
-        max-width: 100%;
-        padding: 14px;
-    }
-
-    #app .list-card ul.sortable-list {
-        padding: 8px;
-    }
-
-    #app .task-header {
-        padding: 12px;
-    }
-
-    #app .task-details {
-        margin: 0 12px;
-    }
-
-    #app .task-info {
-        grid-template-columns: 1fr 1fr;
-        gap: 7px;
-    }
-
-    #app .task-info-item {
-        padding: 8px;
-    }
-}

@@ -128,19 +128,72 @@ dialog textarea::placeholder {
   box-shadow: 0 6px 14px rgba(121, 82, 179, 0.3);
 }
 
-/* Smaller screens */
-@media (max-width: 520px) {
-  dialog {
-    padding: 24px 20px;
-    border-radius: 16px;
-  }
+/*Für den Löschen-Dialog*/
+/* Delete Dialog */
 
-  dialog h2 {
-    font-size: 1.45rem;
-  }
+dialog.delete-dialog {
+  width: min(520px, calc(100% - 40px));
+  padding: 32px;
+}
 
-  .dialog-actions button {
-    flex: 1;
-    padding: 12px;
-  }
+.delete-dialog h2 {
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.delete-dialog p {
+  color: #8b7a9e;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+/* Buttons untereinander */
+
+.delete-dialog .dialog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.delete-dialog .dialog-actions button {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+/* Abbrechen */
+
+.delete-dialog #cancel-task {
+  order: 3;
+  background-color: #f0eafa;
+  color: #674b8b;
+}
+
+/* Aus Liste entfernen */
+
+.delete-dialog #delete-task-here {
+  order: 1;
+  background-color: #8962c4;
+  color: white;
+}
+
+.delete-dialog #delete-task-here:hover {
+  background-color: #7952b3;
+}
+
+/* Überall löschen */
+
+.delete-dialog #delete-task-everywhere {
+  order: 2;
+  background-color: #fff0f0;
+  color: #c04444;
+  border: 1px solid #f3d0d0;
+}
+
+.delete-dialog #delete-task-everywhere:hover {
+  background-color: #ffe2e2;
 }

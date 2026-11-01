@@ -191,11 +191,15 @@ export function showDialogDeleteTask(
     ) => void
 ): void {
     const deletingTaskDialog = document.createElement('dialog');
+    deletingTaskDialog.classList.add('delete-dialog');
 
     deletingTaskDialog.innerHTML = `
         <h2>Soll diese Aufgabe wirklich gelöscht werden?</h2>
+        <p>Was möchtest du tun?</p>
             <div class="dialog-actions">
                 <button type="button" id="cancel-task">
+                    Abbrechen
+                </button>
                 <button type="button" id="delete-task-here">
                     Aufgabe aus dieser Liste entfernen
                 </button>
