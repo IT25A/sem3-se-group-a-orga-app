@@ -3,7 +3,7 @@ import './listStyle.css'
 
 import Sortable from 'sortablejs'
 import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
-import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask} from './dialogs';
+import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList} from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
 export function displayListPage():void{
@@ -99,6 +99,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '🗑️';
     deleteButton.className = 'delete-button';
+
+    const editButton = document.createElement('button');
+    editButton.textContent = '✏️';
+    editButton.className = 'edit-button';
 
     const title = document.createElement('h2');
     title.textContent = list.title;
@@ -286,7 +290,26 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         })
     });
 
-    listHeader.append(title, deleteButton, );
+    editButton.addEventListener('click', () => {
+              showDialogEditList(list.id, ( listId, title, description)=>{
+                const listIndex = lists.findIndex(l => l.id === listId)
+                lists[listIndex].title = title;
+                lists[listIndex].description = description;
+                
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
+
+    listHeader.append(title, editButton, deleteButton);
     listElement.append(listHeader, description, taskCount, taskProgress, taskList);
     container.appendChild(listElement);
 

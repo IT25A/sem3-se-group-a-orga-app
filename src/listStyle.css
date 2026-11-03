@@ -236,6 +236,10 @@
     filter: hue-rotate(150deg); 
 }
 
+#app .edit-button:hover {
+    filter: hue-rotate(270deg); 
+}
+
 /* Ausklappbarer Detailbereich */
 #app .task-details {
     display: flex;

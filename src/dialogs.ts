@@ -1,6 +1,6 @@
 import './dialogStyle.css';
 import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } from './taskAndListLogik';
-import {backlog} from './taskAndListLogik';
+import {backlog, lists} from './taskAndListLogik';
 
 
 
@@ -339,7 +339,9 @@ export function showDialogEditTask(
             <input id="task-title" name="title" value="${task.title}" required />
 
             <label for="task-description">Beschreibung</label>
-            <textarea id="task-description" name="description" value="${task.description}" required></textarea>
+            <textarea id="task-description" name="description"  required>
+            ${task.description}
+            </textarea>
 
             <label for="task-dueDate">Fälligkeit</label>
             <input id="task-dueDate" name="dueDate" type="date" value="${task.dueDate?.toISOString().split('T')[0]}"/>
@@ -429,4 +431,72 @@ const form = editingTaskDialog.querySelector('form')!;
 
     editingTaskDialog.showModal();
     }
+}
+
+//------------------------------------------------------------------------------
+
+export function showDialogEditList(
+    listId: string,
+    onCreate: (
+        listId: string,
+        title: string,
+        description: string,
+    ) => void
+): void {
+    const editingTaskDialog = document.createElement('dialog');
+    const list = lists.find(l => l.id === listId);
+    if(list !== undefined){
+    editingTaskDialog.innerHTML = `
+        <h2>Liste bearbeiten</h2>
+        <form>
+            <label for="task-title">Titel</label>
+            <input id="task-title" name="title" value="${list.title}" required />
+
+            <label for="task-description">Beschreibung</label>
+            <textarea id="task-description" name="description"  required>
+            ${list.description}</textarea>
+
+            <div class="dialog-actions">
+                <button type="button" id="cancel-task">
+                    Abbrechen
+                </button>
+                <button type="submit">Bearbeiten</button>
+            </div>
+        </form>
+    `;
+
+    document.body.appendChild(editingTaskDialog);
+
+    const form = editingTaskDialog.querySelector('form')!;
+    const cancelButton =
+        editingTaskDialog.querySelector<HTMLButtonElement>(
+            '#cancel-task'
+        )!;
+
+    cancelButton.addEventListener('click', () => {
+        editingTaskDialog.close();
+        editingTaskDialog.remove();
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const title = String(formData.get('title') ?? '').trim();
+        const description = String(
+            formData.get('description') ?? ''
+        );
+
+        if (!title) return;
+        if (!description) return;
+
+        onCreate( listId,title, description);
+
+        editingTaskDialog.close();
+        editingTaskDialog.remove();
+    });
+
+    editingTaskDialog.showModal();
+}
 }
