@@ -1,5 +1,6 @@
 import './dialogStyle.css';
-import { removeTaskFromList, deleteTask } from './taskAndListLogik';
+import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } from './taskAndListLogik';
+import {backlog} from './taskAndListLogik';
 
 
 
@@ -244,4 +245,188 @@ export function showDialogDeleteTask(
     });
     deletingTaskDialog.showModal();
 
+}
+//------------------------------------------------------------------------------
+export function showDialogDeleteList(
+    listId: string,
+    onCreate: (    
+
+    ) => void
+): void {
+    const deletingListDialog = document.createElement('dialog');
+    deletingListDialog.classList.add('delete-dialog');
+
+    deletingListDialog.innerHTML = `
+        <h2>Soll diese Liste wirklich gelöscht werden?</h2>
+        <p>Was möchtest du tun?</p>
+            <div class="dialog-actions">
+                <button type="button" id="cancel-task">
+                    Abbrechen
+                </button>
+                <button type="button" id="delete-task-here">
+                    Nur diese Liste löschen (Aufgaben bleiben erhalten)
+                </button>
+                </button>
+                <button type="button" id="delete-task-everywhere">Liste und alle Aufgaben, die nur in dieser Liste sind, löschen</button>
+            </div>
+    `;
+
+    document.body.appendChild(deletingListDialog);
+
+    const form = deletingListDialog.querySelector('form')!;
+    const cancelButton =
+        deletingListDialog.querySelector<HTMLButtonElement>(
+            '#cancel-task'
+        )!;
+
+    const deleteListWithoutTasksButton =
+        deletingListDialog.querySelector<HTMLButtonElement>(
+            '#delete-task-here'
+        )!;
+
+    const deleteListAndAllTasksButton =
+        deletingListDialog.querySelector<HTMLButtonElement>(
+            '#delete-task-everywhere'
+        )!;
+
+    cancelButton.addEventListener('click', () => {
+        deletingListDialog.close();
+        deletingListDialog.remove();
+    });
+
+    deleteListWithoutTasksButton.addEventListener('click', () => {
+        deleteList(listId)
+        onCreate();
+        deletingListDialog.close();
+        deletingListDialog.remove();
+    })
+
+    deleteListAndAllTasksButton.addEventListener('click', () => {
+        deleteListsRecursivly(listId);
+        onCreate();
+        deletingListDialog.close();
+        deletingListDialog.remove();
+    });
+    deletingListDialog.showModal();
+
+}
+
+//------------------------------------------------------------------------------
+export function showDialogEditTask(
+    taskId: string,
+    listId: string,
+    onCreate: (  
+        taskId: string,  
+        listId: string,
+        title: string,
+        description: string,
+        priority: 'klein' | 'mittel' | 'hoch',
+        complexity: 'einfach' | 'mittel' | 'schwierig',
+        timeEstimate: 'kurz' | 'mittel' | 'lang',
+        dueDate?: Date
+    ) => void
+): void {
+    const task = backlog.tasks.find(t => t.id === taskId);
+    const editingTaskDialog = document.createElement('dialog');
+    if(task !== undefined){
+    editingTaskDialog.classList.add('edit-dialog');
+    
+    editingTaskDialog.innerHTML = `
+        <h2>Aufgabe bearbeiten</h2>
+
+        <form>
+            <label for="task-title">Titel</label>
+            <input id="task-title" name="title" value="${task.title}" required />
+
+            <label for="task-description">Beschreibung</label>
+            <textarea id="task-description" name="description" value="${task.description}" required></textarea>
+
+            <label for="task-dueDate">Fälligkeit</label>
+            <input id="task-dueDate" name="dueDate" type="date" value="${task.dueDate?.toISOString().split('T')[0]}"/>
+
+            <label for="task-priority">Priorität</label>
+            <select name="priority" id="task-priority" value="${task.priority}">
+                <option value="klein">Klein</option>
+                <option value="mittel" selected>Mittel</option>
+                <option value="hoch">Hoch</option>
+            </select>
+
+            <label for="task-complexity">Komplexität</label>
+            <select name="complexity" id="task-complexity" value="${task.complexity}">
+                <option value="einfach">Einfach</option>
+                <option value="mittel" selected>Mittel</option>
+                <option value="schwierig">Schwierig</option>
+            </select>
+
+            <label for="task-timeEstimate">Geschätzte Dauer</label>
+            <select name="timeEstimate" id="task-timeEstimate" value="${task.timeEstimate}">
+                <option value="kurz">Kurz</option>
+                <option value="mittel" selected>Mittel</option>
+                <option value="lang">Lang</option>
+            </select>
+
+            <div class="dialog-actions">
+                <button type="button" id="cancel-task">
+                    Abbrechen
+                </button>
+                <button type="submit">Speichern</button>
+            </div>
+        </form>
+    `;
+
+    document.body.appendChild(editingTaskDialog);
+
+const form = editingTaskDialog.querySelector('form')!;
+    const cancelButton =
+        editingTaskDialog.querySelector<HTMLButtonElement>(
+            '#cancel-task'
+        )!;
+
+    cancelButton.addEventListener('click', () => {
+        editingTaskDialog.close();
+        editingTaskDialog.remove();
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const title = String(formData.get('title') ?? '').trim();
+        const description = String(
+            formData.get('description') ?? ''
+        );
+
+        const dueDateValue = String(formData.get('dueDate') ?? '');
+
+        const dueDate = dueDateValue
+            ? new Date(`${dueDateValue}T00:00:00`)
+            : undefined;
+
+        const priority = formData.get('priority') as
+            | 'klein'
+            | 'mittel'
+            | 'hoch';
+        
+        const complexity = formData.get('complexity') as
+            | 'einfach'
+            | 'mittel'
+            | 'schwierig';
+
+        const timeEstimate = formData.get('timeEstimate') as
+            | 'kurz'
+            | 'mittel'
+            | 'lang';
+
+        if (!title) return;
+        if (!description) return;
+
+        onCreate(taskId, listId, title, description, priority, complexity, timeEstimate, dueDate);
+
+        editingTaskDialog.close();
+        editingTaskDialog.remove();
+    });
+
+    editingTaskDialog.showModal();
+    }
 }

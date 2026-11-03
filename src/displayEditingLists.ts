@@ -3,7 +3,7 @@ import './listStyle.css'
 
 import Sortable from 'sortablejs'
 import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
-import { showDialogNewTask, showDialogNewList, showDialogDeleteTask } from './dialogs';
+import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask} from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
 export function displayListPage():void{
@@ -93,6 +93,13 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   const listElement = document.createElement('section');
     listElement.className = 'list-card';
 
+  const listHeader = document.createElement('div');
+  listHeader.className = 'list-header';
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '🗑️';
+    deleteButton.className = 'delete-button';
+
     const title = document.createElement('h2');
     title.textContent = list.title;
 
@@ -134,10 +141,16 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           title.textContent = task.title;
 
           const deleteButton = document.createElement('button');
-          deleteButton.textContent = '-';
+          deleteButton.textContent = '🗑️';
+          deleteButton.className = 'delete-button';
+
+          const editButton = document.createElement('button');
+          editButton.textContent = '✏️';
+          editButton.className = 'edit-button';
 
           const toggle = document.createElement('button');
-          toggle.textContent = '+';
+          toggle.textContent = '⌄';
+          toggle.className = 'toggle-button';
 
           if (task.completed) {
               taskItem.classList.add('completed');
@@ -145,6 +158,21 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
           deleteButton.addEventListener('click', () => {
               showDialogDeleteTask(task.id, list.id, ()=>{
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
+
+          editButton.addEventListener('click', () => {
+              showDialogEditTask(task.id, list.id, ()=>{
                 switch( currentPage){
                   case "home-page":
                         renderHomePage();
@@ -172,6 +200,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                     break;
                 }
           });
+          //[next] on create Funktion schreiben, die die Aufgabe bearbeitet 
 
           // Detailbereich
           const details = document.createElement('div');
@@ -199,10 +228,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
           toggle.addEventListener('click', () => {
             details.hidden = !details.hidden;
-            toggle.textContent = details.hidden ? '+' : '-';
+            toggle.textContent = details.hidden ? '⌄' : '⌃';
           });
 
-          taskHeader.append(checkbox, title, deleteButton, toggle);
+          taskHeader.append(checkbox, title, toggle, editButton, deleteButton);
 
           taskItem.append(taskHeader, details);
           taskList.appendChild(taskItem);
@@ -235,8 +264,25 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         );
     });
 
-    listElement.append(title, description, taskCount,taskProgress, taskList);
+    deleteButton.addEventListener('click', () => {
+        showDialogDeleteList(list.id, ()=>{
+          switch( currentPage){
+            case "home-page":
+                  renderHomePage();
+              break;
+            case "list-page":
+              renderLists();
+              break;
+            default:
+              break;
+          }
+        })
+    });
+
+    listHeader.append(title, deleteButton, );
+    listElement.append(listHeader, description, taskCount, taskProgress, taskList);
     container.appendChild(listElement);
+
     if(clear){
       initializeSortables();
     }

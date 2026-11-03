@@ -92,7 +92,7 @@ export function deleteListsRecursivly(listId: string): void {
       for (const task of [...list.tasks]) { //hier wird über eine Kopie iteriert, weil sonst Tasks übersprungen werden...
         const taskIndexBacklog = backlog.tasks.findIndex(tasks => tasks.id === task);
         if (taskIndexBacklog !== -1) {
-          if (backlog.tasks[taskIndexBacklog].lists.length === 2) {
+          if (backlog.tasks[taskIndexBacklog].lists.length === 2) { // wenn task nur in dieser Liste und im Backlog ist, dann wird sie gelöscht, sonst nur aus der Liste entfernt
             deleteTask(task);
           } else {
             backlog.tasks[taskIndexBacklog].lists =

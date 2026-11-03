@@ -128,7 +128,10 @@ dialog textarea::placeholder {
   box-shadow: 0 6px 14px rgba(121, 82, 179, 0.3);
 }
 
-/*Für den Löschen-Dialog*/
+/*
+Für den Löschen-Dialog
+*/
+
 /* Delete Dialog */
 
 dialog.delete-dialog {
