@@ -47,6 +47,21 @@ document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
     currentPage = "list-page";
     displayListPage()
 })
+/*
+Zitate
+ */
+import { zitat, zeigeZitat } from "./zitate.ts";
+document.getElementById("zitate-link")?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    document.getElementById("app")!.innerHTML = zitat();
+    // Jetzt existiert der Button:
+    document.getElementById("nxtqoute")
+        ?.addEventListener("click", zeigeZitat);
+    await zeigeZitat();
+});
+/*
+Timer
+ */
 
 document.getElementById("timer-link")?.addEventListener("click", () => {
     document.getElementById("app")!.innerHTML = renderTimer();
@@ -74,12 +89,6 @@ document.getElementById("timer-link")?.addEventListener("click", () => {
     document.getElementById("reseten-btn3")
         ?.addEventListener("click", resetTimer3);
 
-
-// TIMER 4: 5 Sekunden
-    document.getElementById("starten-btn4")
-        ?.addEventListener("click", startTimer4);
-    document.getElementById("stoppen-btn4")
-        ?.addEventListener("click", stoppTimer4);
 
     document.getElementById("stoppeneiegner")
     ?.addEventListener("click", stoppeiegener);
