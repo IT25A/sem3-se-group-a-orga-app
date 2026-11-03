@@ -2,8 +2,8 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
-import { showDialogNewTask, showDialogNewList, showDialogDeleteTask } from './dialogs';
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
+import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList} from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
 export function displayListPage():void{
@@ -93,6 +93,17 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   const listElement = document.createElement('section');
     listElement.className = 'list-card';
 
+  const listHeader = document.createElement('div');
+  listHeader.className = 'list-header';
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '🗑️';
+    deleteButton.className = 'delete-button';
+
+    const editButton = document.createElement('button');
+    editButton.textContent = '✏️';
+    editButton.className = 'edit-button';
+
     const title = document.createElement('h2');
     title.textContent = list.title;
 
@@ -134,17 +145,46 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           title.textContent = task.title;
 
           const deleteButton = document.createElement('button');
-          deleteButton.textContent = '-';
+          deleteButton.textContent = '🗑️';
+          deleteButton.className = 'delete-button';
+
+          const editButton = document.createElement('button');
+          editButton.textContent = '✏️';
+          editButton.className = 'edit-button';
 
           const toggle = document.createElement('button');
-          toggle.textContent = '+';
+          toggle.textContent = '⌄';
+          toggle.className = 'toggle-button';
 
           if (task.completed) {
               taskItem.classList.add('completed');
           }
 
           deleteButton.addEventListener('click', () => {
-              showDialogDeleteTask(task.id, list.id, ()=>{
+              showDialogDeleteTask(task.id, list.id, () => {
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
+
+          editButton.addEventListener('click', () => {
+              showDialogEditTask(task.id, list.id, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate)=>{
+                editTaskTitle(taskId, title);
+                editTaskDescription(taskId, description);
+                editTaskPriority(taskId, priority);
+                editTaskComplexity(taskId, complexity);
+                editTaskTimeEstimate(taskId, timeEstimate);
+                if(dueDate){
+                  editTaskDueDate(taskId, dueDate);
+                }
                 switch( currentPage){
                   case "home-page":
                         renderHomePage();
@@ -199,10 +239,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
           toggle.addEventListener('click', () => {
             details.hidden = !details.hidden;
-            toggle.textContent = details.hidden ? '+' : '-';
+            toggle.textContent = details.hidden ? '⌄' : '⌃';
           });
 
-          taskHeader.append(checkbox, title, deleteButton, toggle);
+          taskHeader.append(checkbox, title, toggle, editButton, deleteButton);
 
           taskItem.append(taskHeader, details);
           taskList.appendChild(taskItem);
@@ -235,8 +275,44 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         );
     });
 
-    listElement.append(title, description, taskCount,taskProgress, taskList);
+    deleteButton.addEventListener('click', () => {
+        showDialogDeleteList(list.id, ()=>{
+          switch( currentPage){
+            case "home-page":
+                  renderHomePage();
+              break;
+            case "list-page":
+              renderLists();
+              break;
+            default:
+              break;
+          }
+        })
+    });
+
+    editButton.addEventListener('click', () => {
+              showDialogEditList(list.id, ( listId, title, description)=>{
+                const listIndex = lists.findIndex(l => l.id === listId)
+                lists[listIndex].title = title;
+                lists[listIndex].description = description;
+                
+                switch( currentPage){
+                  case "home-page":
+                        renderHomePage();
+                    break;
+                  case "list-page":
+                    renderLists();
+                    break;
+                  default:
+                    break;
+                }
+              })
+          });
+
+    listHeader.append(title, editButton, deleteButton);
+    listElement.append(listHeader, description, taskCount, taskProgress, taskList);
     container.appendChild(listElement);
+
     if(clear){
       initializeSortables();
     }
