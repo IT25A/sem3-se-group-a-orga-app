@@ -2,7 +2,7 @@ import './style.css'
 import './listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress } from './taskAndListLogik'
+import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask} from './dialogs';
 import { currentPage, renderHomePage } from './main';
 
@@ -157,7 +157,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           }
 
           deleteButton.addEventListener('click', () => {
-              showDialogDeleteTask(task.id, list.id, ()=>{
+              showDialogDeleteTask(task.id, list.id, () => {
                 switch( currentPage){
                   case "home-page":
                         renderHomePage();
@@ -172,7 +172,15 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           });
 
           editButton.addEventListener('click', () => {
-              showDialogEditTask(task.id, list.id, ()=>{
+              showDialogEditTask(task.id, list.id, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate)=>{
+                editTaskTitle(taskId, title);
+                editTaskDescription(taskId, description);
+                editTaskPriority(taskId, priority);
+                editTaskComplexity(taskId, complexity);
+                editTaskTimeEstimate(taskId, timeEstimate);
+                if(dueDate){
+                  editTaskDueDate(taskId, dueDate);
+                }
                 switch( currentPage){
                   case "home-page":
                         renderHomePage();
@@ -200,7 +208,6 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                     break;
                 }
           });
-          //[next] on create Funktion schreiben, die die Aufgabe bearbeitet 
 
           // Detailbereich
           const details = document.createElement('div');
