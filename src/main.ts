@@ -50,7 +50,7 @@ document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
 /*
 Zitate
  */
-import { zitat, zeigeZitat } from "./zitate.ts";
+import { zitat, zeigeZitat,mainzitatanzeiger } from "./zitate.ts";
 document.getElementById("zitate-link")?.addEventListener("click", async (event) => {
     event.preventDefault();
     document.getElementById("app")!.innerHTML = zitat();
@@ -109,11 +109,19 @@ export function renderHomePage():void{
     `;
     app.append(generalContent)
     renderListByIdInContainer(lists[0].id, app, true)
+    //zitate
+// Zitatbereich hinzufügen
+    const zitatBereich = document.createElement('div');
+    zitatBereich.innerHTML = mainzitatanzeiger();
+    app.append(zitatBereich);
+    zeigeZitat();
+    zitatBereich.querySelector('#nxtqoute')
+        ?.addEventListener('click', zeigeZitat);
 
     // Kalenderbereich
     const calenderSection = document.createElement('section');
     calenderSection.className = 'calendar-card';
-    calenderSection.style = `width: 90%`
+    calenderSection.style = `width:80%`
 
     const calenderHeading = document.createElement('h2');
     calenderHeading.textContent = 'Mein Kalender';
@@ -161,9 +169,10 @@ export function renderHomePage():void{
             }
         ]
     })
-
-    // 3. Kalender anzeigen
     calendar.render()
-}
-//document.querySelector<HTMLDivElement>("#app")!.innerHTML = renderTimer();
 
+
+
+
+
+}

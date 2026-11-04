@@ -57,7 +57,28 @@ export async function nächsterzitat() {
 document.getElementById("nxtqoute")
     ?.addEventListener("click", nächsterzitat);
 
+export function mainzitatanzeiger() {
+    return `
+<div class="x">
 
+
+        <div class="main">
+            <div class="zitate">
+                <h1>Motivierende Zitate</h1>
+                <h2>Zitat des Tages</h2>
+
+                <p id="zitat"></p>
+                <p id="autor"></p>
+
+                <button id="nxtqoute" class="nxtqoute">Nächstes Zitat</button>
+            </div>
+        </div>
+        
+ </div>
+ `;
+
+}
+mainzitatanzeiger();
 /*
 Zitate fetchen von api
 export async function zeigeZitat()

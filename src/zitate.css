@@ -15,68 +15,70 @@
 
 /* Inneres Rechteck: nur so hoch wie sein Inhalt */
 .zitate {
-    background-color: #6ab1e8;
-    color: #0d17c8;
+    background: #ffffff;
+    color: #35284a;
 
-    width: 100%;
-    max-width: 500px;
+    width: 90%;
+    max-width: 650px;
+    margin: 30px auto;
     padding: 30px;
     box-sizing: border-box;
-    border-radius: 15px;
+
+    border: 1px solid #e3d6ff;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(119, 80, 175, 0.1);
 
     text-align: center;
-    backdrop-filter: blur(8px);
-
-    border: 10px solid rgba(255, 200, 210, 0.5);
-    border-radius: 25px;
-
-    padding: 35px;
-
-    width: 650px;
-    max-width: 90%;
-    box-sizing: border-box;
-
-    margin: 50px auto;
-
-    text-align: center;
-
 }
-.nxtqoute {
-    padding: 13px 23px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #fff;
-    background-image: linear-gradient(to bottom right, #6a70e8, #0dc89c);
+
+.zitate h1 {
+    color: #7952b3;
+    font-size: 26px;
+    margin: 0 0 12px;
+}
+
+.zitate h2 {
+    color: #655575;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 24px;
+}
+
+.zitate #zitat {
+    font-size: 20px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    margin: 0 0 16px;
+}
+
+.zitate #autor {
+    color: #71677d;
+    font-size: 15px;
+    margin: 0 0 24px;
+}
+
+.zitate .nxtqoute {
+    background: #7952b3;
+    color: white;
     border: none;
     border-radius: 10px;
-    box-shadow: 0px 4px 0px #0ef30e;
-    transition: all 0.2s ease-in-out;
-    font-family: Arial, Helvetica, sans-serif;
+    padding: 12px 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+
+    box-shadow: none;
     cursor: pointer;
-    text-decoration: none;
-    user-select: none;
-    display: inline-block;
-    position: relative;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.nxtqoute:hover {
+.zitate .nxtqoute:hover {
+    background: #654297;
     transform: translateY(-2px);
-    box-shadow: 0px 6px 0px #ffcc00;
+    box-shadow: none;
 }
 
-.nxtqoute:active {
-    transform: translateY(0px);
-    box-shadow: none;
-    background-image: linear-gradient(to bottom right, #0072ff, #00c6ff);
-}
-
-/*** disabled style ***/
-.nxtqoute:disabled {
-    pointer-events: none;
-    opacity: .65;
-    color: #7e7e7e;
-    background: #dcdcdc;
-    box-shadow: none;
-    text-shadow: none;
+.zitate .nxtqoute:active {
+    transform: translateY(0);
 }
