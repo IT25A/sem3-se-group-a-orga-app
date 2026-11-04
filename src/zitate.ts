@@ -3,6 +3,9 @@ import './zitate.css';
 
 export function zitat() {
     return `
+<div class="zitatbody">
+
+
         <div class="background">
             <div class="zitate">
                 <h1>Motivierende Zitate</h1>
@@ -11,10 +14,12 @@ export function zitat() {
                 <p id="zitat"></p>
                 <p id="autor"></p>
 
-                <button id="nxtqoute">Nächstes Zitat</button>
+                <button id="nxtqoute" class="nxtqoute">Nächstes Zitat</button>
             </div>
         </div>
-    `;
+        
+ </div>
+ `;
 }
 
 export async function zeigeZitat() {
