@@ -43,6 +43,11 @@ renderHomePage();
 Hier werden die Funktionen für die Nav-Bar aufgerufen
 */
 
+document.getElementById("home-link")?.addEventListener("click", () =>{
+    currentPage = "home-page";
+    renderHomePage();
+})
+
 document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
     currentPage = "list-page";
     displayListPage()
