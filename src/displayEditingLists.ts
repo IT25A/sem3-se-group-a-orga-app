@@ -5,6 +5,7 @@ import Sortable from 'sortablejs'
 import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
 import { currentPage } from './main';
+import { renderBacklogPage } from './backlog';
 
 export function displayListPage(): void {
   renderLists();
@@ -173,7 +174,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
       });
 
       editButton.addEventListener('click', () => {
-        showDialogEditTask(task.id, listId, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate) => {
+        showDialogEditTask(task.id, (taskId, title, description, priority, complexity, timeEstimate, dueDate) => {
           editTaskTitle(taskId, title);
           editTaskDescription(taskId, description);
           editTaskPriority(taskId, priority);
@@ -189,6 +190,9 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
             case "list-page":
               renderLists();
               break;
+            case "backlog-page":
+              renderBacklogPage();
+              break;  
             default:
               break;
           }
