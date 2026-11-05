@@ -44,6 +44,7 @@ Hier werden die Funktionen für die Nav-Bar aufgerufen
 */
 
 document.getElementById("home-link")?.addEventListener("click", () =>{
+    currentPage = "home-page";
     renderHomePage();
 })
 
