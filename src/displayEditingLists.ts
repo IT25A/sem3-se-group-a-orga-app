@@ -2,7 +2,7 @@ import './style.css'
 import './styles/listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
+import { lists, backlog, createTask, deleteTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
 import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
@@ -159,7 +159,11 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
       }
 
       deleteButton.addEventListener('click', () => {
-        showDialogDeleteTask(task.id, listId, () => {
+        if(currentPage === "backlog-page"){
+          deleteTask(task.id);
+          renderBacklogPage();
+        }else{
+          showDialogDeleteTask(task.id, listId, () => {
           switch (currentPage) {
             case "home-page":
             renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
@@ -171,6 +175,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
               break;
           }
         })
+        }  
       });
 
       editButton.addEventListener('click', () => {
