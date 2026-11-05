@@ -1,10 +1,10 @@
 import './style.css'
-import './listStyle.css'
+import './styles/listStyle.css'
 
 import Sortable from 'sortablejs'
 import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
-import { currentPage, renderHomePage } from './main';
+import { currentPage } from './main';
 
 export function displayListPage(): void {
   renderLists();
@@ -37,7 +37,7 @@ function initializeSortables(): void {
         }
         switch (currentPage) {
           case "home-page":
-            renderHomePage();
+            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
             break;
           case "list-page":
             renderLists();
@@ -81,45 +81,8 @@ function renderLists(): void {
   initializeSortables();
 }
 
-//Funktion um Listen (woanders) anzuszeigen
-
-export function renderListByIdInContainer(id: string, container: HTMLDivElement, clear: boolean): void {
-  if (clear) {
-    for (const child of Array.from(container.children)) {
-      if (child.classList.contains("list-card")) {
-        child.replaceChildren()
-        child.remove();
-      }
-    }
-    destroySortables();
-  }
-  const listIndex = lists.findIndex(l => l.id === id)
-  const list = lists[listIndex]
-  const listElement = document.createElement('section');
-  listElement.className = 'list-card';
-
-  const listHeader = document.createElement('div');
-  listHeader.className = 'list-header';
-
-  const deleteButton = document.createElement('button');
-  deleteButton.textContent = '🗑️';
-  deleteButton.className = 'delete-button';
-
-  const editButton = document.createElement('button');
-  editButton.textContent = '✏️';
-  editButton.className = 'edit-button';
-
-  const title = document.createElement('h2');
-  title.textContent = list.title;
-
-  const description = document.createElement('p');
-  description.textContent = list.description;
-
-  const taskCount = document.createElement('p');
-  taskCount.textContent = `Tasks: ${list.tasks.length}`;
-
-  const taskProgress = document.createElement('p');
-  taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+export function displayProgressBar( progress: number):  HTMLElement {
+  
 
   //Progressbar
   //Hintergrund
@@ -137,7 +100,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   //Balken 
   const fill = document.createElement('div');
   fill.style.cssText = `
-  width: ${calculateProgress(list.id)}%;
+  width: ${progress}%;
   height: 100%;
   background-color: #7952b3; 
   border-radius: 6px;
@@ -146,17 +109,17 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
   progressBar.appendChild(fill);
 
-  //Wrapper-Container 
-  const progressContainer = document.createElement('div');
-  progressContainer.append(taskProgress, progressBar);
+  return progressBar;
+}
 
 
-  const taskList = document.createElement('ul');
-  taskList.className = "sortable-list";
-  taskList.id = list.id;
-
-  for (const taskId of list.tasks) {
-    const taskItem = document.createElement('li');
+//Funktion um Aufgaben (woanders) anzuszeigen
+export function renderTaskByIdInContainer(taskId: string, listId: string, container: HTMLUListElement): void {
+  const thisTask = backlog.tasks.find(t => t.id === taskId);
+  if (!thisTask) {
+    throw new Error(`Task with id ${taskId} not found`);
+  }
+  const taskItem = document.createElement('li');
     taskItem.id = taskId;
     taskItem.classList.add('task-item');
 
@@ -195,10 +158,10 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
       }
 
       deleteButton.addEventListener('click', () => {
-        showDialogDeleteTask(task.id, list.id, () => {
+        showDialogDeleteTask(task.id, listId, () => {
           switch (currentPage) {
             case "home-page":
-              renderHomePage();
+            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
               break;
             case "list-page":
               renderLists();
@@ -210,7 +173,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
       });
 
       editButton.addEventListener('click', () => {
-        showDialogEditTask(task.id, list.id, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate) => {
+        showDialogEditTask(task.id, listId, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate) => {
           editTaskTitle(taskId, title);
           editTaskDescription(taskId, description);
           editTaskPriority(taskId, priority);
@@ -221,7 +184,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           }
           switch (currentPage) {
             case "home-page":
-              renderHomePage();
+              renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
               break;
             case "list-page":
               renderLists();
@@ -237,7 +200,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         taskItem.classList.toggle('completed', task.completed);
         switch (currentPage) {
           case "home-page":
-            renderHomePage();
+            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
             break;
           case "list-page":
             renderLists();
@@ -279,8 +242,66 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
       taskHeader.append(checkbox, title, toggle, editButton, deleteButton);
 
       taskItem.append(taskHeader, details);
-      taskList.appendChild(taskItem);
+      if(currentPage === "home-page"){
+        container.insertBefore(taskItem, container.querySelector('.zitat-card'));
+      }else{
+        container.appendChild(taskItem);
+      }
     }
+}
+
+export function renderListByIdInContainer(id: string, container: HTMLDivElement, clear: boolean): void {
+  if (clear) {
+    for (const child of Array.from(container.children)) {
+      if (child.classList.contains("list-card")) {
+        child.replaceChildren()
+        child.remove();
+      }
+    }
+    destroySortables();
+  }
+  const listIndex = lists.findIndex(l => l.id === id)
+  const list = lists[listIndex]
+  const listElement = document.createElement('section');
+  listElement.className = 'list-card';
+
+  const listHeader = document.createElement('div');
+  listHeader.className = 'list-header';
+
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = '🗑️';
+  deleteButton.className = 'delete-button';
+
+  const editButton = document.createElement('button');
+  editButton.textContent = '✏️';
+  editButton.className = 'edit-button';
+
+  const title = document.createElement('h2');
+  title.textContent = list.title;
+
+  const description = document.createElement('p');
+  description.textContent = list.description;
+
+  const taskCount = document.createElement('p');
+  taskCount.textContent = `Tasks: ${list.tasks.length}`;
+
+  //Progressbar
+  const taskProgress = document.createElement('p');
+  taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+
+  const progressBar =displayProgressBar(calculateProgress(list.id));
+
+  //Wrapper-Container 
+  const progressContainer = document.createElement('div');
+  progressContainer.append(progressBar);
+
+
+  const taskList = document.createElement('ul');
+  taskList.className = "sortable-list";
+  taskList.id = list.id;
+
+  for (const taskId of list.tasks) {
+    renderTaskByIdInContainer(taskId, list.id, taskList);
 
   }
 
@@ -297,7 +318,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         addTaskToList(newTask.id, listId)
         switch (currentPage) {
           case "home-page":
-            renderHomePage();
+            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
             break;
           case "list-page":
             renderLists();
@@ -313,7 +334,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     showDialogDeleteList(list.id, () => {
       switch (currentPage) {
         case "home-page":
-          renderHomePage();
+          renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
           break;
         case "list-page":
           renderLists();
@@ -332,7 +353,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
       switch (currentPage) {
         case "home-page":
-          renderHomePage();
+          renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
           break;
         case "list-page":
           renderLists();
@@ -345,7 +366,12 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
   listHeader.append(title, editButton, deleteButton);
   listElement.append(listHeader, description, taskCount, taskProgress, progressBar, taskList);
-  container.appendChild(listElement);
+
+  if(currentPage === "home-page"){
+    container.insertBefore(listElement, container.querySelector('.zitat-card'));
+  }else{
+    container.appendChild(listElement);
+  }
 
   if (clear) {
     initializeSortables();

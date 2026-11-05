@@ -6,6 +6,7 @@ import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
 import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
+import { renderBacklogPage } from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
@@ -34,7 +35,7 @@ export let currentPage = "home-page";
 // 1. Unsere Webseite erstellen
 
 populateTestData(); //Wie der Name sagt, zum Laden von Testdaten (decken eine Auswahl verschiedener  Fälle ab, das ganze ist grob beschrieben in TestFictures über die Namen der Vars und so)
-const app = document.querySelector<HTMLDivElement>('#app')!;
+export const app = document.querySelector<HTMLDivElement>('#app')!;
 
 renderHomePage();
 
@@ -51,6 +52,11 @@ document.getElementById("home-link")?.addEventListener("click", () =>{
 document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
     currentPage = "list-page";
     displayListPage()
+})
+
+document.getElementById("backlog-link")?.addEventListener("click", () =>{
+    currentPage = "backlog-page";
+    renderBacklogPage()
 })
 /*
 Zitate
@@ -116,12 +122,12 @@ export function renderHomePage():void{
     `;
     app.append(generalContent)
 
-
     renderListByIdInContainer(lists[0].id, app, true);
 //zitate
 // Zitatbereich hinzufügen
     const zitatBereich = document.createElement('div');
     zitatBereich.innerHTML = mainzitatanzeiger();
+    zitatBereich.className = 'zitat-card';
     app.append(zitatBereich);
     zeigeZitat();
     zitatBereich.querySelector('#nxtqoute')

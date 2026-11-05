@@ -1,4 +1,4 @@
-import './dialogStyle.css';
+import './styles/dialogStyle.css';
 import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } from './taskAndListLogik';
 import {backlog, lists} from './taskAndListLogik';
 
