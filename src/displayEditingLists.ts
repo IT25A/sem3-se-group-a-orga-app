@@ -85,7 +85,12 @@ function renderLists(): void {
 
 export function renderListByIdInContainer(id: string, container: HTMLDivElement, clear: boolean): void {
   if (clear) {
-    container.replaceChildren();
+    for (const child of Array.from(container.children)) {
+      if (child.classList.contains("list-card")) {
+        child.replaceChildren()
+        child.remove();
+      }
+    }
     destroySortables();
   }
   const listIndex = lists.findIndex(l => l.id === id)

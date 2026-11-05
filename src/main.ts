@@ -103,13 +103,17 @@ export function renderHomePage():void{
     const generalContent = document.createElement('div');
     generalContent.className = 'app';
 
+
+
     generalContent.innerHTML = `
     <h1>Meine OrgaAPP</h1>
     <p>Ziehe deine Aufgaben mit der Maus!</p>
     `;
     app.append(generalContent)
-    renderListByIdInContainer(lists[0].id, app, true)
-    //zitate
+
+
+    renderListByIdInContainer(lists[0].id, app, true);
+//zitate
 // Zitatbereich hinzufügen
     const zitatBereich = document.createElement('div');
     zitatBereich.innerHTML = mainzitatanzeiger();
@@ -169,10 +173,5 @@ export function renderHomePage():void{
             }
         ]
     })
-    calendar.render()
-
-
-
-
-
+    calendar.render();
 }
