@@ -1,6 +1,6 @@
 import './styles/dialogStyle.css';
 import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } from './taskAndListLogik';
-import {backlog, lists} from './taskAndListLogik';
+import {backlog, lists} from './persistence/state';
 
 
 

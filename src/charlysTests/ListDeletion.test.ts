@@ -6,13 +6,12 @@ import {
 } from 'vitest';
 
 import { 
-  backlog,
-  lists,
   createTask,
   addList,
   addTaskToList,
   deleteList,
 } from '../taskAndListLogik';
+import { lists, backlog } from '../persistence/state';
 
 describe('Deleting lists', () => {
   beforeEach(() => {

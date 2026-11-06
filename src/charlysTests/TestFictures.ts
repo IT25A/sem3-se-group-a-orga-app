@@ -1,6 +1,6 @@
 
 import {
-  lists,
+  
   createTask,
   addList,
   addTaskToList,
@@ -9,19 +9,19 @@ import {
   editTaskTimeEstimate,
   editTaskCompleted,
 } from '../taskAndListLogik';
-
+import { lists } from '../persistence/state';
 import type {
   Priority,
   Complexity,
   TimeEstimate,
 } from '../taskAndListLogik';
 
-export function populateTestData() {
+export async function populateTestData() {
   // Create lists.
-  addList('Arbeit', 'Aufgaben rund um Arbeit und Projekte');
-  addList('Privat', 'Persönliche Aufgaben und Besorgungen');
-  addList('Lernen', 'Lern- und Studienaufgaben');
-  addList('Leere Liste', 'Eine Liste ohne Aufgaben');
+  await addList('Arbeit', 'Aufgaben rund um Arbeit und Projekte');
+  await addList('Privat', 'Persönliche Aufgaben und Besorgungen');
+  await addList('Lernen', 'Lern- und Studienaufgaben');
+  await addList('Leere Liste', 'Eine Liste ohne Aufgaben');
 
   // Retrieve the created lists.
   const getList = (title: string) => {
@@ -34,59 +34,59 @@ export function populateTestData() {
     return list;
   };
 
-  const workList = getList('Arbeit');
-  const personalList = getList('Privat');
-  const studyList = getList('Lernen');
-  const emptyList = getList('Leere Liste');
+  const workList = await getList('Arbeit');
+  const personalList = await getList('Privat');
+  const studyList = await getList('Lernen');
+  const emptyList = await getList('Leere Liste');
 
-  const backlogOnlyTask = createTask({
+  const backlogOnlyTask = await createTask({
     title: 'Buch lesen',
     description: '20 Seiten lesen',
   });
 
-  const workTask = createTask({
+  const workTask = await createTask({
     title: 'Projektbericht fertigstellen',
     description: 'Den Abschlussbericht fertigstellen',
   });
 
-  const sharedTask = createTask({
+  const sharedTask = await createTask({
     title: 'Präsentation vorbereiten',
     description: 'Folien für das Meeting erstellen',
   });
 
-  const personalTask = createTask({
+  const personalTask = await createTask({
     title: 'Einkaufen',
     description: 'Milch, Brot und Obst kaufen',
   });
 
-  const studyTask = createTask({
+  const studyTask = await createTask({
     title: 'TypeScript wiederholen',
     description: 'Typen und Interfaces üben',
   });
 
-  const completedTask = createTask({
+  const completedTask = await createTask({
     title: 'Rechnung versenden',
     description: 'Die Rechnung an den Kunden schicken',
   });
 
-  const multiListTask = createTask({
+  const multiListTask = await createTask({
     title: 'Woche planen',
     description: 'Arbeit, Lernen und private Aufgaben organisieren',
   });
 
   // Assign tasks to lists.
-  addTaskToList(workTask.id, workList.id);
+  await addTaskToList(workTask.id, workList.id);
 
-  addTaskToList(sharedTask.id, workList.id);
-  addTaskToList(sharedTask.id, personalList.id);
+  await addTaskToList(sharedTask.id, workList.id);
+  await addTaskToList(sharedTask.id, personalList.id);
 
-  addTaskToList(personalTask.id, personalList.id);
-  addTaskToList(studyTask.id, studyList.id);
-  addTaskToList(completedTask.id, workList.id);
+  await addTaskToList(personalTask.id, personalList.id);
+  await addTaskToList(studyTask.id, studyList.id);
+  await addTaskToList(completedTask.id, workList.id);
 
-  addTaskToList(multiListTask.id, workList.id);
-  addTaskToList(multiListTask.id, personalList.id);
-  addTaskToList(multiListTask.id, studyList.id);
+  await addTaskToList(multiListTask.id, workList.id);
+  await addTaskToList(multiListTask.id, personalList.id);
+  await addTaskToList(multiListTask.id, studyList.id);
 
   // Use your exact union types.
   const priorityHigh: Priority = 'hoch';
@@ -102,26 +102,26 @@ export function populateTestData() {
   const timeLong: TimeEstimate = 'lang';
 
   // Set varied task properties.
-  editTaskPriority(workTask.id, priorityHigh);
-  editTaskComplexity(workTask.id, complexityHard);
-  editTaskTimeEstimate(workTask.id, timeLong);
+  await editTaskPriority(workTask.id, priorityHigh);
+  await editTaskComplexity(workTask.id, complexityHard);
+  await editTaskTimeEstimate(workTask.id, timeLong);
 
-  editTaskPriority(sharedTask.id, priorityMedium);
-  editTaskComplexity(sharedTask.id, complexityMedium);
-  editTaskTimeEstimate(sharedTask.id, timeMedium);
+  await editTaskPriority(sharedTask.id, priorityMedium);
+  await editTaskComplexity(sharedTask.id, complexityMedium);
+  await editTaskTimeEstimate(sharedTask.id, timeMedium);
 
-  editTaskPriority(personalTask.id, priorityLow);
-  editTaskComplexity(personalTask.id, complexityEasy);
-  editTaskTimeEstimate(personalTask.id, timeShort);
+  await editTaskPriority(personalTask.id, priorityLow);
+  await editTaskComplexity(personalTask.id, complexityEasy);
+  await editTaskTimeEstimate(personalTask.id, timeShort);
 
-  editTaskPriority(studyTask.id, priorityHigh);
-  editTaskComplexity(studyTask.id, complexityMedium);
-  editTaskTimeEstimate(studyTask.id, timeLong);
+  await editTaskPriority(studyTask.id, priorityHigh);
+  await editTaskComplexity(studyTask.id, complexityMedium);
+  await editTaskTimeEstimate(studyTask.id, timeLong);
 
-  editTaskPriority(completedTask.id, priorityHigh);
-  editTaskCompleted(completedTask.id, true);
+  await editTaskPriority(completedTask.id, priorityHigh);
+  await editTaskCompleted(completedTask.id, true);
 
-  editTaskPriority(multiListTask.id, priorityMedium);
+  await editTaskPriority(multiListTask.id, priorityMedium);
 
   return {
     lists: {

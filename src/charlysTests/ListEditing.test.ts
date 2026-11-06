@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  lists,
+  
   addList,
   renameList,
   changeListDescription,
 } from '../taskAndListLogik';
+import { lists } from '../persistence/state';
 
 describe('Editing lists', () => {
   beforeEach(() => {

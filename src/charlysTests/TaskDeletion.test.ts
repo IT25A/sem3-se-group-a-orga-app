@@ -1,13 +1,12 @@
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  backlog,
-  lists,
   createTask,
   addList,
   addTaskToList,
   deleteTask,
 } from '../taskAndListLogik';
+import { lists, backlog } from '../persistence/state';
 
 describe('Deleting tasks', () => {
   beforeEach(() => {
