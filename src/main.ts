@@ -1,7 +1,6 @@
 import './style.css'
 //inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 //import Sortable from 'sortablejs'
-import { resetAppData } from "./persistence/state"; //(Falls die Datenbankinitialisierung nicht funktioniert, kann man hiermit den Speicher leeren und die App neu starten)
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
 import dayGridPlugin from 'fullcalendar/daygrid';
@@ -48,11 +47,7 @@ async function main() {
 
     //Ich hoffe das geht (wieso hatten wir keine main() function? hahah)
 
-    //import {plugins} from "fullcalendar/all"; hat nicht funktioniert
 
-    // 1. Unsere Webseite erstellen
-
-    //populateTestData(); //Wie der Name sagt, zum Laden von Testdaten (decken eine Auswahl verschiedener  Fälle ab, das ganze ist grob beschrieben in TestFictures über die Namen der Vars und so)
 
     renderHomePage();
 
@@ -150,7 +145,9 @@ export function renderHomePage():void{
     `;
     app.append(generalContent)
 
-    renderListByIdInContainer(lists[0].id, app, true);
+    if (lists.length > 0) {
+        renderListByIdInContainer(lists[0].id, app, true);
+    }
 //zitate
 // Zitatbereich hinzufügen
     const zitatBereich = document.createElement('div');

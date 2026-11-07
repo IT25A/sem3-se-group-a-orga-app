@@ -110,12 +110,14 @@ export async function deleteListsRecursivly(listId: string): Promise<void> {
 //[start]
 export function calculateProgress(listId: string){
   let done: number = 0;
-  const listIndex = lists.findIndex(list => list.id === listId);
-  const list = lists[listIndex]
-  const total= list.tasks.length;
+  const list = lists.find(list => list.id === listId);
+
   if (!list || list.tasks.length === 0) {
     return 0;
   }
+
+  const total= list.tasks.length;
+  
 
   for(const taskId of list.tasks){
     const task = backlog.tasks.find(task => task.id === taskId);

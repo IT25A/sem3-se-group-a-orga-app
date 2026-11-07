@@ -7,7 +7,7 @@ import type { Backlog } from "../taskAndListLogik";
 interface AppDatabase {
   "app-state": {
     key: string;
-    value: List[] | Backlog;
+    value: List[] | Backlog | boolean;
   };
 }
 
@@ -46,8 +46,8 @@ export async function saveData(
   await Promise.all([
     tx.store.put(lists, "lists"),
     tx.store.put(backlog, "backlog"),
+    tx.store.put(true, "hasInitialized"),
   ]);
-
   await tx.done;
 }
 
@@ -73,17 +73,21 @@ export async function saveBacklog(backlog: Backlog): Promise<void> {
 export async function loadData(): Promise<{
   lists: List[] | undefined;
   backlog: Backlog | undefined;
+  hasInitialized: boolean | undefined;
 }> {
   const db = await getDatabase();
 
-  const [lists, backlog] = await Promise.all([
+  // Alle drei Einträge parallel aus der Datenbank laden.
+  const [lists, backlog, hasInitialized] = await Promise.all([
     db.get("app-state", "lists"),
     db.get("app-state", "backlog"),
+    db.get("app-state", "hasInitialized"),
   ]);
 
   return {
     lists: lists as List[] | undefined,
     backlog: backlog as Backlog | undefined,
+    hasInitialized: hasInitialized as boolean | undefined,
   };
 }
 
@@ -101,6 +105,14 @@ export async function loadBacklog(): Promise<Backlog | undefined> {
   return db.get("app-state", "backlog") as Promise<Backlog | undefined>;
 }
 
+// Nur den Initialisierungsmarker laden.
+// Anders als loadBacklog() gibt diese Funktion einen Boolean zurück.
+export async function loadInitialized(): Promise<boolean | undefined> {
+  const db = await getDatabase();
+
+  return db.get("app-state", "hasInitialized") as Promise<boolean | undefined>;
+}
+
 // --------------------------------
 // DATEN LÖSCHEN
 // --------------------------------
@@ -111,3 +123,4 @@ export async function clearStorage(): Promise<void> {
 
   await db.clear("app-state");
 }
+

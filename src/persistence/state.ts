@@ -1,7 +1,8 @@
 
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
-import {populateTestData} from "../charlysTests/TestFictures";
+
+import { createWelcomeData } from "./welcomeData";
 
 import {
   loadData,
@@ -29,26 +30,66 @@ export let backlog: Backlog = {
 // --------------------------------
 
 export async function initializeData(): Promise<void> {
+  // Zuerst alle gespeicherten Daten aus der IndexedDB laden.
   const data = await loadData();
 
-  // Gespeicherte Listen laden
-  if (data.lists !== undefined) {
-    lists = data.lists;
+  // --------------------------------
+  // FALL 1: Ersteinrichtung wurde bereits durchgeführt
+  // --------------------------------
+
+  if (data.hasInitialized === true) {
+    lists = data.lists ?? [];
+
+    backlog = data.backlog ?? {
+      id: "backlog",
+      title: "Backlog",
+      description: "This is the backlog list",
+      createdAt: new Date(),
+      tasks: [],
+    };
+
+    if (data.lists === undefined || data.backlog === undefined) {
+      await saveData(lists, backlog);
+    }
+
+    return;
   }
 
-  // Gespeichertes Backlog laden
-  if (data.backlog !== undefined) {
-    backlog = data.backlog;
+  // --------------------------------
+  // FALL 2: Datenbank ist wirklich leer
+  // --------------------------------
+
+  const isFreshDatabase =
+    data.lists === undefined &&
+    data.backlog === undefined;
+
+  if (isFreshDatabase) {
+    const initialData = createWelcomeData();
+
+    lists = initialData.lists;
+    backlog = initialData.backlog;
+
+    await saveData(lists, backlog);
+
+    return;
   }
 
-  // Initialdaten speichern, falls noch nicht vorhanden
-  if (data.lists === undefined) {
-    await saveLists(lists);
-  }
+  // --------------------------------
+  // FALL 3: Es existieren bereits ältere Daten,
+  // aber noch kein Initialisierungsmarker.
+  // --------------------------------
 
-  if (data.backlog === undefined) {
-    await saveBacklog(backlog);
-  }
+  lists = data.lists ?? [];
+
+  backlog = data.backlog ?? {
+    id: "backlog",
+    title: "Backlog",
+    description: "This is the backlog list",
+    createdAt: new Date(),
+    tasks: [],
+  };
+
+  await saveData(lists, backlog);
 }
 
 // --------------------------------
@@ -88,10 +129,11 @@ export async function updateAppData(
   lists = newLists;
   backlog = newBacklog;
 }
-// --------------------------------
-// ALLE DATEN VALIDIEREN (Inkonsistenzen prüfen)
-// --------------------------------
 
+// --------------------------------
+// ALLE DATEN VALIDIEREN
+// Inkonsistenzen zwischen Listen und Aufgaben prüfen
+// --------------------------------
 
 export function validateData(): void {
   for (const list of lists) {
@@ -127,24 +169,4 @@ export function validateData(): void {
       }
     }
   }
-}
-
-// --------------------------------
-// APP RESET (wenn nötig, um die App in einen sauberen Zustand zu versetzen)
-// --------------------------------
-
-
-export async function resetAppData(): Promise<void> {
-  const emptyLists: List[] = [];
-
-  const emptyBacklog: Backlog = {
-    id: "backlog",
-    title: "Backlog",
-    description: "This is the backlog list",
-    createdAt: new Date(),
-    tasks: [],
-  };
-  populateTestData();
-
-  await updateAppData(emptyLists, emptyBacklog);
 }
