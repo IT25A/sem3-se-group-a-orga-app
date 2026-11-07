@@ -19,6 +19,30 @@ function destroySortables(): void {
   sortableInstances.length = 0;
 }
 
+/** Aktualisiert auf der Startseite die vorhandene Slider-Karte der betroffenen Liste. */
+function refreshHomeList(listId: string, sourceElement: HTMLElement): void {
+  const sliderCard = sourceElement.closest<HTMLDivElement>('.slidable-card');
+  const listStillExists = lists.some(list => list.id === listId);
+
+  if (sliderCard) {
+    if (listStillExists) {
+      renderListByIdInContainer(listId, sliderCard, true);
+    } else {
+      sliderCard.remove();
+      destroySortables();
+      initializeSortables();
+    }
+    return;
+  }
+
+  // Fallback für die Home-Ansicht ohne Card-Slider.
+  const appContainer = document.querySelector<HTMLDivElement>('#app');
+  if (appContainer && lists.length > 0) {
+    const idToRender = listStillExists ? listId : lists[0].id;
+    renderListByIdInContainer(idToRender, appContainer, true);
+  }
+}
+
 function initializeSortables(): void {
   document.querySelectorAll<HTMLElement>('.sortable-list').forEach(element => {
     const sortable = Sortable.create(element, {
@@ -39,7 +63,10 @@ function initializeSortables(): void {
         }
         switch (currentPage) {
           case "home-page":
-            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+            refreshHomeList(oldListId, event.from as HTMLElement);
+            if (newListId !== oldListId) {
+              refreshHomeList(newListId, event.to as HTMLElement);
+            }
             break;
           case "list-page":
             renderLists();
@@ -170,7 +197,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
           showDialogDeleteTask(task.id, listId, () => {
           switch (currentPage) {
             case "home-page":
-            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+              refreshHomeList(listId, taskItem);
               break;
             case "list-page":
               renderLists();
@@ -194,7 +221,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
           }
           switch (currentPage) {
             case "home-page":
-              renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+              refreshHomeList(listId, taskItem);
               break;
             case "list-page":
               renderLists();
@@ -213,7 +240,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
         taskItem.classList.toggle('completed', task.completed);
         switch (currentPage) {
           case "home-page":
-            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+            refreshHomeList(listId, taskItem);
             break;
           case "list-page":
             renderLists();
@@ -331,13 +358,13 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           addTaskToList(newTask.id, listId)
           switch (currentPage) {
             case "home-page":
-              renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+              refreshHomeList(listId, taskList);
               break;
-          case "list-page":
-            renderLists();
-            break;
-          default:
-            break;
+            case "list-page":
+              renderLists();
+              break;
+            default:
+              break;
         }
       }
     );
@@ -348,7 +375,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     showDialogDeleteList(list.id, () => {
       switch (currentPage) {
         case "home-page":
-          renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+          refreshHomeList(list.id, listElement);
           break;
         case "list-page":
           renderLists();
@@ -367,7 +394,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
       switch (currentPage) {
         case "home-page":
-          renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+          refreshHomeList(listId, listElement);
           break;
         case "list-page":
           renderLists();

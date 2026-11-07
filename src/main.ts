@@ -33,6 +33,7 @@ import { displayListPage, renderListByIdInContainer } from './displayEditingList
 import { populateTestData } from './charlysTests/TestFictures'
 
 import { initializeData } from "./persistence/state.ts";
+import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -145,8 +146,11 @@ export function renderHomePage():void{
     `;
     app.append(generalContent)
 
+    const listenBereich = document.createElement('div');
+
     if (lists.length > 0) {
-        renderListByIdInContainer(lists[0].id, app, true);
+        showCardSliderForListsInContainer(listenBereich);
+        cardSliderNavigation();
     }
 //zitate
 // Zitatbereich hinzufügen
