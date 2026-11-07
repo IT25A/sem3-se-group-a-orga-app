@@ -1,8 +1,6 @@
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  backlog,
-  lists,
   createTask,
   addList,
   editTaskTitle,
@@ -17,7 +15,7 @@ import {
 } from '../taskAndListLogik';
 
 import type { Priority, Complexity, TimeEstimate } from '../taskAndListLogik';
-
+import { lists, backlog } from '../persistence/state';
 // Replace these example values with valid values from your types.
 const priorityA = 'Low' as Priority;
 const priorityB = 'High' as Priority;

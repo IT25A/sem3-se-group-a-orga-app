@@ -1,14 +1,12 @@
-/* 
-Hier soll die Logik zum erstellen von Listen und Aufgaben implementiert werden.
-*/
-export let lists: List[] = []
-export let backlog: Backlog = {
+import {lists, backlog, updateAppData} from './persistence/state';
+//export let lists: List[] = []
+/*export let backlog: Backlog = {
   id: "backlog",
   title: 'Backlog',
   description: 'This is the backlog list',
   createdAt: new Date(),
   tasks: []
-};
+};*/
 
 export type Backlog = {
   id: string;
@@ -48,12 +46,13 @@ function createList(title: string, description: string): List {
   }
   return newList;
 }
-export function addList(title: string, description: string): void {
+export async function addList(title: string, description: string): Promise<void> {
   const newList = createList(title, description);
   lists.push(newList);
+  await updateAppData(lists, backlog);
 }
 
-export function deleteList(id: string): void {
+export async function deleteList(id: string): Promise<void> {
   const index = lists.findIndex(list => list.id === id);
   if (index === -1) {
     return;
@@ -68,23 +67,26 @@ export function deleteList(id: string): void {
   }
   //remove list itself
   lists.splice(index, 1);
+  await updateAppData(lists, backlog);
 }
 
-export function renameList(id: string, newTitle: string): void {
+export async function renameList(id: string, newTitle: string): Promise<void> {
   const list = lists.find(list => list.id === id);
   if (list) {
     list.title = newTitle;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function changeListDescription(id: string, newDescription: string): void {
+export async function changeListDescription(id: string, newDescription: string): Promise<void> {
   const list = lists.find(list => list.id === id);
   if (list) {
     list.description = newDescription;
+    await updateAppData(lists, backlog);
   }
 } 
 
-export function deleteListsRecursivly(listId: string): void {
+export async function deleteListsRecursivly(listId: string): Promise<void> {
   const listIndex = lists.findIndex(list => list.id === listId);
   if (listIndex !== -1) {
     if (lists[listIndex].tasks.length > 0) {
@@ -93,7 +95,7 @@ export function deleteListsRecursivly(listId: string): void {
         const taskIndexBacklog = backlog.tasks.findIndex(tasks => tasks.id === task);
         if (taskIndexBacklog !== -1) {
           if (backlog.tasks[taskIndexBacklog].lists.length === 2) { // wenn task nur in dieser Liste und im Backlog ist, dann wird sie gelöscht, sonst nur aus der Liste entfernt
-            deleteTask(task);
+            await deleteTask(task);
           } else {
             backlog.tasks[taskIndexBacklog].lists =
               backlog.tasks[taskIndexBacklog].lists.filter(id => id !== listId);
@@ -102,17 +104,20 @@ export function deleteListsRecursivly(listId: string): void {
       }
     }
     lists.splice(listIndex, 1);
+    await updateAppData(lists, backlog);
   }
 } 
 //[start]
 export function calculateProgress(listId: string){
   let done: number = 0;
-  const listIndex = lists.findIndex(list => list.id === listId);
-  const list = lists[listIndex]
-  const total= list.tasks.length;
+  const list = lists.find(list => list.id === listId);
+
   if (!list || list.tasks.length === 0) {
     return 0;
   }
+
+  const total= list.tasks.length;
+  
 
   for(const taskId of list.tasks){
     const task = backlog.tasks.find(task => task.id === taskId);
@@ -138,7 +143,7 @@ export type Task = {
   lists: string[];
 };
 
-export function createTask({
+export async function createTask({
   title,
   description,
   priority,
@@ -152,7 +157,7 @@ export function createTask({
   complexity?: Complexity;
   timeEstimate?: TimeEstimate;
   dueDate?: Date;
-}): Task {
+}): Promise<Task> {
   const newTask: Task = {
     id: generateUniqueId(),
     title,
@@ -166,10 +171,11 @@ export function createTask({
     lists: [backlog.id]
   };
   backlog.tasks.push(newTask);
+  await updateAppData(lists, backlog);
   return newTask;
 }
 
-export function addTaskToList(taskId: string, listId: string): void {
+export async function addTaskToList(taskId: string, listId: string): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   const list = lists.find(list => list.id === listId);
   if (task && list) {
@@ -179,10 +185,11 @@ export function addTaskToList(taskId: string, listId: string): void {
     if (!list.tasks.some(t => t === taskId)) {
       list.tasks.push(taskId);
     }
+    await updateAppData(lists, backlog);
   }
 } 
 
-export function deleteTask(taskId: string): void {
+export async function deleteTask(taskId: string): Promise<void> {
   const taskIndex = backlog.tasks.findIndex(task => task.id === taskId);
   if (taskIndex !== -1) {
     const task = backlog.tasks[taskIndex];
@@ -196,10 +203,11 @@ export function deleteTask(taskId: string): void {
       }
     }
     backlog.tasks.splice(taskIndex, 1);
+    await updateAppData(lists, backlog);
   }
 }
 
-export function removeTaskFromList(taskId: string, listId: string): void {
+export async function removeTaskFromList(taskId: string, listId: string): Promise<void> {
   const list = lists.find(list => list.id === listId);
   const task = backlog.tasks.find(task => task.id === taskId);
 
@@ -211,55 +219,61 @@ export function removeTaskFromList(taskId: string, listId: string): void {
         task.lists.splice(listIndex, 1)
       }
   }
+  await updateAppData(lists, backlog);
 }
 
-export function editTaskTitle(taskId: string, newTitle: string): void {
+export async function editTaskTitle(taskId: string, newTitle: string): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.title = newTitle;
+    await updateAppData(lists, backlog);
   }
 }
-
-export function editTaskDescription(taskId: string, newDescription: string): void {
+  
+export async function editTaskDescription(taskId: string, newDescription: string): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.description = newDescription;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function editTaskDueDate(taskId: string, newDueDate?: Date): void {
+export async function editTaskDueDate(taskId: string, newDueDate?: Date): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.dueDate = newDueDate;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function editTaskPriority(taskId: string, newPriority: Priority): void {
+export async function editTaskPriority(taskId: string, newPriority: Priority): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.priority = newPriority;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function editTaskComplexity(taskId: string, newComplexity: Complexity): void {
+export async function editTaskComplexity(taskId: string, newComplexity: Complexity): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.complexity = newComplexity;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function editTaskTimeEstimate(taskId: string, newTimeEstimate: TimeEstimate): void {
+export async function editTaskTimeEstimate(taskId: string, newTimeEstimate: TimeEstimate): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.timeEstimate = newTimeEstimate;
+    await updateAppData(lists, backlog);
   }
 }
 
-export function editTaskCompleted(taskId: string, completed: boolean): void {
+export async function editTaskCompleted(taskId: string, completed: boolean): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.completed = completed;
+    await updateAppData(lists, backlog);
   }
 }
-
-

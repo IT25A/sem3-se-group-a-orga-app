@@ -1,6 +1,6 @@
 import './styles/dialogStyle.css';
 import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } from './taskAndListLogik';
-import {backlog, lists} from './taskAndListLogik';
+import {backlog, lists} from './persistence/state';
 
 
 
@@ -314,10 +314,8 @@ export function showDialogDeleteList(
 //------------------------------------------------------------------------------
 export function showDialogEditTask(
     taskId: string,
-    listId: string,
     onCreate: (  
         taskId: string,  
-        listId: string,
         title: string,
         description: string,
         priority: 'klein' | 'mittel' | 'hoch',
@@ -423,7 +421,7 @@ const form = editingTaskDialog.querySelector('form')!;
         if (!title) return;
         if (!description) return;
 
-        onCreate(taskId, listId, title, description, priority, complexity, timeEstimate, dueDate);
+        onCreate(taskId, title, description, priority, complexity, timeEstimate, dueDate);
 
         editingTaskDialog.close();
         editingTaskDialog.remove();

@@ -1,5 +1,5 @@
 import {renderTaskByIdInContainer} from './displayEditingLists'
-import {backlog, calculateProgress} from './taskAndListLogik'
+import {backlog} from './persistence/state'
 import'./style.css'
 import './styles/listStyle.css'
 

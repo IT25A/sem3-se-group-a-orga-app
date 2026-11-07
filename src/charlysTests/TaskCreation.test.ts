@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { backlog, createTask } from '../taskAndListLogik';
+import {  createTask } from '../taskAndListLogik';
 import type { Priority, Complexity, TimeEstimate } from '../taskAndListLogik';
+import {  backlog } from '../persistence/state';
 
 describe('Task creation', () => {   
   beforeEach(() => {

@@ -2,9 +2,11 @@ import './style.css'
 import './styles/listStyle.css'
 
 import Sortable from 'sortablejs'
-import { lists, backlog, createTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
+import {  createTask, deleteTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
 import { currentPage } from './main';
+import { renderBacklogPage } from './backlog';
+import { lists, backlog } from './persistence/state';
 
 export function displayListPage(): void {
   renderLists();
@@ -74,9 +76,9 @@ function renderLists(): void {
     );
   });
 
-  for (const list of lists) {
-    renderListByIdInContainer(list.id, container, false)
-  }
+  lists.forEach(list => {
+    renderListByIdInContainer(list.id, container, false);
+  });
 
   initializeSortables();
 }
@@ -117,8 +119,11 @@ export function displayProgressBar( progress: number):  HTMLElement {
 export function renderTaskByIdInContainer(taskId: string, listId: string, container: HTMLUListElement): void {
   const thisTask = backlog.tasks.find(t => t.id === taskId);
   if (!thisTask) {
-    throw new Error(`Task with id ${taskId} not found`);
-  }
+    console.warn(
+        `Aufgabe ${taskId} existiert nicht mehr im Backlog.`
+    );
+    return;
+}
   const taskItem = document.createElement('li');
     taskItem.id = taskId;
     taskItem.classList.add('task-item');
@@ -158,7 +163,11 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
       }
 
       deleteButton.addEventListener('click', () => {
-        showDialogDeleteTask(task.id, listId, () => {
+        if(currentPage === "backlog-page"){
+          deleteTask(task.id);
+          renderBacklogPage();
+        }else{
+          showDialogDeleteTask(task.id, listId, () => {
           switch (currentPage) {
             case "home-page":
             renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
@@ -170,10 +179,11 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
               break;
           }
         })
+        }  
       });
 
       editButton.addEventListener('click', () => {
-        showDialogEditTask(task.id, listId, (taskId, listId, title, description, priority, complexity, timeEstimate, dueDate) => {
+        showDialogEditTask(task.id, (taskId, title, description, priority, complexity, timeEstimate, dueDate) => {
           editTaskTitle(taskId, title);
           editTaskDescription(taskId, description);
           editTaskPriority(taskId, priority);
@@ -189,6 +199,9 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
             case "list-page":
               renderLists();
               break;
+            case "backlog-page":
+              renderBacklogPage();
+              break;  
             default:
               break;
           }
@@ -314,12 +327,12 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
     showDialogNewTask(
       list.id,
       (listId, title, description, priority, complexity, timeEstimate, dueDate) => {
-        const newTask = createTask({ title, description, priority, complexity, timeEstimate, dueDate })
-        addTaskToList(newTask.id, listId)
-        switch (currentPage) {
-          case "home-page":
-            renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
-            break;
+        createTask({ title, description, priority, complexity, timeEstimate, dueDate }).then(newTask => {
+          addTaskToList(newTask.id, listId)
+          switch (currentPage) {
+            case "home-page":
+              renderListByIdInContainer(lists[0].id, document.querySelector<HTMLDivElement>('#app')!, true);
+              break;
           case "list-page":
             renderLists();
             break;
@@ -329,6 +342,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
       }
     );
   });
+});
 
   deleteButton.addEventListener('click', () => {
     showDialogDeleteList(list.id, () => {
