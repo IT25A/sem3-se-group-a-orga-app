@@ -1,6 +1,4 @@
 import './style.css'
-//inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
-//import Sortable from 'sortablejs'
 import { Calendar } from 'fullcalendar';
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
 import dayGridPlugin from 'fullcalendar/daygrid';
@@ -10,28 +8,11 @@ import { renderBacklogPage } from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
-import {
-    renderTimer,
-    resetTimer1,
-    resetTimer2,
-    stoppTimer1,
-    stoppTimer2,
-    initEigenerWecker,
-    stoppeiegener
-} from "./timer";
-import { zeigeDatum } from "./timer";
-import {startTimer1} from "./timer";
-import {startTimer2} from "./timer";
-import {
-    startTimer3, stoppTimer3, resetTimer3,
-
-} from "./timer";
+import { renderTimer, resetTimer1, resetTimer2, stoppTimer1, stoppTimer2, initEigenerWecker, stoppeiegener, initEigenerWecker1, zeigeDatum, startTimer1, startTimer2, startTimer3, stoppTimer3, resetTimer3 } from "./timer";
 import { zitat, zeigeZitat,mainzitatanzeiger } from "./zitate.ts";
-
 import { lists, validateData } from './persistence/state.ts';
 import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
-import { populateTestData } from './charlysTests/TestFictures'
-
+//import { populateTestData } from './charlysTests/TestFictures' hat nicht mehr bei mir funktioniert
 import { initializeData } from "./persistence/state.ts";
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -46,6 +27,7 @@ async function main() {
     console.log("Daten erfolgreich geladen!");
 
     //Ich hoffe das geht (wieso hatten wir keine main() function? hahah)
+      // stimmt wäre vlt nh idee hahahha
 
 
 
@@ -116,6 +98,7 @@ async function main() {
         ?.addEventListener("click", stoppeiegener);
 
         initEigenerWecker();
+        initEigenerWecker1();
 
         //document.getElementById("weckereinstellen").addEventListener("click", --);
     });
@@ -148,7 +131,6 @@ export function renderHomePage():void{
     if (lists.length > 0) {
         renderListByIdInContainer(lists[0].id, app, true);
     }
-//zitate
 // Zitatbereich hinzufügen
     const zitatBereich = document.createElement('div');
     zitatBereich.innerHTML = mainzitatanzeiger();
