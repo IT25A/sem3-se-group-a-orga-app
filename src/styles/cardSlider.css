@@ -62,11 +62,23 @@
     padding: 0;
 
     scroll-behavior: smooth;
+    /* Fade-Effekt oben und unten */
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 5%,
+        rgba(0, 0, 0, 1) 95%,
+        rgba(0, 0, 0, 0) 100%
+    );
+
+    mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 1) 5%,
+        rgba(0, 0, 0, 1) 95%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
-
-
-
-
 
 /* Einzelne Karten */
 .card-slider .slidable-card {
@@ -74,6 +86,7 @@
     width: 100%;
     min-height: 100%;
     box-sizing: border-box;
+    padding-top: 5px;
 }
 
 .card-slider .slidable-card.active {

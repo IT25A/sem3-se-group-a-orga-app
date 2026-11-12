@@ -10,7 +10,6 @@ export function renderBacklogPage(): void {
     <p>Hier sind alle deine Aufgaben, unabhängig von ihren Listenzugehörigkeiten.</p>
     <div id="backlog-container"></div>
   `;
-
   renderBacklogInContainer(app);
 }
 
@@ -19,17 +18,11 @@ const backlogContainer = document.createElement('div');
   backlogContainer.id = 'backlog-container';
   backlogContainer.classList.add('list-card');
   container.appendChild(backlogContainer);
-
-  
-
   const backlogList = document.createElement('ul');
   backlogList.id = 'backlog-list';
   backlogContainer.appendChild(backlogList);
-
   for (const task of backlog.tasks) {
     renderTaskByIdInContainer(task.id, 'backlog', backlogList);
   }
-
   container.append();
-  
 }
