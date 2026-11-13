@@ -329,50 +329,56 @@ export function showDialogEditTask(
     if(task !== undefined){
     editingTaskDialog.classList.add('edit-dialog');
     
-    editingTaskDialog.innerHTML = `
-        <h2>Aufgabe bearbeiten</h2>
+     // Datum VOR dem HTML-Template formatieren
+        const dueDateValue = task.dueDate
+            ? [
+                task.dueDate.getFullYear(),
+                String(task.dueDate.getMonth() + 1).padStart(2, '0'),
+                String(task.dueDate.getDate()).padStart(2, '0')
+            ].join('-')
+            : '';
 
-        <form>
-            <label for="task-title">Titel</label>
-            <input id="task-title" name="title" value="${task.title}" required />
+        editingTaskDialog.innerHTML = `
+            <h2>Aufgabe bearbeiten</h2>
+            <form>
+                <label for="task-title">Titel</label>
+                <input id="task-title" name="title"
+                    value="${task.title}" required />
 
-            <label for="task-description">Beschreibung</label>
-            <textarea id="task-description" name="description"  required>
-            ${task.description}
-            </textarea>
+                <label for="task-description">Beschreibung</label>
+                <textarea id="task-description" name="description" required>${task.description}</textarea>
 
-            <label for="task-dueDate">Fälligkeit</label>
-            <input id="task-dueDate" name="dueDate" type="date" value="${task.dueDate?.toISOString().split('T')[0]}"/>
+                <label for="task-dueDate">Fälligkeit</label>
+                <input id="task-dueDate" name="dueDate"
+                    type="date" value="${dueDateValue}" />
 
-            <label for="task-priority">Priorität</label>
-            <select name="priority" id="task-priority" value="${task.priority}">
-                <option value="klein">Klein</option>
-                <option value="mittel" selected>Mittel</option>
-                <option value="hoch">Hoch</option>
-            </select>
+                <label for="task-priority">Priorität</label>
+                <select name="priority" id="task-priority">
+                    <option value="klein">Klein</option>
+                    <option value="mittel">Mittel</option>
+                    <option value="hoch">Hoch</option>
+                </select>
 
-            <label for="task-complexity">Komplexität</label>
-            <select name="complexity" id="task-complexity" value="${task.complexity}">
-                <option value="einfach">Einfach</option>
-                <option value="mittel" selected>Mittel</option>
-                <option value="schwierig">Schwierig</option>
-            </select>
+                <label for="task-complexity">Komplexität</label>
+                <select name="complexity" id="task-complexity">
+                    <option value="einfach">Einfach</option>
+                    <option value="mittel">Mittel</option>
+                    <option value="schwierig">Schwierig</option>
+                </select>
 
-            <label for="task-timeEstimate">Geschätzte Dauer</label>
-            <select name="timeEstimate" id="task-timeEstimate" value="${task.timeEstimate}">
-                <option value="kurz">Kurz</option>
-                <option value="mittel" selected>Mittel</option>
-                <option value="lang">Lang</option>
-            </select>
+                <label for="task-timeEstimate">Geschätzte Dauer</label>
+                <select name="timeEstimate" id="task-timeEstimate">
+                    <option value="kurz">Kurz</option>
+                    <option value="mittel">Mittel</option>
+                    <option value="lang">Lang</option>
+                </select>
 
-            <div class="dialog-actions">
-                <button type="button" id="cancel-task">
-                    Abbrechen
-                </button>
-                <button type="submit">Speichern</button>
-            </div>
-        </form>
-    `;
+                <div class="dialog-actions">
+                    <button type="button" id="cancel-task">Abbrechen</button>
+                    <button type="submit">Speichern</button>
+                </div>
+            </form>
+        `;
 
     document.body.appendChild(editingTaskDialog);
 

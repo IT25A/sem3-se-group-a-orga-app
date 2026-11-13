@@ -1,11 +1,7 @@
 import './style.css'
 //inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
 //import Sortable from 'sortablejs'
-import { Calendar } from 'fullcalendar';
-import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
-import dayGridPlugin from 'fullcalendar/daygrid';
-import timeGridPlugin from 'fullcalendar/timegrid';
-import listPlugin from 'fullcalendar/list';
+
 import { renderBacklogPage } from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
@@ -34,6 +30,7 @@ import { populateTestData } from './charlysTests/TestFictures'
 
 import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
+import { showCalender } from './calender.ts';
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -46,12 +43,7 @@ async function main() {
     //resetAppData(); // Zum Testen, um die Datenbank zu leeren und mit frischen Daten zu starten
     console.log("Daten erfolgreich geladen!");
 
-    //Ich hoffe das geht (wieso hatten wir keine main() function? hahah)
-
-
-
     renderHomePage();
-
 
     /*
     Hier werden die Funktionen für die Nav-Bar aufgerufen
@@ -142,7 +134,6 @@ export function renderHomePage():void{
 
     generalContent.innerHTML = `
     <h1>Meine OrgaAPP</h1>
-    <p>Ziehe deine Aufgaben mit der Maus!</p>
     `;
     app.append(generalContent)
 
@@ -178,40 +169,5 @@ export function renderHomePage():void{
     // Alles an #app anhängen
     app.append(calenderSection);
 
-
-    // 1. Platz für den Kalender suchen
-    const calendarEl = document.getElementById('calendar')!
-
-    // 2. Kalender erstellen
-    const calendar = new Calendar(calendarEl, {
-
-        plugins: [
-            dayGridPlugin,
-            timeGridPlugin,
-            listPlugin,
-            themePlugin
-        ],
-
-        // Monatsansicht
-        initialView: 'dayGridMonth',
-
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-        },
-
-        // Beispielaufgaben- ihr könnt weitere ergänzen
-        events: [
-            {
-                title: 'Java lernen',
-                start: '2026-10-20'
-            },
-            {
-                title: 'Sport machen',
-                start: '2026-10-22'
-            }
-        ]
-    })
-    calendar.render();
+    showCalender(calenderElement);
 }

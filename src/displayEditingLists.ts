@@ -216,9 +216,7 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
           editTaskPriority(taskId, priority);
           editTaskComplexity(taskId, complexity);
           editTaskTimeEstimate(taskId, timeEstimate);
-          if (dueDate) {
-            editTaskDueDate(taskId, dueDate);
-          }
+          editTaskDueDate(taskId, dueDate);
           switch (currentPage) {
             case "home-page":
               refreshHomeList(listId, taskItem);

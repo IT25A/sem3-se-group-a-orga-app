@@ -131,6 +131,47 @@ export async function updateAppData(
 }
 
 // --------------------------------
+// KALENDER EVENTS ERZEUGEN
+// --------------------------------
+
+
+export function getCalendarEvents() {
+  return backlog.tasks
+    .filter(task => {
+      const dueDate = task.dueDate;
+
+      return (
+        dueDate instanceof Date &&
+        !Number.isNaN(dueDate.getTime()) &&
+        !task.completed
+      );
+    })
+    .map(task => {
+      const dueDate = task.dueDate!;
+
+      const localDate = [
+        dueDate.getFullYear(),
+        String(dueDate.getMonth() + 1).padStart(2, "0"),
+        String(dueDate.getDate()).padStart(2, "0")
+      ].join("-");
+
+      return {
+        id: `task-${task.id}`,
+        title: `Erledige ${task.title}`,
+        start: localDate,
+        allDay: true,
+        editable: false,
+
+
+        extendedProps: {
+          taskId: task.id,
+          type: "task-reminder"
+        }
+      };
+    });
+}
+
+// --------------------------------
 // ALLE DATEN VALIDIEREN
 // Inkonsistenzen zwischen Listen und Aufgaben prüfen
 // --------------------------------
