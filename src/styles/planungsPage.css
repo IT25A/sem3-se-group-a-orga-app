@@ -1,0 +1,65 @@
+.planning-page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    height: 100vh;
+    max-height: 100vh;
+
+    overflow: hidden;
+}
+
+.planning-content {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    gap: 22px;
+}
+
+.task-container {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+
+    min-height: 0;
+    min-width: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.calender-container {
+    display: flex;
+    flex-direction: column;
+    flex: 4;
+
+    min-height: 0;
+    min-width: 0;
+
+    overflow: hidden;
+}
+
+/* FullCalendar */
+
+.calender-container > * {
+    width: 100%;
+    min-width: 0;
+}
+
+.calender-container .fc {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-width: 0;
+}
+
+

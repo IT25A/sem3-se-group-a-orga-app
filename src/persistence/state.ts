@@ -137,37 +137,48 @@ export async function updateAppData(
 
 export function getCalendarEvents() {
   return backlog.tasks
-    .filter(task => {
-      const dueDate = task.dueDate;
+    .filter(task => !task.completed)
+    .flatMap(task => {
+      const events = [];
 
-      return (
-        dueDate instanceof Date &&
-        !Number.isNaN(dueDate.getTime()) &&
-        !task.completed
-      );
-    })
-    .map(task => {
-      const dueDate = task.dueDate!;
+      // Geplanter Zeitraum
+      if (task.startDate && task.endDate) {
+        events.push({
+          id: `task-${task.id}-schedule`,
+          title: task.title,
+          start: task.startDate,
+          end: task.endDate,
+          allDay: false,
+          editable: false,
+          extendedProps: {
+            taskId: task.id,
+            type: "task-schedule"
+          }
+        });
+      }
 
-      const localDate = [
-        dueDate.getFullYear(),
-        String(dueDate.getMonth() + 1).padStart(2, "0"),
-        String(dueDate.getDate()).padStart(2, "0")
-      ].join("-");
+      // Fälligkeitsdatum
+      if (task.dueDate instanceof Date &&
+          !Number.isNaN(task.dueDate.getTime())) {
+        events.push({
+          id: `task-${task.id}-deadline`,
+          title: task.title,
+          start: [
+            task.dueDate.getFullYear(),
+            String(task.dueDate.getMonth() + 1).padStart(2, "0"),
+            String(task.dueDate.getDate()).padStart(2, "0")
+          ].join("-"),
+          allDay: true,
+          editable: false,
+          color: "#dc2626",
+          extendedProps: {
+            taskId: task.id,
+            type: "task-reminder"
+          }
+        });
+      }
 
-      return {
-        id: `task-${task.id}`,
-        title: `Erledige ${task.title}`,
-        start: localDate,
-        allDay: true,
-        editable: false,
-
-
-        extendedProps: {
-          taskId: task.id,
-          type: "task-reminder"
-        }
-      };
+      return events;
     });
 }
 

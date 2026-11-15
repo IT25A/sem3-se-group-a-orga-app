@@ -6,9 +6,9 @@ import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
 
 import { getCalendarEvents } from './persistence/state';
-
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
+
 
 export function showCalender(container: HTMLDivElement): void {
 
@@ -27,7 +27,7 @@ export function showCalender(container: HTMLDivElement): void {
             themePlugin
         ],
 
-        initialView: "dayGridMonth",
+        initialView: "timeGridWeek",
 
         headerToolbar: {
             left: 'prev,next today',

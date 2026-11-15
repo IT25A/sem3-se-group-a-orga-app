@@ -1,4 +1,5 @@
 import {lists, backlog, updateAppData} from './persistence/state';
+import { refreshCalendar } from './calender';
 //export let lists: List[] = []
 /*export let backlog: Backlog = {
   id: "backlog",
@@ -135,6 +136,8 @@ export type Task = {
   title: string;
   description: string;
   dueDate?: Date;
+  startDate?: Date;
+  endDate?: Date;
   createdAt: Date;
   priority: Priority;
   complexity: Complexity;
@@ -172,6 +175,7 @@ export async function createTask({
   };
   backlog.tasks.push(newTask);
   await updateAppData(lists, backlog);
+  refreshCalendar();
   return newTask;
 }
 
@@ -204,6 +208,7 @@ export async function deleteTask(taskId: string): Promise<void> {
     }
     backlog.tasks.splice(taskIndex, 1);
     await updateAppData(lists, backlog);
+    refreshCalendar();
   }
 }
 
@@ -227,6 +232,7 @@ export async function editTaskTitle(taskId: string, newTitle: string): Promise<v
   if (task) {
     task.title = newTitle;
     await updateAppData(lists, backlog);
+    refreshCalendar();
   }
 }
   
@@ -243,6 +249,7 @@ export async function editTaskDueDate(taskId: string, newDueDate?: Date): Promis
   if (task) {
     task.dueDate = newDueDate;
     await updateAppData(lists, backlog);
+    refreshCalendar();
   }
 }
 
@@ -275,5 +282,6 @@ export async function editTaskCompleted(taskId: string, completed: boolean): Pro
   if (task) {
     task.completed = completed;
     await updateAppData(lists, backlog);
+    refreshCalendar();
   }
 }

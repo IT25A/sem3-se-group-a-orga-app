@@ -3,7 +3,6 @@ import { removeTaskFromList, deleteTask, deleteList, deleteListsRecursivly } fro
 import {backlog, lists} from './persistence/state';
 
 
-
 export function showDialogNewTask(
     listId: string,
     onCreate: (
@@ -14,7 +13,7 @@ export function showDialogNewTask(
         complexity: 'einfach' | 'mittel' | 'schwierig',
         timeEstimate: 'kurz' | 'mittel' | 'lang',
         dueDate?: Date
-    ) => void
+    ) => void | Promise<void>
 ): void {
     const addingTaskDialog = document.createElement('dialog');
 
@@ -74,7 +73,7 @@ export function showDialogNewTask(
         addingTaskDialog.remove();
     });
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const formData = new FormData(form);
@@ -108,7 +107,7 @@ export function showDialogNewTask(
         if (!title) return;
         if (!description) return;
 
-        onCreate(listId, title, description, priority, complexity, timeEstimate, dueDate);
+        await onCreate(listId, title, description, priority, complexity, timeEstimate, dueDate);
 
         addingTaskDialog.close();
         addingTaskDialog.remove();
@@ -322,7 +321,7 @@ export function showDialogEditTask(
         complexity: 'einfach' | 'mittel' | 'schwierig',
         timeEstimate: 'kurz' | 'mittel' | 'lang',
         dueDate?: Date
-    ) => void
+    ) => void | Promise<void>
 ): void {
     const task = backlog.tasks.find(t => t.id === taskId);
     const editingTaskDialog = document.createElement('dialog');
@@ -393,7 +392,7 @@ const form = editingTaskDialog.querySelector('form')!;
         editingTaskDialog.remove();
     });
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const formData = new FormData(form);
@@ -427,7 +426,7 @@ const form = editingTaskDialog.querySelector('form')!;
         if (!title) return;
         if (!description) return;
 
-        onCreate(taskId, title, description, priority, complexity, timeEstimate, dueDate);
+        await onCreate(taskId, title, description, priority, complexity, timeEstimate, dueDate);
 
         editingTaskDialog.close();
         editingTaskDialog.remove();

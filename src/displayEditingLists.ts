@@ -1,7 +1,7 @@
 import './style.css'
 import './styles/listStyle.css'
 
-import Sortable from 'sortablejs'
+import { initializeSortables, destroySortables } from './sortable';
 import {  createTask, deleteTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
 import { currentPage } from './main';
@@ -12,15 +12,10 @@ export function displayListPage(): void {
   renderLists();
 }
 
-const sortableInstances: Sortable[] = [];
 
-function destroySortables(): void {
-  sortableInstances.forEach(sortable => sortable.destroy());
-  sortableInstances.length = 0;
-}
 
 /** Aktualisiert auf der Startseite die vorhandene Slider-Karte der betroffenen Liste. */
-function refreshHomeList(listId: string, sourceElement: HTMLElement): void {
+export function refreshHomeList(listId: string, sourceElement: HTMLElement): void {
   const sliderCard = sourceElement.closest<HTMLDivElement>('.slidable-card');
   const listStillExists = lists.some(list => list.id === listId);
 
@@ -43,43 +38,7 @@ function refreshHomeList(listId: string, sourceElement: HTMLElement): void {
   }
 }
 
-function initializeSortables(): void {
-  document.querySelectorAll<HTMLElement>('.sortable-list').forEach(element => {
-    const sortable = Sortable.create(element, {
-      group: 'aufgaben',
-      animation: 150,
-      filter: '.add-task-item',
-      preventOnFilter: false,
 
-      onEnd: (event) => {
-        const oldListId = event.from.id;
-        const newListId = event.to.id;
-        const item = event.item as HTMLElement;
-        const taskId = item.id;
-
-        if (oldListId != newListId) {
-          addTaskToList(taskId, newListId);
-          removeTaskFromList(taskId, oldListId);
-        }
-        switch (currentPage) {
-          case "home-page":
-            refreshHomeList(oldListId, event.from as HTMLElement);
-            if (newListId !== oldListId) {
-              refreshHomeList(newListId, event.to as HTMLElement);
-            }
-            break;
-          case "list-page":
-            renderLists();
-            break;
-          default:
-            break;
-        }
-      }
-    });
-
-    sortableInstances.push(sortable);
-  });
-}
 
 function renderLists(): void {
   const container = document.querySelector<HTMLDivElement>('#app',);
@@ -143,7 +102,7 @@ export function displayProgressBar( progress: number):  HTMLElement {
 
 
 //Funktion um Aufgaben (woanders) anzuszeigen
-export function renderTaskByIdInContainer(taskId: string, listId: string, container: HTMLUListElement): void {
+export  function renderTaskByIdInContainer(taskId: string, listId: string, container: HTMLUListElement): void {
   const thisTask = backlog.tasks.find(t => t.id === taskId);
   if (!thisTask) {
     console.warn(
@@ -210,13 +169,13 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
       });
 
       editButton.addEventListener('click', () => {
-        showDialogEditTask(task.id, (taskId, title, description, priority, complexity, timeEstimate, dueDate) => {
-          editTaskTitle(taskId, title);
-          editTaskDescription(taskId, description);
-          editTaskPriority(taskId, priority);
-          editTaskComplexity(taskId, complexity);
-          editTaskTimeEstimate(taskId, timeEstimate);
-          editTaskDueDate(taskId, dueDate);
+        showDialogEditTask(task.id, async (taskId, title, description, priority, complexity, timeEstimate, dueDate) => {
+          await editTaskTitle(taskId, title);
+          await editTaskDescription(taskId, description);
+          await editTaskPriority(taskId, priority);
+          await editTaskComplexity(taskId, complexity);
+          await editTaskTimeEstimate(taskId, timeEstimate);
+          await editTaskDueDate(taskId, dueDate);
           switch (currentPage) {
             case "home-page":
               refreshHomeList(listId, taskItem);
@@ -233,8 +192,8 @@ export function renderTaskByIdInContainer(taskId: string, listId: string, contai
         })
       });
 
-      checkbox.addEventListener('change', () => {
-        editTaskCompleted(task.id, checkbox.checked)
+      checkbox.addEventListener('change', async () => {
+        await editTaskCompleted(task.id, checkbox.checked)
         taskItem.classList.toggle('completed', task.completed);
         switch (currentPage) {
           case "home-page":
@@ -350,23 +309,30 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
 
   addTaskItem.addEventListener('click', () => {
     showDialogNewTask(
-      list.id,
-      (listId, title, description, priority, complexity, timeEstimate, dueDate) => {
-        createTask({ title, description, priority, complexity, timeEstimate, dueDate }).then(newTask => {
-          addTaskToList(newTask.id, listId)
-          switch (currentPage) {
-            case "home-page":
-              refreshHomeList(listId, taskList);
-              break;
-            case "list-page":
-              renderLists();
-              break;
-            default:
-              break;
+        list.id,
+        async (listId, title, description, priority, complexity, timeEstimate, dueDate) => {
+            const newTask = await createTask({
+                title,
+                description,
+                priority,
+                complexity,
+                timeEstimate,
+                dueDate
+            });
+
+            await addTaskToList(newTask.id, listId);
+
+
+            switch (currentPage) {
+                case "home-page":
+                    refreshHomeList(listId, taskList);
+                    break;
+                case "list-page":
+                    renderLists();
+                    break;
+            }
         }
-      }
     );
-  });
 });
 
   deleteButton.addEventListener('click', () => {

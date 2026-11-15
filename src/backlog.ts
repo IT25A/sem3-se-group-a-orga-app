@@ -13,8 +13,8 @@ export function renderBacklogPage(): void {
   renderBacklogInContainer(app);
 }
 
-function renderBacklogInContainer(container: HTMLDivElement): void {
-const backlogContainer = document.createElement('div');
+export function renderBacklogInContainer(container: HTMLDivElement): void {
+  const backlogContainer = document.createElement('div');
   backlogContainer.id = 'backlog-container';
   backlogContainer.classList.add('list-card');
   container.appendChild(backlogContainer);

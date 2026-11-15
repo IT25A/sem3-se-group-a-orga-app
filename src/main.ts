@@ -1,6 +1,4 @@
 import './style.css'
-//inpm run devnpm run devmport {plugins} from "fullcalendar/all" funktioniert nicht bitte nicht aktivieren
-//import Sortable from 'sortablejs'
 
 import { renderBacklogPage } from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
@@ -25,12 +23,14 @@ import {
 import { zitat, zeigeZitat,mainzitatanzeiger } from "./zitate.ts";
 
 import { lists, validateData } from './persistence/state.ts';
-import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
-import { populateTestData } from './charlysTests/TestFictures'
+import { displayListPage } from './displayEditingLists';
+import { populateTestData } from './charlysTests/TestFictures' //Bitte erstmal drin lassen 
 
 import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
 import { showCalender } from './calender.ts';
+import { displayPlanungsPage } from './wochePlanen.ts';
+
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -62,6 +62,10 @@ async function main() {
     document.getElementById("backlog-link")?.addEventListener("click", () =>{
         currentPage = "backlog-page";
         renderBacklogPage()
+    })
+    document.getElementById("planung-link")?.addEventListener("click", () =>{
+        currentPage = "planung-page";
+        displayPlanungsPage()
     })
     /*
     Zitate
@@ -129,8 +133,6 @@ export function renderHomePage():void{
     app.replaceChildren();
     const generalContent = document.createElement('div');
     generalContent.className = 'app';
-
-
 
     generalContent.innerHTML = `
     <h1>Meine OrgaAPP</h1>
