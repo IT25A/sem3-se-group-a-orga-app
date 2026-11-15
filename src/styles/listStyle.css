@@ -375,3 +375,10 @@
 #app .sortable-chosen {
     box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2) !important;
 }
+/*Benachrichtigung*/
+.btnbenachrichtigung {
+    background-color: #f0eafa;
+    color: #674b8b;
+    border: none;
+    cursor: pointer;
+}
