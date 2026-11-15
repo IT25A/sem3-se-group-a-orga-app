@@ -4,11 +4,21 @@ import themePlugin from 'fullcalendar/themes/monarch';
 import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
+import interactionPlugin, {
+    Draggable
+} from 'fullcalendar/interaction';
 
 import { getCalendarEvents } from './persistence/state';
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
-
+export interface CalendarEvent {
+    id: string;
+    taskId: string;
+    title: string;
+    start: string;
+    end: string;
+    allDay: boolean;
+}
 
 export function showCalender(container: HTMLDivElement): void {
 
@@ -24,15 +34,23 @@ export function showCalender(container: HTMLDivElement): void {
             dayGridPlugin,
             timeGridPlugin,
             listPlugin,
-            themePlugin
+            themePlugin,
+            interactionPlugin
         ],
 
         initialView: "timeGridWeek",
+        locale: "de",
+        firstDay:1,
+        weekends:true,
+        allDaySlot:true,
+        slotDuration: "01:00:00",
+        editable:true,
+        droppable:true,
 
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
+            right: 'dayGridMonth,timeGridWeek'
         },
 
         events: (_fetchInfo, successCallback, failureCallback) => {

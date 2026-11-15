@@ -8,11 +8,10 @@ import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
 
+
 export function displayListPage(): void {
   renderLists();
 }
-
-
 
 /** Aktualisiert auf der Startseite die vorhandene Slider-Karte der betroffenen Liste. */
 export function refreshHomeList(listId: string, sourceElement: HTMLElement): void {
@@ -37,9 +36,6 @@ export function refreshHomeList(listId: string, sourceElement: HTMLElement): voi
     renderListByIdInContainer(idToRender, appContainer, true);
   }
 }
-
-
-
 function renderLists(): void {
   const container = document.querySelector<HTMLDivElement>('#app',);
   if (!container) {
@@ -113,6 +109,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
   const taskItem = document.createElement('li');
     taskItem.id = taskId;
     taskItem.classList.add('task-item');
+    taskItem.classList.add('fc-draggable-task');
 
     const task = backlog.tasks.find(t => t.id === taskId);
 
@@ -207,6 +204,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
         }
       });
 
+
       // Detailbereich
       const details = document.createElement('div');
       details.className = 'task-details';
@@ -235,6 +233,8 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
         details.hidden = !details.hidden;
         toggle.textContent = details.hidden ? '⌄' : '⌃';
       });
+
+  
 
       taskHeader.append(checkbox, title, toggle, editButton, deleteButton);
 

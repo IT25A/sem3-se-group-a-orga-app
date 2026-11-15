@@ -2,6 +2,7 @@
 import { renderBacklogInContainer } from "./backlog";
 import { showCalender } from "./calender";
 import './styles/planungsPage.css'
+import { initializeCalendarDraggable } from './calendarDraggable.ts';
 
 export function displayPlanungsPage() {
 
@@ -38,18 +39,20 @@ export function displayPlanungsPage() {
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
 
-    renderBacklogInContainer(taskContainer);
-
     // Kalender rechts
     const calenderContainer = document.createElement("div");
     calenderContainer.classList.add("calender-container");
 
-    showCalender(calenderContainer);
 
-    // Beide Bereiche zusammenfügen
+    //beide
     planningContent.append(taskContainer, calenderContainer);
 
     planningPage.append(header, planningContent);
 
     container.appendChild(planningPage);
+
+    renderBacklogInContainer(taskContainer);
+    showCalender(calenderContainer);
+
+    initializeCalendarDraggable(taskContainer);
 }
