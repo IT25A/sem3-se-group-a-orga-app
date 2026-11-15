@@ -4,14 +4,17 @@ import themePlugin from 'fullcalendar/themes/monarch';
 import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
+import { updateEventlog, eventlog} from './persistence/state';
 import interactionPlugin, {
     Draggable
 } from 'fullcalendar/interaction';
 
 import { getCalendarEvents } from './persistence/state';
+import { loadEventlog } from './persistence/storage';
+
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
-export interface CalendarEvent {
+export type CalendarEvent = {
     id: string;
     taskId: string;
     title: string;
@@ -20,7 +23,7 @@ export interface CalendarEvent {
     allDay: boolean;
 }
 
-export function showCalender(container: HTMLDivElement): void {
+export async function showCalender(container: HTMLDivElement): Promise<void> {
 
     // Falls bereits ein Kalender existiert:
     // Vorherige Instanz zerstören
@@ -53,19 +56,20 @@ export function showCalender(container: HTMLDivElement): void {
             right: 'dayGridMonth,timeGridWeek'
         },
 
-        events: (_fetchInfo, successCallback, failureCallback) => {
-            try {
-                successCallback(getCalendarEvents());
-            } catch (error) {
-                failureCallback(error as Error);
-            }
-        },
+        events: await loadEventlog(),
+        eventReceive: (info) => {
+            const newEvent = info.event;
 
-        eventClick: (info) => {
-            console.log(
-                "Aufgabe:",
-                info.event.extendedProps.taskId
-            );
+            const calendarEvent: CalendarEvent = {
+                id: newEvent.id,
+                taskId: String(newEvent.extendedProps.taskId),
+                title: newEvent.title,
+                start: newEvent.start!.toISOString(),
+                end: newEvent.end!.toISOString(),
+                allDay: newEvent.allDay
+            };
+            eventlog.push(calendarEvent)
+            updateEventlog(eventlog);
         }
     });
 

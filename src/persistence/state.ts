@@ -1,6 +1,7 @@
 
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
+import type { CalendarEvent } from "../calender";
 
 import { createWelcomeData } from "./welcomeData";
 
@@ -9,6 +10,8 @@ import {
   saveLists,
   saveBacklog,
   saveData,
+  saveEventlog,
+  loadEventlog,
 } from "./storage";
 
 // --------------------------------
@@ -25,6 +28,8 @@ export let backlog: Backlog = {
   tasks: [],
 };
 
+export let eventlog: CalendarEvent[] = [];
+
 // --------------------------------
 // INITIALISIERUNG
 // --------------------------------
@@ -39,6 +44,7 @@ export async function initializeData(): Promise<void> {
 
   if (data.hasInitialized === true) {
     lists = data.lists ?? [];
+    eventlog = data.eventlog ?? [];
 
     backlog = data.backlog ?? {
       id: "backlog",
@@ -49,7 +55,7 @@ export async function initializeData(): Promise<void> {
     };
 
     if (data.lists === undefined || data.backlog === undefined) {
-      await saveData(lists, backlog);
+      await saveData(lists, backlog, eventlog);
     }
 
     return;
@@ -69,7 +75,7 @@ export async function initializeData(): Promise<void> {
     lists = initialData.lists;
     backlog = initialData.backlog;
 
-    await saveData(lists, backlog);
+    await saveData(lists, backlog, eventlog);
 
     return;
   }
@@ -89,7 +95,7 @@ export async function initializeData(): Promise<void> {
     tasks: [],
   };
 
-  await saveData(lists, backlog);
+  await saveData(lists, backlog, eventlog);
 }
 
 // --------------------------------
@@ -117,17 +123,41 @@ export async function updateBacklog(
 }
 
 // --------------------------------
+// Eventlog AKTUALISIEREN
+// --------------------------------
+
+export async function updateEventlog(
+  newEventlog: CalendarEvent[]
+): Promise<void> {
+  eventlog = newEventlog;
+
+  await saveEventlog(eventlog);
+}
+
+// --------------------------------
+// Eventlog LADEN
+// --------------------------------
+
+export async function getEventlog(): Promise<CalendarEvent[]|undefined> {
+  return await loadEventlog()
+
+}
+
+
+// --------------------------------
 // ALLE DATEN AKTUALISIEREN
 // --------------------------------
 
 export async function updateAppData(
   newLists: List[],
-  newBacklog: Backlog
+  newBacklog: Backlog,
+  newEventlog: CalendarEvent[],
 ): Promise<void> {
-  await saveData(newLists, newBacklog);
+  await saveData(newLists, newBacklog, newEventlog);
 
   lists = newLists;
   backlog = newBacklog;
+  eventlog = newEventlog;
 }
 
 // --------------------------------
