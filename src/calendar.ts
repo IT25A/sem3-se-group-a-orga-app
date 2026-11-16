@@ -1,21 +1,25 @@
 
-import { Calendar } from 'fullcalendar';
+
 import themePlugin from 'fullcalendar/themes/monarch';
 import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
 import { updateEventlog, eventlog} from './persistence/state';
 import interactionPlugin from 'fullcalendar/interaction';
+import { Calendar, type EventApi } from 'fullcalendar';
+
 
 import { getCalendarEvents } from './persistence/state';
 import { loadEventlog } from './persistence/storage';
 
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
+let isUndoing = false;
 export type CalendarEvent = {
     id: string;
     taskId: string;
     title: string;
+    description?: string;
     start: string;
     color: string;
     end: string;
@@ -64,12 +68,16 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             text: '-',
             click: () => zoomOut(),
             },
+            undo: {
+                text: '↶',
+                click: () => undoLast(),
+            }
         },
 
         headerToolbar: {
-            left: 'prev,next zoomIn,zoomOut',
+            left: 'prev,next  undo zoomIn,zoomOut',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: 'dayGridMonth,timeGridWeek'
         },
 
         eventSources: [
@@ -131,6 +139,76 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         };
 
         updateEventlog(eventlog);
+        //undo
+         // Undo darf keine neue Undo-Aktion erzeugen
+        if (isUndoing) {
+            saveEvent(event);
+            return;
+        }
+
+        // Aktuelle Position speichern
+        saveEvent(event);
+
+        pushUndo({
+            label: 'Termin verschieben',
+
+            undo: () => {
+                isUndoing = true;
+
+                info.revert();
+
+                isUndoing = false;
+
+                const restored = calendar?.getEventById(event.id);
+
+                if (restored) {
+                    saveEvent(restored);
+                }
+            }
+        });
+    },
+    dateClick: (info) => {
+        const title = prompt('Titel des Termins:')?.trim();
+
+        if (!title) return;
+
+        const description =
+            prompt('Beschreibung (optional):')?.trim() ?? '';
+
+        const start = info.date;
+
+        const end = new Date(
+            start.getTime() +
+            (info.allDay ? 86400000 : 3600000)
+        );
+
+        const id = crypto.randomUUID();
+
+        const newEvent = calendar!.addEvent({
+            id,
+            title,
+            start,
+            end,
+            allDay: info.allDay,
+            color: '#7952b3',
+
+            extendedProps: {
+                taskId: '',
+                description,
+                origin: 'manual'
+            }
+        });
+        
+        if(newEvent){saveEvent(newEvent);}
+
+        // Undo-Aktion registrieren
+        pushUndo({
+            label: 'Termin erstellen',
+            undo: () => {
+                calendar?.getEventById(id)?.remove();
+                removeEventFromLog(id);
+            }
+        });
     },
     eventClick: (info) => {
         const event = info.event;
@@ -139,7 +217,33 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         );
         if (!confirmed) return;
 
+        const snapshot = {
+            id: event.id,
+            title: event.title,
+            start: event.startStr,
+            end: event.endStr || undefined,
+            allDay: event.allDay,
+            color: event.color || event.color,
+            extendedProps: {
+                ...event.extendedProps,
+                origin: 'manual'
+            }
+        };
+
         event.remove();
+        removeEventFromLog(event.id);
+
+        pushUndo({
+            label: 'Termin löschen',
+
+            undo: () => {
+                const restored = calendar?.addEvent(snapshot);
+
+                if (restored) {
+                    saveEvent(restored);
+                }
+            }
+        });
 
         const index = eventlog.findIndex(
             e => e.id === event.id
@@ -204,4 +308,72 @@ function applyZoom() {
         calendar.setOption('slotDuration', zoom.duration);
         calendar.setOption('slotMinHeight', zoom.height);
     }
+}
+//Zum erstellen von events per klick
+function toStoredEvent(event: EventApi): CalendarEvent {
+    return {
+        id: event.id,
+        taskId: String(event.extendedProps.taskId ?? ''),
+        title: event.title,
+        description: String(event.extendedProps.description ?? ''),
+        start: event.startStr,
+        end: event.endStr,
+        color: event.color || event.color || '#7952b3',
+        allDay: event.allDay
+    };
+}
+
+function saveEvent(event: EventApi) {
+    const storedEvent = toStoredEvent(event);
+
+    const index = eventlog.findIndex(
+        e => e.id === storedEvent.id
+    );
+
+    if (index === -1) {
+        eventlog.push(storedEvent);
+    } else {
+        eventlog[index] = storedEvent;
+    }
+
+    updateEventlog(eventlog);
+}
+
+function removeEventFromLog(id: string) {
+    const index = eventlog.findIndex(
+        e => e.id === id
+    );
+
+    if (index !== -1) {
+        eventlog.splice(index, 1);
+        updateEventlog(eventlog);
+    }
+}
+
+// hier folgt undo zeugs
+
+type UndoAction = {
+    label: string;
+    undo: () => void;
+};
+
+const undoStack: UndoAction[] = [];
+
+function pushUndo(action: UndoAction) {
+    undoStack.push(action);
+
+    // Maximal 50 Aktionen speichern
+    if (undoStack.length > 50) {
+        undoStack.shift();
+    }
+}
+
+function undoLast() {
+    const action = undoStack.pop();
+
+    if (!action) return;
+
+    action.undo();
+
+    console.log('Rückgängig:', action.label);
 }

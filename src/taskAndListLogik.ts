@@ -1,5 +1,5 @@
 import {lists, backlog, eventlog, updateAppData} from './persistence/state';
-import { refreshCalendar } from './calender';
+import { refreshCalendar } from './calendar';
 import { saveData, saveEventlog } from './persistence/storage';
 //export let lists: List[] = []
 /*export let backlog: Backlog = {

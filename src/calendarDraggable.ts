@@ -54,6 +54,7 @@ export function initializeCalendarDraggable(): void {
                     duration: myTime,
                     color: myColor,
                     id: generateUniqueId(),
+                    description: originTask.description,
                     extendedProps: {
                         taskId: eventEl.id
                     }
@@ -70,3 +71,5 @@ export function destroyCalendarDraggable(): void {
     draggables.forEach(draggable => draggable.destroy());
     draggables = [];
 }
+
+

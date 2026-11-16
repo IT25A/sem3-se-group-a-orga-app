@@ -1,6 +1,6 @@
 
 import { renderBacklogInContainer } from "./backlog";
-import { showCalender } from "./calender";
+import { showCalender } from "./calendar.ts";
 import './styles/planungsPage.css'
 import { destroyCalendarDraggable, initializeCalendarDraggable } from './calendarDraggable.ts';
 

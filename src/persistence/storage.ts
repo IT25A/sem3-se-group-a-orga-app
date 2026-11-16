@@ -3,7 +3,7 @@ import { openDB, type IDBPDatabase } from "idb";
 
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
-import type { CalendarEvent } from "../calender";
+import type { CalendarEvent } from "../calendar";
 
 interface AppDatabase {
   "app-state": {

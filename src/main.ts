@@ -28,7 +28,7 @@ import { populateTestData } from './charlysTests/TestFictures' //Bitte erstmal d
 
 import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
-import { showCalender } from './calender.ts';
+import { showCalender } from './calendar.ts';
 import { displayPlanungsPage } from './wochePlanen.ts';
 import { destroyCalendarDraggable } from './calendarDraggable.ts';
 
