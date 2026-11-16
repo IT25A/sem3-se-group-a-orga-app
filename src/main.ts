@@ -1,5 +1,6 @@
 import './style.css'
 import { Calendar } from 'fullcalendar';
+import {  benachrichtige} from "./backlog.ts"
 import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
 import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
@@ -108,7 +109,6 @@ async function main() {
             initEigenerWecker();
             initEigenerWecker1();
 
-            //document.getElementById("weckereinstellen").addEventListener("click", --);
         });
 
 
@@ -133,6 +133,13 @@ export function renderHomePage(): void {
     generalContent.innerHTML = `
     <h1>Meine OrgaAPP</h1>
     <p>Ziehe deine Aufgaben mit der Maus!</p>
+      <dialog id="aufgaben-popup">
+        <p id="popup-text"></p>
+
+        <form method="dialog">
+            <button class="btnbenachrichtigung">OK</button>
+        </form>
+    </dialog>
     `;
     app.append(generalContent)
 
@@ -203,4 +210,6 @@ export function renderHomePage(): void {
         ]
     })
     calendar.render();
+    benachrichtige();
+
 }

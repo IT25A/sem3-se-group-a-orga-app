@@ -17,7 +17,7 @@ export function renderBacklogPage(): void {
     </dialog>
   `;
   renderBacklogInContainer(app);
-  benachrichtige();
+
 
 }
 
@@ -37,7 +37,7 @@ function renderBacklogInContainer(container: HTMLDivElement): void {
 
   /* hier Benachrichtigiungen zu offene Aufgaben in Backlog*/
 
-  function benachrichtige(): void {
+  export function benachrichtige(): void {
     const offeneaufgaben = backlog.tasks.filter(
         task => task.completed === false
     );
@@ -51,7 +51,7 @@ function renderBacklogInContainer(container: HTMLDivElement): void {
     }
   }
 
-  function pruefeoffeneAufgaben(): void {
+  export function pruefeoffeneAufgaben(): void {
     const offeneaufgaben = backlog.tasks.filter(
         task => task.completed === false
     );
@@ -81,7 +81,7 @@ function renderBacklogInContainer(container: HTMLDivElement): void {
     }
   }
 
-  function pruefeanzahlgesamt(): void {
+  export function pruefeanzahlgesamt(): void {
     const anzahloffene = backlog.tasks.filter(
         task => task.completed === false
     ).length;
