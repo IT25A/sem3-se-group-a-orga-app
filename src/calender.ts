@@ -49,6 +49,11 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         slotMinHeight: 40,
         editable:true,
         droppable:true,
+        nowIndicator: true,
+        weekNumbers: true,
+        scrollTime: '09:00:00',
+        dayMaxEvents: true,
+        navLinks: true, //wenn man auf einen tag klickt kommt man auf tag 
 
         buttons: {
             zoomIn: {
@@ -76,8 +81,57 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         {
             id: 'other-events',
             events: getCalendarEvents(),
+        },{
+            id: 'night-zones',
+            editable: false,
+            events: [
+                // 22:00 bis 24:00 – leichtes Lila
+                {
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '22:00:00',
+                    endTime: '24:00:00',
+                    display: 'background',
+                    color: 'rgb(166, 98, 243)'
+                },
+
+                // 00:00 bis 04:00 – stärkeres Lila
+                {
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '00:00:00',
+                    endTime: '04:00:00',
+                    display: 'background',
+                    color: 'rgb(120, 6, 251)'
+                },
+
+                // 04:00 bis 06:00 – leichtes Lila
+                {
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '04:00:00',
+                    endTime: '06:00:00',
+                    display: 'background',
+                    color: 'rgb(166, 98, 243)'
+                }
+            ]
         }
     ],
+    eventChange: (info) => {
+        const event = info.event;
+
+        const index = eventlog.findIndex(
+            e => e.id === event.id
+        );
+
+        if (index === -1) return;
+
+        eventlog[index] = {
+            ...eventlog[index],
+            start: event.startStr,
+            end: event.endStr,
+            allDay: event.allDay
+        };
+
+        updateEventlog(eventlog);
+    },
     eventClick: (info) => {
         const event = info.event;
         const confirmed = confirm(
