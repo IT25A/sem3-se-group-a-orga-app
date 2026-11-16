@@ -1,5 +1,6 @@
 import {lists, backlog, eventlog, updateAppData} from './persistence/state';
 import { refreshCalendar } from './calender';
+import { saveData, saveEventlog } from './persistence/storage';
 //export let lists: List[] = []
 /*export let backlog: Backlog = {
   id: "backlog",
@@ -208,6 +209,7 @@ export async function deleteTask(taskId: string): Promise<void> {
     }
     backlog.tasks.splice(taskIndex, 1);
     await updateAppData(lists, backlog, eventlog);
+    deleteEventRelatedToTask(taskId);
     refreshCalendar();
   }
 }
@@ -232,6 +234,7 @@ export async function editTaskTitle(taskId: string, newTitle: string): Promise<v
   if (task) {
     task.title = newTitle;
     await updateAppData(lists, backlog, eventlog);
+    updateEventTitleRelatedToTaskTitleChange(taskId, newTitle)
     refreshCalendar();
   }
 }
@@ -257,6 +260,7 @@ export async function editTaskPriority(taskId: string, newPriority: Priority): P
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.priority = newPriority;
+    updateEventColorRelatedToTaskPriorityChange(taskId, newPriority)
     await updateAppData(lists, backlog, eventlog);
   }
 }
@@ -282,6 +286,41 @@ export async function editTaskCompleted(taskId: string, completed: boolean): Pro
   if (task) {
     task.completed = completed;
     await updateAppData(lists, backlog, eventlog);
+    if(completed){deleteEventRelatedToTask(taskId);}
     refreshCalendar();
   }
+}
+
+function deleteEventRelatedToTask(taskId: string): void {
+    saveEventlog(eventlog.filter(element => element.taskId !== taskId));
+}
+
+function updateEventColorRelatedToTaskPriorityChange(taskId: string, priority:Priority){
+   eventlog.forEach(element => {
+        if (element.taskId === taskId) {
+            switch(priority){
+              case 'klein':
+                element.color = '#dbc9f6';
+                break;
+              case 'mittel':
+                element.color = '#bc9aee';
+                break;
+              case 'hoch':
+                element.color = '#7952b3'
+                break;
+              default:
+                break;
+            }
+        }
+    });
+    saveEventlog(eventlog);
+}
+
+function updateEventTitleRelatedToTaskTitleChange(taskId: string, title:string){
+   eventlog.forEach(element => {
+        if (element.taskId === taskId) {
+            element.title = title;
+        }
+    });
+    saveEventlog(eventlog);
 }
