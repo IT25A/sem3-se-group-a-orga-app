@@ -5,9 +5,7 @@ import dayGridPlugin from 'fullcalendar/daygrid';
 import timeGridPlugin from 'fullcalendar/timegrid';
 import listPlugin from 'fullcalendar/list';
 import { updateEventlog, eventlog} from './persistence/state';
-import interactionPlugin, {
-    Draggable
-} from 'fullcalendar/interaction';
+import interactionPlugin from 'fullcalendar/interaction';
 
 import { getCalendarEvents } from './persistence/state';
 import { loadEventlog } from './persistence/storage';
@@ -19,6 +17,7 @@ export type CalendarEvent = {
     taskId: string;
     title: string;
     start: string;
+    color: string;
     end: string;
     allDay: boolean;
 }
@@ -57,7 +56,7 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             click: () => zoomIn(),
             },
             zoomOut: {
-            text: '−',
+            text: '-',
             click: () => zoomOut(),
             },
         },
@@ -68,7 +67,17 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
 
-        events: await loadEventlog(),
+        eventSources: [
+        {
+            id: 'saved-events',
+            events: await loadEventlog(),
+            color: '#7952b3'
+        },
+        {
+            id: 'other-events',
+            events: getCalendarEvents(),
+        }
+    ],
         eventReceive: (info) => {
             const newEvent = info.event;
 
@@ -77,6 +86,7 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
                 taskId: String(newEvent.extendedProps.taskId),
                 title: newEvent.title,
                 start: newEvent.start!.toISOString(),
+                color: newEvent.color,
                 end: newEvent.end!.toISOString(),
                 allDay: newEvent.allDay
             };
@@ -118,7 +128,8 @@ function zoomOut() {
 
 function applyZoom() {
   const zoom = zoomLevels[zoomIndex];
-
-  calendar.setOption('slotDuration', zoom.duration);
-  calendar.setOption('slotMinHeight', zoom.height);
+    if(calendar){
+        calendar.setOption('slotDuration', zoom.duration);
+        calendar.setOption('slotMinHeight', zoom.height);
+    }
 }

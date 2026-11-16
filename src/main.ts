@@ -30,6 +30,7 @@ import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
 import { showCalender } from './calender.ts';
 import { displayPlanungsPage } from './wochePlanen.ts';
+import { destroyCalendarDraggable } from './calendarDraggable.ts';
 
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -50,16 +51,19 @@ async function main() {
     */
 
     document.getElementById("home-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
         currentPage = "home-page";
         renderHomePage();
     })
 
     document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
         currentPage = "list-page";
         displayListPage()
     })
 
     document.getElementById("backlog-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
         currentPage = "backlog-page";
         renderBacklogPage()
     })

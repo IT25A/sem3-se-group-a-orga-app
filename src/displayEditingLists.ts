@@ -7,6 +7,7 @@ import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogD
 import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
+import { displayPlanungsPage } from './wochePlanen';
 
 
 export function displayListPage(): void {
@@ -158,6 +159,12 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
             case "list-page":
               renderLists();
               break;
+            case "backlog-page":
+              renderBacklogPage();
+              break;
+            case "planung-page":
+              displayPlanungsPage();
+              break;
             default:
               break;
           }
@@ -182,7 +189,10 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               break;
             case "backlog-page":
               renderBacklogPage();
-              break;  
+              break;
+            case "planung-page":
+              displayPlanungsPage();
+              break;
             default:
               break;
           }
@@ -193,15 +203,21 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
         await editTaskCompleted(task.id, checkbox.checked)
         taskItem.classList.toggle('completed', task.completed);
         switch (currentPage) {
-          case "home-page":
-            refreshHomeList(listId, taskItem);
-            break;
-          case "list-page":
-            renderLists();
-            break;
-          default:
-            break;
-        }
+            case "home-page":
+              refreshHomeList(listId, taskItem);
+              break;
+            case "list-page":
+              renderLists();
+              break;
+            case "backlog-page":
+              renderBacklogPage();
+              break;
+            case "planung-page":
+              displayPlanungsPage();
+              break;
+            default:
+              break;
+          }
       });
 
 

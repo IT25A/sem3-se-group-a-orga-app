@@ -2,9 +2,10 @@
 import { renderBacklogInContainer } from "./backlog";
 import { showCalender } from "./calender";
 import './styles/planungsPage.css'
-import { initializeCalendarDraggable } from './calendarDraggable.ts';
+import { destroyCalendarDraggable, initializeCalendarDraggable } from './calendarDraggable.ts';
 
 export function displayPlanungsPage() {
+    destroyCalendarDraggable();
 
     const container = document.querySelector<HTMLDivElement>("#app");
 

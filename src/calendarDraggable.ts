@@ -1,34 +1,71 @@
+
 import { Draggable } from 'fullcalendar/interaction';
+import { backlog } from './persistence/state';
 
-let draggable: Draggable | null = null;
+let draggables: Draggable[] = [];
 
-export function initializeCalendarDraggable(
-    container: HTMLElement
-): void {
+export function initializeCalendarDraggable(): void {
 
-    // Alte Instanz zerstören
-    draggable?.destroy();
+    // Alte Instanzen zerstören
+    destroyCalendarDraggable();
+    // Alle Elemente mit der Klasse auswählen (wichtig xD)
+    document.querySelectorAll<HTMLElement>('#app').forEach(container => {
 
-    // Neue Draggable-Instanz erstellen
-    draggable = new Draggable(container, {
+        const draggable = new Draggable(container, {
+            itemSelector: '.fc-draggable-task',
+            appendTo: container,
 
-        itemSelector: '.fc-draggable-task',
-        appendTo: container,
-        eventData: (eventEl) => {
+            eventData: (eventEl) => {
+                const originTask = backlog.tasks.find(t => t.id === eventEl.id);
 
-            return {
-                title: eventEl.textContent?.trim() ?? '',
-                duration: '01:00',
-
-                extendedProps: {
-                    taskId: eventEl.id
+                if (!originTask) {
+                    return;
                 }
-            };
-        }
+
+                let myColor = null;
+                let myTime = null;
+
+                switch (originTask.priority) {
+                    case 'klein':
+                        myColor = '#dbc9f6';
+                        break;
+                    case 'mittel':
+                        myColor = '#bc9aee';
+                        break;
+                    case 'hoch':
+                        myColor = '#7952b3';
+                        break;
+                }
+
+                switch (originTask.timeEstimate) {
+                    case 'kurz':
+                        myTime = '00:10';
+                        break;
+                    case 'mittel':
+                        myTime = '00:30';
+                        break;
+                    case 'lang':
+                        myTime = '02:00';
+                        break;
+                }
+
+                return {
+                    title: originTask.title,
+                    duration: myTime,
+                    color: myColor,
+                    extendedProps: {
+                        taskId: eventEl.id
+                    }
+                };
+            }
+        });
+
+        // Instanz speichern
+        draggables.push(draggable);
     });
 }
 
 export function destroyCalendarDraggable(): void {
-    draggable?.destroy();
-    draggable = null;
+    draggables.forEach(draggable => draggable.destroy());
+    draggables = [];
 }
