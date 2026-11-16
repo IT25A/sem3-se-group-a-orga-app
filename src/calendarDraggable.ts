@@ -13,7 +13,7 @@ export function initializeCalendarDraggable(
     draggable = new Draggable(container, {
 
         itemSelector: '.fc-draggable-task',
-
+        appendTo: container,
         eventData: (eventEl) => {
 
             return {

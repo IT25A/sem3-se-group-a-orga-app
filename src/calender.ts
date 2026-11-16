@@ -47,13 +47,25 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         weekends:true,
         allDaySlot:true,
         slotDuration: "01:00:00",
+        slotMinHeight: 40,
         editable:true,
         droppable:true,
 
+        buttons: {
+            zoomIn: {
+            text: '+',
+            click: () => zoomIn(),
+            },
+            zoomOut: {
+            text: '−',
+            click: () => zoomOut(),
+            },
+        },
+
         headerToolbar: {
-            left: 'prev,next today',
+            left: 'prev,next zoomIn,zoomOut',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
 
         events: await loadEventlog(),
@@ -79,4 +91,34 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
 // Kalender aktualisieren
 export function refreshCalendar(): void {
     calendar?.refetchEvents();
+}
+
+const zoomLevels = [
+  { duration: '01:00:00', height: 40 },
+  { duration: '00:30:00', height: 40 },
+  { duration: '00:15:00', height: 40 },
+  { duration: '00:05:00', height: 40 },
+];
+
+let zoomIndex = 1;
+
+function zoomIn() {
+  if (zoomIndex < zoomLevels.length - 1) {
+    zoomIndex++;
+    applyZoom();
+  }
+}
+
+function zoomOut() {
+  if (zoomIndex > 0) {
+    zoomIndex--;
+    applyZoom();
+  }
+}
+
+function applyZoom() {
+  const zoom = zoomLevels[zoomIndex];
+
+  calendar.setOption('slotDuration', zoom.duration);
+  calendar.setOption('slotMinHeight', zoom.height);
 }
