@@ -1,11 +1,11 @@
 
 import { Draggable } from 'fullcalendar/interaction';
 import { backlog } from './persistence/state';
+import { generateUniqueId } from './taskAndListLogik';
 
 let draggables: Draggable[] = [];
 
 export function initializeCalendarDraggable(): void {
-
     // Alte Instanzen zerstören
     destroyCalendarDraggable();
     // Alle Elemente mit der Klasse auswählen (wichtig xD)
@@ -53,6 +53,7 @@ export function initializeCalendarDraggable(): void {
                     title: originTask.title,
                     duration: myTime,
                     color: myColor,
+                    id: generateUniqueId(),
                     extendedProps: {
                         taskId: eventEl.id
                     }

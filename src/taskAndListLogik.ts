@@ -293,6 +293,7 @@ export async function editTaskCompleted(taskId: string, completed: boolean): Pro
 
 function deleteEventRelatedToTask(taskId: string): void {
     saveEventlog(eventlog.filter(element => element.taskId !== taskId));
+    refreshCalendar()
 }
 
 function updateEventColorRelatedToTaskPriorityChange(taskId: string, priority:Priority){
@@ -314,6 +315,7 @@ function updateEventColorRelatedToTaskPriorityChange(taskId: string, priority:Pr
         }
     });
     saveEventlog(eventlog);
+    refreshCalendar();
 }
 
 function updateEventTitleRelatedToTaskTitleChange(taskId: string, title:string){
@@ -323,4 +325,5 @@ function updateEventTitleRelatedToTaskTitleChange(taskId: string, title:string){
         }
     });
     saveEventlog(eventlog);
+    refreshCalendar();
 }

@@ -78,6 +78,24 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             events: getCalendarEvents(),
         }
     ],
+    eventClick: (info) => {
+        const event = info.event;
+        const confirmed = confirm(
+            `Möchtest du das Event "${event.title}" wirklich löschen?`
+        );
+        if (!confirmed) return;
+
+        event.remove();
+
+        const index = eventlog.findIndex(
+            e => e.id === event.id
+        );
+
+        if (index !== -1) {
+            eventlog.splice(index, 1);
+            updateEventlog(eventlog);
+        }
+    },
         eventReceive: (info) => {
             const newEvent = info.event;
 
