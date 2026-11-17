@@ -40,7 +40,7 @@ export function renderBacklogInContainer(container: HTMLDivElement): void {
   container.append();
   initializeSortables();
 }
-}
+
 
   /* hier Benachrichtigiungen zu offene Aufgaben in Backlog*/
 
