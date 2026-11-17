@@ -62,4 +62,81 @@
     min-width: 0;
 }
 
+.fc .fc-header-toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.fc .fc-toolbar-chunk:first-child {
+    align-self: flex-start;
+}
+
+.fc .fc-toolbar-chunk:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.fc-event-tooltip {
+    position: fixed;
+    z-index: 10000;
+    min-width: 200px;
+    max-width: 300px;
+    padding: 12px 14px;
+    border-radius: 10px;
+
+    background: var(--tooltip-bg, #ffffff);
+    color: var(--tooltip-text, #25212d);
+
+    border: 1px solid var(--tooltip-border, #e5e0eb);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16);
+
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 120ms ease, transform 120ms ease;
+
+    font-family: inherit;
+}
+
+.fc-event-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fc-event-tooltip-title {
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 6px;
+}
+
+.fc-event-tooltip-time {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 7px;
+}
+
+.fc-event-tooltip-description {
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.fc-event-tooltip-accent {
+    width: 4px;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+}
 

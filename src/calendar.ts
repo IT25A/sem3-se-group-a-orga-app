@@ -75,11 +75,11 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         },
 
         headerToolbar: {
-            left: 'prev,next  undo zoomIn,zoomOut',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
+            left: 'title',
+            center: '',
+            right: 'prev,next today undo zoomIn zoomOut dayGridMonth,timeGridWeek,timeGridDay'
         },
-
+        displayEventTime: false,
         eventSources: [
         {
             id: 'saved-events',
@@ -166,6 +166,9 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
                 }
             }
         });
+    },
+    eventDidMount: (info) => {
+        createEventTooltip(info);
     },
     dateClick: (info) => {
         const title = prompt('Titel des Termins:')?.trim();
@@ -376,4 +379,92 @@ function undoLast() {
     action.undo();
 
     console.log('Rückgängig:', action.label);
+}
+
+
+function createEventTooltip(info: any) {
+    const event = info.event;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'fc-event-tooltip';
+
+    const accent = document.createElement('div');
+    accent.className = 'fc-event-tooltip-accent';
+    accent.style.backgroundColor =
+        event.backgroundColor || '#7952b3';
+
+    const title = document.createElement('div');
+    title.className = 'fc-event-tooltip-title';
+    title.textContent = event.title;
+
+    const time = document.createElement('div');
+    time.className = 'fc-event-tooltip-time';
+
+    if (event.allDay) {
+        time.textContent = 'Ganztägig';
+    } else {
+        const format = (date: Date | null) =>
+            date?.toLocaleTimeString('de-DE', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }) ?? '';
+
+        time.textContent =
+            `${format(event.start)} – ${format(event.end)}`;
+    }
+
+    const description = document.createElement('div');
+    description.className =
+        'fc-event-tooltip-description';
+
+    description.textContent =
+        event.extendedProps.description || '';
+
+    tooltip.append(accent, title, time);
+
+    if (description.textContent) {
+        tooltip.append(description);
+    }
+
+    document.body.appendChild(tooltip);
+
+    const moveTooltip = (e: MouseEvent) => {
+        const offset = 14;
+
+        let x = e.clientX + offset;
+        let y = e.clientY + offset;
+
+        const rect = tooltip.getBoundingClientRect();
+
+        if (x + rect.width > window.innerWidth - 10) {
+            x = e.clientX - rect.width - offset;
+        }
+
+        if (y + rect.height > window.innerHeight - 10) {
+            y = e.clientY - rect.height - offset;
+        }
+
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
+    };
+
+    const show = (e: MouseEvent) => {
+        moveTooltip(e);
+        tooltip.classList.add('visible');
+    };
+
+    const hide = () => {
+        tooltip.remove();
+    };
+
+    info.el.addEventListener('mouseenter', show);
+    info.el.addEventListener('mousemove', moveTooltip);
+    info.el.addEventListener('mouseleave', hide);
+
+    return () => {
+        info.el.removeEventListener('mouseenter', show);
+        info.el.removeEventListener('mousemove', moveTooltip);
+        info.el.removeEventListener('mouseleave', hide);
+        tooltip.remove();
+    };
 }
