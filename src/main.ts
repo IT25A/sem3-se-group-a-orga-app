@@ -1,10 +1,5 @@
 import './style.css'
-import { Calendar } from 'fullcalendar';
-import {  benachrichtige} from "./backlog.ts"
-import themePlugin from 'fullcalendar/themes/monarch'; // YOUR THEME
-import dayGridPlugin from 'fullcalendar/daygrid';
-import timeGridPlugin from 'fullcalendar/timegrid';
-import listPlugin from 'fullcalendar/list';
+
 import { renderBacklogPage } from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
@@ -12,6 +7,13 @@ import 'fullcalendar/themes/monarch/palettes/purple.css';
 import { renderTimer, resetTimer1, resetTimer2, stoppTimer1, stoppTimer2, initEigenerWecker, stoppeiegener, initEigenerWecker1, zeigeDatum, startTimer1, startTimer2, startTimer3, stoppTimer3, resetTimer3 } from "./timer";
 import { zitat, zeigeZitat, mainzitatanzeiger } from "./zitate.ts";
 import { lists, validateData } from './persistence/state.ts';
+
+import { initializeData } from "./persistence/state.ts";
+import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
+import { showCalender } from './calendar.ts';
+import { displayPlanungsPage } from './wochePlanen.ts';
+import { destroyCalendarDraggable } from './calendarDraggable.ts';
+
 import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
 //import { populateTestData } from './charlysTests/TestFictures' hat nicht mehr bei mir funktioniert
 import { initializeData } from "./persistence/state.ts";
@@ -22,39 +24,41 @@ export const app = document.querySelector<HTMLDivElement>('#app')!;
 
 
 async function main() {
-    try {
-        // Daten aus IndexedDB laden
-        await initializeData();
-        validateData();
-        //resetAppData(); // Zum Testen, um die Datenbank zu leeren und mit frischen Daten zu starten
-        console.log("Daten erfolgreich geladen!");
+  try {
+    // Daten aus IndexedDB laden
+    await initializeData();
+    validateData();
+    //resetAppData(); // Zum Testen, um die Datenbank zu leeren und mit frischen Daten zu starten
+    console.log("Daten erfolgreich geladen!");
 
-        //Ich hoffe das geht (wieso hatten wir keine main() function? hahah)
-        // stimmt wäre vlt nh idee hahahha
+    renderHomePage();
 
+    /*
+    Hier werden die Funktionen für die Nav-Bar aufgerufen
+    */
 
-
+    document.getElementById("home-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
+        currentPage = "home-page";
         renderHomePage();
 
 
-        /*
-        Hier werden die Funktionen für die Nav-Bar aufgerufen
-        */
+    document.getElementById("meine-listen-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
+        currentPage = "list-page";
+        displayListPage()
+    })
 
-        document.getElementById("home-link")?.addEventListener("click", () => {
-            currentPage = "home-page";
-            renderHomePage();
-        })
-
-        document.getElementById("meine-listen-link")?.addEventListener("click", () => {
-            currentPage = "list-page";
-            displayListPage()
-        })
-
-        document.getElementById("backlog-link")?.addEventListener("click", () => {
-            currentPage = "backlog-page";
-            renderBacklogPage()
-        })
+    document.getElementById("backlog-link")?.addEventListener("click", () =>{
+        destroyCalendarDraggable();
+        currentPage = "backlog-page";
+        renderBacklogPage()
+    })
+    document.getElementById("planung-link")?.addEventListener("click", () =>{
+        currentPage = "planung-page";
+        displayPlanungsPage()
+    })
+   
 
         document.getElementById("habits-link")?.addEventListener("click", () => {
             currentPage = "habits-page";
@@ -128,11 +132,8 @@ export function renderHomePage(): void {
     const generalContent = document.createElement('div');
     generalContent.className = 'app';
 
-
-
     generalContent.innerHTML = `
     <h1>Meine OrgaAPP</h1>
-    <p>Ziehe deine Aufgaben mit der Maus!</p>
       <dialog id="aufgaben-popup">
         <p id="popup-text"></p>
 
@@ -174,42 +175,5 @@ export function renderHomePage(): void {
     // Alles an #app anhängen
     app.append(calenderSection);
 
-
-    // 1. Platz für den Kalender suchen
-    const calendarEl = document.getElementById('calendar')!
-
-    // 2. Kalender erstellen
-    const calendar = new Calendar(calendarEl, {
-
-        plugins: [
-            dayGridPlugin,
-            timeGridPlugin,
-            listPlugin,
-            themePlugin
-        ],
-
-        // Monatsansicht
-        initialView: 'dayGridMonth',
-
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-        },
-
-        // Beispielaufgaben- ihr könnt weitere ergänzen
-        events: [
-            {
-                title: 'Java lernen',
-                start: '2026-10-20'
-            },
-            {
-                title: 'Sport machen',
-                start: '2026-10-22'
-            }
-        ]
-    })
-    calendar.render();
-    benachrichtige();
-
+    showCalender(calenderElement);
 }

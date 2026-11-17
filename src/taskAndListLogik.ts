@@ -1,4 +1,6 @@
-import {lists, backlog, updateAppData} from './persistence/state';
+import {lists, backlog, eventlog, updateAppData} from './persistence/state';
+import { refreshCalendar } from './calendar';
+import { saveData, saveEventlog } from './persistence/storage';
 //export let lists: List[] = []
 /*export let backlog: Backlog = {
   id: "backlog",
@@ -49,7 +51,7 @@ function createList(title: string, description: string): List {
 export async function addList(title: string, description: string): Promise<void> {
   const newList = createList(title, description);
   lists.push(newList);
-  await updateAppData(lists, backlog);
+  await updateAppData(lists, backlog, eventlog);
 }
 
 export async function deleteList(id: string): Promise<void> {
@@ -67,14 +69,14 @@ export async function deleteList(id: string): Promise<void> {
   }
   //remove list itself
   lists.splice(index, 1);
-  await updateAppData(lists, backlog);
+  await updateAppData(lists, backlog, eventlog);
 }
 
 export async function renameList(id: string, newTitle: string): Promise<void> {
   const list = lists.find(list => list.id === id);
   if (list) {
     list.title = newTitle;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 }
 
@@ -82,7 +84,7 @@ export async function changeListDescription(id: string, newDescription: string):
   const list = lists.find(list => list.id === id);
   if (list) {
     list.description = newDescription;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 } 
 
@@ -104,7 +106,7 @@ export async function deleteListsRecursivly(listId: string): Promise<void> {
       }
     }
     lists.splice(listIndex, 1);
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 } 
 //[start]
@@ -135,6 +137,8 @@ export type Task = {
   title: string;
   description: string;
   dueDate?: Date;
+  startDate?: Date;
+  endDate?: Date;
   createdAt: Date;
   priority: Priority;
   complexity: Complexity;
@@ -171,7 +175,8 @@ export async function createTask({
     lists: [backlog.id]
   };
   backlog.tasks.push(newTask);
-  await updateAppData(lists, backlog);
+  await updateAppData(lists, backlog, eventlog);
+  refreshCalendar();
   return newTask;
 }
 
@@ -185,7 +190,7 @@ export async function addTaskToList(taskId: string, listId: string): Promise<voi
     if (!list.tasks.some(t => t === taskId)) {
       list.tasks.push(taskId);
     }
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 } 
 
@@ -203,7 +208,9 @@ export async function deleteTask(taskId: string): Promise<void> {
       }
     }
     backlog.tasks.splice(taskIndex, 1);
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
+    deleteEventRelatedToTask(taskId);
+    refreshCalendar();
   }
 }
 
@@ -219,14 +226,16 @@ export async function removeTaskFromList(taskId: string, listId: string): Promis
         task.lists.splice(listIndex, 1)
       }
   }
-  await updateAppData(lists, backlog);
+  await updateAppData(lists, backlog, eventlog);
 }
 
 export async function editTaskTitle(taskId: string, newTitle: string): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.title = newTitle;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
+    updateEventTitleRelatedToTaskTitleChange(taskId, newTitle)
+    refreshCalendar();
   }
 }
   
@@ -234,7 +243,7 @@ export async function editTaskDescription(taskId: string, newDescription: string
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.description = newDescription;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 }
 
@@ -242,7 +251,8 @@ export async function editTaskDueDate(taskId: string, newDueDate?: Date): Promis
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.dueDate = newDueDate;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
+    refreshCalendar();
   }
 }
 
@@ -250,7 +260,8 @@ export async function editTaskPriority(taskId: string, newPriority: Priority): P
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.priority = newPriority;
-    await updateAppData(lists, backlog);
+    updateEventColorRelatedToTaskPriorityChange(taskId, newPriority)
+    await updateAppData(lists, backlog, eventlog);
   }
 }
 
@@ -258,7 +269,7 @@ export async function editTaskComplexity(taskId: string, newComplexity: Complexi
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.complexity = newComplexity;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 }
 
@@ -266,7 +277,7 @@ export async function editTaskTimeEstimate(taskId: string, newTimeEstimate: Time
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.timeEstimate = newTimeEstimate;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
   }
 }
 
@@ -274,6 +285,45 @@ export async function editTaskCompleted(taskId: string, completed: boolean): Pro
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.completed = completed;
-    await updateAppData(lists, backlog);
+    await updateAppData(lists, backlog, eventlog);
+    if(completed){deleteEventRelatedToTask(taskId);}
+    refreshCalendar();
   }
+}
+
+function deleteEventRelatedToTask(taskId: string): void {
+    saveEventlog(eventlog.filter(element => element.taskId !== taskId));
+    refreshCalendar()
+}
+
+function updateEventColorRelatedToTaskPriorityChange(taskId: string, priority:Priority){
+   eventlog.forEach(element => {
+        if (element.taskId === taskId) {
+            switch(priority){
+              case 'klein':
+                element.color = '#dbc9f6';
+                break;
+              case 'mittel':
+                element.color = '#bc9aee';
+                break;
+              case 'hoch':
+                element.color = '#7952b3'
+                break;
+              default:
+                break;
+            }
+        }
+    });
+    saveEventlog(eventlog);
+    refreshCalendar();
+}
+
+function updateEventTitleRelatedToTaskTitleChange(taskId: string, title:string){
+   eventlog.forEach(element => {
+        if (element.taskId === taskId) {
+            element.title = title;
+        }
+    });
+    saveEventlog(eventlog);
+    refreshCalendar();
 }

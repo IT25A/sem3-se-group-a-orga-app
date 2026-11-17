@@ -375,6 +375,18 @@
 #app .sortable-chosen {
     box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2) !important;
 }
+.fc-draggable-task[draggable=true]{
+    background-color: #eee5ff !important;
+    border: 2px solid #7952b3 !important;
+    border-radius: 12px !important;
+    display: flex;
+    align-items: center;      /* vertikal zentrieren */
+    justify-content: flex-start; /* horizontal links lassen */
+
+    box-shadow: 0 6px 18px rgba(121, 82, 179, 0.3);
+
+    opacity: 0.9;
+    cursor: grabbing;
 /*Benachrichtigung*/
 .btnbenachrichtigung {
     background-color: #f0eafa;

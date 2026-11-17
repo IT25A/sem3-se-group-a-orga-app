@@ -3,11 +3,12 @@ import { openDB, type IDBPDatabase } from "idb";
 
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
+import type { CalendarEvent } from "../calendar";
 
 interface AppDatabase {
   "app-state": {
     key: string;
-    value: List[] | Backlog | boolean;
+    value: List[] | Backlog | boolean | CalendarEvent[];
   };
 }
 
@@ -37,7 +38,8 @@ function getDatabase() {
 // Alle Daten speichern
 export async function saveData(
   lists: List[],
-  backlog: Backlog
+  backlog: Backlog,
+  eventlog:CalendarEvent[]
 ): Promise<void> {
   const db = await getDatabase();
 
@@ -47,6 +49,7 @@ export async function saveData(
     tx.store.put(lists, "lists"),
     tx.store.put(backlog, "backlog"),
     tx.store.put(true, "hasInitialized"),
+    tx.store.put(eventlog, "eventlog"),
   ]);
   await tx.done;
 }
@@ -65,6 +68,12 @@ export async function saveBacklog(backlog: Backlog): Promise<void> {
   await db.put("app-state", backlog, "backlog");
 }
 
+// Ereignisse speichern
+export async function saveEventlog(eventlog: CalendarEvent[]): Promise<void> {
+  const db = await getDatabase();
+  await db.put("app-state", eventlog, "eventlog");
+}
+
 // --------------------------------
 // DATEN LADEN
 // --------------------------------
@@ -74,20 +83,23 @@ export async function loadData(): Promise<{
   lists: List[] | undefined;
   backlog: Backlog | undefined;
   hasInitialized: boolean | undefined;
+  eventlog: CalendarEvent[] | undefined;
 }> {
   const db = await getDatabase();
 
   // Alle drei Einträge parallel aus der Datenbank laden.
-  const [lists, backlog, hasInitialized] = await Promise.all([
+  const [lists, backlog, hasInitialized, eventlog] = await Promise.all([
     db.get("app-state", "lists"),
     db.get("app-state", "backlog"),
     db.get("app-state", "hasInitialized"),
+    db.get("app-state", "eventlog"),
   ]);
 
   return {
     lists: lists as List[] | undefined,
     backlog: backlog as Backlog | undefined,
     hasInitialized: hasInitialized as boolean | undefined,
+    eventlog: eventlog as CalendarEvent[] | undefined,
   };
 }
 
@@ -103,6 +115,13 @@ export async function loadBacklog(): Promise<Backlog | undefined> {
   const db = await getDatabase();
 
   return db.get("app-state", "backlog") as Promise<Backlog | undefined>;
+}
+
+// Nur Eventlog laden
+export async function loadEventlog(): Promise<CalendarEvent[] | undefined> {
+  const db = await getDatabase();
+
+  return db.get("app-state", "eventlog") as Promise<CalendarEvent[] | undefined>;
 }
 
 // Nur den Initialisierungsmarker laden.
