@@ -1,15 +1,21 @@
 // @ts-ignore cal-heatmap declarations are inaccessible through its package exports map.
 import CalHeatmap from 'cal-heatmap';
 import 'cal-heatmap/cal-heatmap.css';
-import { habitState, addHabit, removeHabit, updateHabit } from './persistence/habitsState';
+import {
+    habitState,
+    initializeHabitsData,
+    addHabit,
+    removeHabit,
+    updateHabit,
+} from './persistence/habitsState';
 import './style.css';
 import './styles/habitsStyle.css';
 
 let calInstance: any = null;
 
-export function renderHabitsPage(): void {
+export async function renderHabitsPage(): Promise<void> {
     const app = document.getElementById('app') as HTMLDivElement;
-    app.replaceChildren(); // Leert den Container sauber ohne innerHTML
+    app.replaceChildren();
 
     const heading = document.createElement('h1');
     heading.textContent = 'Meine Habits';
@@ -17,7 +23,6 @@ export function renderHabitsPage(): void {
     const heatmapContainer = document.createElement('div');
     heatmapContainer.id = 'habit-heatmap';
 
-    // Formular-Bereich erstellen
     const habitForm = document.createElement('div');
     habitForm.classList.add('habit-form');
 
@@ -32,7 +37,6 @@ export function renderHabitsPage(): void {
 
     habitForm.append(newHabitInput, addHabitBtn);
 
-    // Listen-Container erstellen
     const listContainer = document.createElement('div');
     listContainer.id = 'habit-list-container';
     listContainer.classList.add('list-card');
@@ -41,31 +45,34 @@ export function renderHabitsPage(): void {
     habitList.id = 'habit-list';
     listContainer.appendChild(habitList);
 
-    // Alles in #app einfügen
     app.append(heading, heatmapContainer, habitForm, listContainer);
 
+    // 1. ZUERST Daten aus der Datenbank laden!
+    await initializeHabitsData();
+
+    // 2. Danach Events, Liste und Heatmap mit den geladenen Daten rendern
     setupFormEvents(newHabitInput, addHabitBtn);
     renderHabitList();
-    initHeatmap();
+    await initHeatmap();
 }
 
 function setupFormEvents(input: HTMLInputElement, addBtn: HTMLButtonElement): void {
-    addBtn.addEventListener('click', () => {
+    addBtn.addEventListener('click', async () => {
         const name = input.value.trim();
         if (!name) return;
 
-        addHabit(name);
+        await addHabit(name);
         input.value = '';
         renderHabitList();
-        updateHeatmap();
+        await updateHeatmap();
     });
 }
 
 function renderHabitList(): void {
     const habitList = document.getElementById('habit-list') as HTMLUListElement;
-    habitList.replaceChildren(); // Liste sauber leeren
+    habitList.replaceChildren();
 
-    for (const habit of habitState.tasks) {
+    for (const habit of habitState.habits) {
         const li = document.createElement('li');
         li.classList.add('habit-item');
 
@@ -101,23 +108,22 @@ function renderHabitList(): void {
         deleteButton.title = 'Habit löschen';
         deleteButton.textContent = '🗑️';
 
-        // Event-Listener direkt an die erstellten Buttons hängen
-        minusButton.addEventListener('click', () => {
-            updateHabit(habit.id, -1, 'minus');
+        minusButton.addEventListener('click', async () => {
+            await updateHabit(habit.id, -1, 'minus');
             renderHabitList();
-            updateHeatmap();
+            await updateHeatmap();
         });
 
-        plusButton.addEventListener('click', () => {
-            updateHabit(habit.id, 1, 'plus');
+        plusButton.addEventListener('click', async () => {
+            await updateHabit(habit.id, 1, 'plus');
             renderHabitList();
-            updateHeatmap();
+            await updateHeatmap();
         });
 
-        deleteButton.addEventListener('click', () => {
-            removeHabit(habit.id);
+        deleteButton.addEventListener('click', async () => {
+            await removeHabit(habit.id);
             renderHabitList();
-            updateHeatmap();
+            await updateHeatmap();
         });
 
         controlsDiv.append(minusButton, countSpan, plusButton, deleteButton);
@@ -126,31 +132,43 @@ function renderHabitList(): void {
     }
 }
 
-function initHeatmap(): void {
+async function initHeatmap(): Promise<void> {
+    if (calInstance) {
+        await calInstance.destroy();
+    }
+
     calInstance = new CalHeatmap();
-    calInstance.paint({
+    await calInstance.paint({
         itemSelector: '#habit-heatmap',
         date: { start: new Date('2026-11-01') },
         range: 12,
         domain: { type: 'month' },
         subDomain: { type: 'day', radius: 2 },
+        animationDuration: 0,
         data: {
-            source: habitState.logs,
+            source: [...habitState.logs],
             x: 'date',
             y: 'value',
         },
         scale: {
             color: {
                 type: 'threshold',
-                range: ['#f01b1b', '#f5a802', '#22c55e'],
+                range: ['#ef4444', '#f97316', '#22c55e'],
                 domain: [0, 0.5],
             },
         },
     });
 }
 
-function updateHeatmap(): void {
-    if (calInstance) {
-        calInstance.fill(habitState.logs);
-    }
+async function updateHeatmap(): Promise<void> {
+    if (!calInstance) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const hasTodayLog = habitState.logs.some((log) => log.date === today);
+
+    const dataToFill = hasTodayLog
+        ? [...habitState.logs]
+        : [...habitState.logs, { date: today, value: null }];
+
+    await calInstance.fill(dataToFill);
 }

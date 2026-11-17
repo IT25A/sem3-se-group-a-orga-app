@@ -4,11 +4,13 @@ import { openDB, type IDBPDatabase } from "idb";
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
 import type { CalendarEvent } from "../calendar";
+import type { Habit } from "./habitsState";
+import type { HabitLog } from "./habitsState";
 
 interface AppDatabase {
   "app-state": {
     key: string;
-    value: List[] | Backlog | boolean | CalendarEvent[];
+    value: List[] | Backlog | boolean | CalendarEvent[] | Habit[] | HabitLog[];
   };
 }
 
@@ -39,7 +41,7 @@ function getDatabase() {
 export async function saveData(
   lists: List[],
   backlog: Backlog,
-  eventlog:CalendarEvent[]
+  eventlog: CalendarEvent[]
 ): Promise<void> {
   const db = await getDatabase();
 
@@ -50,6 +52,21 @@ export async function saveData(
     tx.store.put(backlog, "backlog"),
     tx.store.put(true, "hasInitialized"),
     tx.store.put(eventlog, "eventlog"),
+  ]);
+  await tx.done;
+}
+// Habits-Daten speichern
+export async function saveHabitsData(
+  habits: Habit[],
+  habitLogs: HabitLog[]
+): Promise<void> {
+  const db = await getDatabase();
+
+  const tx = db.transaction("app-state", "readwrite");
+
+  await Promise.all([
+    tx.store.put(habits, "habits"),
+    tx.store.put(habitLogs, "habitLogs"),
   ]);
   await tx.done;
 }
@@ -72,6 +89,18 @@ export async function saveBacklog(backlog: Backlog): Promise<void> {
 export async function saveEventlog(eventlog: CalendarEvent[]): Promise<void> {
   const db = await getDatabase();
   await db.put("app-state", eventlog, "eventlog");
+}
+
+// Habits speichern
+export async function saveHabits(habits: Habit[]): Promise<void> {
+  const db = await getDatabase();
+  await db.put("app-state", habits, "habits");
+}
+
+// Habits-Logs speichern
+export async function saveHabitLogs(habitLogs: HabitLog[]): Promise<void> {
+  const db = await getDatabase();
+  await db.put("app-state", habitLogs, "habitLogs");
 }
 
 // --------------------------------
@@ -103,6 +132,24 @@ export async function loadData(): Promise<{
   };
 }
 
+//Habits und HabitLogs laden
+export async function loadHabitsData(): Promise<{
+  habits: Habit[] | undefined;
+  habitLogs: HabitLog[] | undefined;
+}> {
+  const db = await getDatabase();
+
+  const [habits, habitLogs] = await Promise.all([
+    db.get("app-state", "habits"),
+    db.get("app-state", "habitLogs"),
+  ]);
+
+  return {
+    habits: habits as Habit[] | undefined,
+    habitLogs: habitLogs as HabitLog[] | undefined,
+  };
+}
+
 // Nur Listen laden
 export async function loadLists(): Promise<List[] | undefined> {
   const db = await getDatabase();
@@ -122,6 +169,18 @@ export async function loadEventlog(): Promise<CalendarEvent[] | undefined> {
   const db = await getDatabase();
 
   return db.get("app-state", "eventlog") as Promise<CalendarEvent[] | undefined>;
+}
+
+// Nur Habits laden
+export async function loadHabits(): Promise<Habit[] | undefined> {
+  const db = await getDatabase();
+  return db.get("app-state", "habits") as Promise<Habit[] | undefined>;
+}
+
+// Nur Habitlog laden
+export async function loadHabitlog(): Promise<HabitLog[] | undefined> {
+  const db = await getDatabase();
+  return db.get("app-state", "habitLogs") as Promise<HabitLog[] | undefined>;
 }
 
 // Nur den Initialisierungsmarker laden.
