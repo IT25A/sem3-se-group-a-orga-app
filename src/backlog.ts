@@ -6,6 +6,7 @@ import { initializeSortables, destroySortables } from './sortable'
 
 
 
+
 export function renderBacklogPage(): void {
   const app = document.getElementById('app') as HTMLDivElement;
   app.innerHTML = `
@@ -45,6 +46,8 @@ export function renderBacklogInContainer(container: HTMLDivElement): void {
   /* hier Benachrichtigiungen zu offene Aufgaben in Backlog*/
 
   export function benachrichtige(): void {
+    if (benachrichtigungenStumm ) return;
+
     const offeneaufgaben = backlog.tasks.filter(
         task => task.completed === false
     );
@@ -80,12 +83,13 @@ export function renderBacklogInContainer(container: HTMLDivElement): void {
           `Erinnerung 🔔 Du hast noch ${anzahloffene} offene Aufgaben.`;
 
       popup.showModal();
-
+      if (!benachrichtigungenOhneTon ) {
+        //!benachrichtigungenOhneTon bedeutet: Nur wenn „ohne Ton“ nicht aktiviert ist, spiele Musik ab
       const audio = new Audio("/Benachrichtigung.mp3");
 
       audio.play()
           .catch(error => console.error("Audiofehler:", error));
-    }
+    }}
   }
 
   export function pruefeanzahlgesamt(): void {
@@ -109,10 +113,43 @@ export function renderBacklogInContainer(container: HTMLDivElement): void {
           `achte bitte auf deine Gesundheit! 🔔`;
 
       popup.showModal();
+      if (!benachrichtigungenOhneTon ) {
 
       const audio = new Audio("/error1.mp3");
 
       audio.play()
           .catch(error => console.error("Audiofehler:", error));
-    }
+    }}
   }
+let benachrichtigungenStumm = false;
+
+export function stummschalten(): void {
+  const checkbox = document.getElementById(
+      "benachrichtigung-stumm"
+  ) as HTMLInputElement | null;
+
+  if (!checkbox) return;
+
+  checkbox.checked = benachrichtigungenStumm;
+
+  checkbox.addEventListener("change", () => {
+    benachrichtigungenStumm = checkbox.checked;
+  });
+}
+let benachrichtigungenOhneTon = false;
+
+export function benachrichtigeOhneTon(): void {
+  const checkbox = document.getElementById(
+      "benachrichtigung-ohneTon"
+  ) as HTMLInputElement | null;
+
+  if (!checkbox) return;
+
+  checkbox.checked = benachrichtigungenOhneTon;
+
+  checkbox.addEventListener("change", () => {
+    benachrichtigungenOhneTon = checkbox.checked;
+  });
+}
+
+

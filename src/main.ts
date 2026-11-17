@@ -1,6 +1,6 @@
 import './style.css'
 
-import {benachrichtige, renderBacklogPage} from './backlog';
+import {benachrichtige, stummschalten,benachrichtigeOhneTon ,renderBacklogPage} from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
@@ -139,6 +139,19 @@ export function renderHomePage(): void {
             <button class="btnbenachrichtigung">OK</button>
         </form>
       </dialog>
+    <div class="benachrichtigung-optionen">
+        <label class="benachrichtigung-option">
+            <input type="checkbox" id="benachrichtigung-stumm">
+                <span class="option-emoji" aria-hidden="true">🔕</span>
+                <span>Benachrichtigungen ausschalten</span>
+        </label>
+
+        <label class="benachrichtigung-option">
+            <input type="checkbox" id="benachrichtigung-ohneTon">
+                 <span class="option-emoji" aria-hidden="true">🔇</span>
+                 <span>Benachrichtigungen ohne Ton</span>
+        </label>
+</div>
     `;
 
     app.append(generalContent)
@@ -175,5 +188,9 @@ export function renderHomePage(): void {
     app.append(calenderSection);
 
     showCalender(calenderElement);
+    //Benachrichtigung in Home
     benachrichtige();
+    stummschalten();
+    benachrichtigeOhneTon();
+
 }
