@@ -148,5 +148,55 @@
     "id": 30,
     "quote": "The biggest risk is not taking any risk.",
     "author": "Mark Zuckerberg"
+  },
+  {
+    "id": 31,
+    "quote": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+    "author": "Johann Wolfgang von Goethe"
+  },
+  {
+    "id": 32,
+    "quote": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+    "author": "Immanuel Kant"
+  },
+  {
+    "id": 33,
+    "quote": "Courage ist gut, aber Ausdauer ist besser.",
+    "author": "Theodor Fontane"
+  },
+  {
+    "id": 34,
+    "quote": "Man muss noch Chaos in sich haben, um einen tanzenden Stern gebären zu können.",
+    "author": "Friedrich Nietzsche"
+  },
+  {
+    "id": 35,
+    "quote": "Wer nichts waget, der darf nichts hoffen.",
+    "author": "Friedrich Schiller"
+  },
+  {
+    "id": 36,
+    "quote": "Wer nichts weiß, muss alles glauben.",
+    "author": "Marie von Ebner-Eschenbach"
+  },
+  {
+    "id": 37,
+    "quote": "Und jedem Anfang wohnt ein Zauber inne.",
+    "author": "Hermann Hesse"
+  },
+  {
+    "id": 38,
+    "quote": "Du musst dein Leben ändern.",
+    "author": "Rainer Maria Rilke"
+  },
+  {
+    "id": 39,
+    "quote": "Glück entsteht oft durch Aufmerksamkeit in kleinen Dingen, Unglück oft durch Vernachlässigung kleiner Dinge.",
+    "author": "Wilhelm Busch"
+  },
+  {
+    "id": 40,
+    "quote": "Kein Mensch muss müssen.",
+    "author": "Gotthold Ephraim Lessing"
   }
 ]

@@ -387,4 +387,10 @@
 
     opacity: 0.9;
     cursor: grabbing;
+/*Benachrichtigung*/
+.btnbenachrichtigung {
+    background-color: #f0eafa;
+    color: #674b8b;
+    border: none;
+    cursor: pointer;
 }

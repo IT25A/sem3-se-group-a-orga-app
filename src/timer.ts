@@ -1,21 +1,21 @@
-// render = anzeigen/darstellen
+import "./timer.css";
+import {backlog} from './persistence/state'
+// select tag : auswählbare liste , options ist die zu ausgewählten einträge
 export function renderTimer() {
     return `
         <div class="timebody">
             <div class="hero">
-                <h1 class="ueberschrift">Now ⏱️</h1>
+                <h1 class="ueberschrift">Aktuelles Datum &#128198 und Uhrzeit ⏱️</h1>
 
                 <div class="timebox">
+                <div class="time">
+                        <h2 id="tag">00</h2>
+                        <p>Tag</p>
+                </div>
                     <div class="time">
                         <h2 id="monat">00</h2>
                         <p>Monat</p>
                     </div>
-                               
-                    <div class="time">
-                        <h2 id="tag">00</h2>
-                        <p>Tag</p>
-                    </div>
-
                     <div class="time">
                         <h2 id="stunden">00</h2>
                         <p>Stunden</p>
@@ -32,12 +32,31 @@ export function renderTimer() {
                     </div>
                  </div>
                  <div class="wecker" id="wecker">
-                    <h2> Wecker anlegen? </h2> 
+                    <h2 class="ueberschrift"> Wecker anlegen? </h2> 
                     <input type="datetime-local" id="selbstdefiniert" placeholder="dein Timer">
                     <button class="btn-65" id="btn">Bestätigen</button>
                     <button class="btn-65" id="stoppeneiegner">Stoppen</button>
+                    <button class="btn-65" id="reset-eigen">Resetten</button>
                     <h2 id="countdown-display-eigen">00:00</h2>
+                 </div>
+                 
+                <div class="wecker" id="wecker1">
+                    <h2 class="ueberschrift">Aufgabenwecker anlegen?</h2>
+                    <div class="wecker-bedienung">  
+                        <select
+                            id="aufgabeWecker">
+                            <options value ="">Bitte wähle Aufgabe</options>
+                        </select>
+                            
+                        <input type="datetime-local" id="selbstdefiniert1">
+                        <button class="btn-65" id="btn1">Bestätigen</button>
+                        <button class="btn-65" id="stoppeneiegner1">Stoppen</button>
+                        <button class="btn-65" id="reset-eigen1">Resetten</button>
+                   
                     </div>
+
+                    <h2 id="countdown-display-eigen1">00:00</h2>
+                </div>
 
                 <div class="timer-container">
                     <h1 class="ueberschrift">Countdown starten</h1>
@@ -75,6 +94,24 @@ export function renderTimer() {
     `;
 }
 
+
+export function tasks() {
+    const selectelement = document.getElementById(
+        "aufgabeWecker"
+    ) as HTMLSelectElement;
+
+    selectelement.innerHTML =
+        '<option value="">Bitte wähle eine Aufgabe</option>';
+
+    for (const task of backlog.tasks) {
+        const option = document.createElement("option");
+
+        option.value = String(task.id);
+        option.textContent = task.title;
+
+        selectelement.appendChild(option);
+    }
+}
 
 // 2. Datum anzeigen
 export function zeigeDatum() {
@@ -298,7 +335,48 @@ export function initEigenerWecker() {
             alert("Bitte eine gültige Uhrzeit in der Zukunft auswählen!");
         }
     });
+    document.getElementById("reset-eigen")!
+        .addEventListener("click", () => {
+            stoppeiegener();
+
+            document.getElementById("countdown-display-eigen")!
+                .textContent = "00:00";
+        });
     }
+
+export function initEigenerWecker1() {
+    tasks();
+    const button = document.getElementById("btn1") as HTMLButtonElement;
+
+    button.addEventListener("click", () => {
+        const input = document.getElementById(
+            "selbstdefiniert1"
+        ) as HTMLInputElement;
+
+        const zeit = input.value;
+        const time = new Date(zeit).getTime();
+        const differenz = time - Date.now();
+        const restsekunden = Math.floor(differenz / 1000);
+
+        if (Number.isFinite(time) && restsekunden > 0) {
+            eigenerwecker1(restsekunden);
+        } else {
+            alert("Bitte eine gültige Uhrzeit in der Zukunft auswählen!");
+        }
+        document.getElementById("reset-eigen1")!
+            .addEventListener("click", () => {
+                stoppeiegener1();
+
+                document.getElementById("countdown-display-eigen1")!
+                    .textContent = "00:00";
+            });
+
+
+    });
+
+    document.getElementById("stoppeneiegner1")!
+        .addEventListener("click", stoppeiegener1);
+}
 
 let eigenerintervall: ReturnType<typeof setInterval> | null = null;
 
@@ -344,8 +422,66 @@ export function stoppeiegener() {
     eigenerintervall = null;
 }
 
+let eigenerintervall1: ReturnType<typeof setInterval> | null = null;
+
+export function eigenerwecker1(restsekunden: number) {
+    const auswahl = document.getElementById(
+        "aufgabeWecker"
+    ) as HTMLSelectElement;
+
+    const task = backlog.tasks.find(
+        task => String(task.id) === auswahl.value
+    );
+
+    if (!task) {
+        alert("Bitte eine Aufgabe auswählen!");
+        return;
+    }
+
+    const aufgabe = task.title;
 
 
+    // Hier muss eigenerintervall1 geprüft werden.
+    if (eigenerintervall1 !== null || restsekunden <= 0) {
+        return;
+    }
+
+    // Aufgabe einmal beim Start auslesen.
+    //
+
+    //const aufgabe = aufgabenEingabe.value.trim() || "Dein Ereignis";
+
+    eigenerintervall1 = setInterval(() => {
+        restsekunden--;
+
+        const uebrigeminuten = Math.floor(restsekunden / 60);
+        const uebrigesekunden = restsekunden % 60;
+
+        // Nur die Anzeige des Aufgabenweckers verändern.
+        document.getElementById("countdown-display-eigen1")!.textContent =
+            `${String(uebrigeminuten).padStart(2, "0")}:${String(uebrigesekunden).padStart(2, "0")}`;
+
+        if (restsekunden <= 0) {
+            // Nur das Intervall des Aufgabenweckers beenden.
+            clearInterval(eigenerintervall1!);
+            eigenerintervall1 = null;
+
+            const audio = new Audio("/audio1.mp3");
+
+            audio.play()
+                .catch(error => console.error("Audiofehler:", error));
+
+            setTimeout(() => {
+                alert(`Dein Wecker für „${aufgabe}“ ist abgelaufen! ⏰`);
+            }, 1500);
+        }
+    }, 1000);
+}
+
+export function stoppeiegener1() {
+    clearInterval(eigenerintervall1!);
+    eigenerintervall1 = null;
+}
 
 
 

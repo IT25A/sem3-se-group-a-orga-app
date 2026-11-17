@@ -1,0 +1,82 @@
+.habit-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+#habit-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.habit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.habit-item.status-green {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.habit-item.status-red {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.habit-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-minus,
+.btn-plus {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-plus {
+    background-color: #22c55e;
+    color: white;
+}
+
+.btn-minus {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-delete {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 6px;
+    transition: background-color 0.2s, color 0.2s;
+
+}
+
+.btn-delete:hover {
+    background-color: #f5a802;
+    border-color: #f5a802;
+    color: white;
+}
