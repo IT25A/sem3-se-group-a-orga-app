@@ -1,21 +1,47 @@
+#habit-list-container,
+#habit-list,
+.habit-item {
+    box-sizing: border-box;
+}
+
 .habit-form {
     display: flex;
+    justify-content: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin: 0 auto 16px auto;
+}
+
+.habit-form input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+
+#habit-list-container {
+    width: 100%;
 }
 
 #habit-list {
+    background-color: #eee5ff;
+    padding: 15px;
+    border-radius: 10px;
     list-style: none;
-    padding: 0;
+    margin: 0;
+    width: 100%;
+
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
+    align-items: stretch;
 }
 
 .habit-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+
     padding: 10px 14px;
     border-radius: 6px;
     background-color: #f3f4f6;
@@ -61,7 +87,7 @@
     color: white;
 }
 
-.btn-delete {
+.delete-button {
     width: 28px;
     height: 28px;
     border: 1px solid #d1d5db;
@@ -72,10 +98,10 @@
     cursor: pointer;
     margin-left: 6px;
     transition: background-color 0.2s, color 0.2s;
-
+    filter: hue-rotate(90deg);
 }
 
-.btn-delete:hover {
+.delete-button:hover {
     background-color: #f5a802;
     border-color: #f5a802;
     color: white;

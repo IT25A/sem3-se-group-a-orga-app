@@ -1,4 +1,3 @@
-
 /* Hauptbereich: Listen untereinander */
 #app {
     display: flex;
@@ -39,7 +38,7 @@
 }
 
 /* Beschreibung und Task-Anzahl */
-#app .list-card > p {
+#app .list-card>p {
     margin: 0;
     color: #6f647c;
     line-height: 1.5;
@@ -81,7 +80,7 @@
 
     cursor: grab;
     transition: background-color 0.2s ease,
-                box-shadow 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 #app .list-card ul.sortable-list li.task-item:hover {
@@ -152,7 +151,8 @@
 }
 
 /* Aufgabentext */
-#app .task-title , #app .list-header h2 {
+#app .task-title,
+#app .list-header h2 {
     flex: 1;
     min-width: 0;
     color: #443653;
@@ -179,8 +179,9 @@
     cursor: pointer;
 
     transition: background-color 0.2s ease,
-                transform 0.2s ease;
+        transform 0.2s ease;
 }
+
 #app .delete-button {
     display: flex;
     align-items: center;
@@ -191,7 +192,7 @@
     height: 28px;
     padding: 0;
 
-    filter: hue-rotate(90deg); 
+    filter: hue-rotate(90deg);
 
     background-color: transparent;
     border: none;
@@ -200,7 +201,7 @@
     cursor: pointer;
 
     transition: background-color 0.2s ease,
-                transform 0.2s ease;
+        transform 0.2s ease;
 }
 
 #app .edit-button {
@@ -213,7 +214,7 @@
     height: 28px;
     padding: 0;
 
-    filter: hue-rotate(210deg) brightness(0.9); 
+    filter: hue-rotate(210deg) brightness(0.9);
 
     background-color: transparent;
     border: none;
@@ -222,7 +223,7 @@
     cursor: pointer;
 
     transition: background-color 0.2s ease,
-                transform 0.2s ease;
+        transform 0.2s ease;
 }
 
 
@@ -233,11 +234,11 @@
 }
 
 #app .delete-button:hover {
-    filter: hue-rotate(150deg); 
+    filter: hue-rotate(150deg);
 }
 
 #app .edit-button:hover {
-    filter: hue-rotate(270deg); 
+    filter: hue-rotate(270deg);
 }
 
 /* Ausklappbarer Detailbereich */
@@ -375,18 +376,23 @@
 #app .sortable-chosen {
     box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2) !important;
 }
-.fc-draggable-task[draggable=true]{
+
+.fc-draggable-task[draggable=true] {
     background-color: #eee5ff !important;
     border: 2px solid #7952b3 !important;
     border-radius: 12px !important;
     display: flex;
-    align-items: center;      /* vertikal zentrieren */
-    justify-content: flex-start; /* horizontal links lassen */
+    align-items: center;
+    /* vertikal zentrieren */
+    justify-content: flex-start;
+    /* horizontal links lassen */
 
     box-shadow: 0 6px 18px rgba(121, 82, 179, 0.3);
 
     opacity: 0.9;
     cursor: grabbing;
+}
+
 /*Benachrichtigung*/
 .btnbenachrichtigung {
     background-color: #f0eafa;

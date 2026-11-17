@@ -9,30 +9,47 @@ let calInstance: any = null;
 
 export function renderHabitsPage(): void {
     const app = document.getElementById('app') as HTMLDivElement;
-    app.innerHTML = `
-        <h1>Meine Habits</h1>
-        
-        <div id="habit-heatmap"></div>
+    app.replaceChildren(); // Leert den Container sauber ohne innerHTML
 
-        <div class="habit-form">
-            <input type="text" id="new-habit-input" placeholder="Neues Habit eingeben..." />
-            <button id="add-habit-btn">Hinzufügen</button>
-        </div>
+    const heading = document.createElement('h1');
+    heading.textContent = 'Meine Habits';
 
-        <div id="habit-list-container" class="list-card">
-            <ul id="habit-list"></ul>
-        </div>
-    `;
+    const heatmapContainer = document.createElement('div');
+    heatmapContainer.id = 'habit-heatmap';
 
-    setupFormEvents();
+    // Formular-Bereich erstellen
+    const habitForm = document.createElement('div');
+    habitForm.classList.add('habit-form');
+
+    const newHabitInput = document.createElement('input');
+    newHabitInput.type = 'text';
+    newHabitInput.id = 'new-habit-input';
+    newHabitInput.placeholder = 'Neues Habit eingeben...';
+
+    const addHabitBtn = document.createElement('button');
+    addHabitBtn.id = 'add-habit-btn';
+    addHabitBtn.textContent = 'Hinzufügen';
+
+    habitForm.append(newHabitInput, addHabitBtn);
+
+    // Listen-Container erstellen
+    const listContainer = document.createElement('div');
+    listContainer.id = 'habit-list-container';
+    listContainer.classList.add('list-card');
+
+    const habitList = document.createElement('ul');
+    habitList.id = 'habit-list';
+    listContainer.appendChild(habitList);
+
+    // Alles in #app einfügen
+    app.append(heading, heatmapContainer, habitForm, listContainer);
+
+    setupFormEvents(newHabitInput, addHabitBtn);
     renderHabitList();
     initHeatmap();
 }
 
-function setupFormEvents(): void {
-    const input = document.getElementById('new-habit-input') as HTMLInputElement;
-    const addBtn = document.getElementById('add-habit-btn') as HTMLButtonElement;
-
+function setupFormEvents(input: HTMLInputElement, addBtn: HTMLButtonElement): void {
     addBtn.addEventListener('click', () => {
         const name = input.value.trim();
         if (!name) return;
@@ -46,11 +63,11 @@ function setupFormEvents(): void {
 
 function renderHabitList(): void {
     const habitList = document.getElementById('habit-list') as HTMLUListElement;
-    habitList.innerHTML = '';
+    habitList.replaceChildren(); // Liste sauber leeren
 
     for (const habit of habitState.tasks) {
         const li = document.createElement('li');
-        li.className = 'habit-item';
+        li.classList.add('habit-item');
 
         if (habit.lastAction === 'plus') {
             li.classList.add('status-green');
@@ -58,20 +75,33 @@ function renderHabitList(): void {
             li.classList.add('status-red');
         }
 
-        li.innerHTML = `
-            <span class="habit-name">${habit.name}</span>
-            <div class="habit-controls">
-                <button class="btn-minus" title="Minus">-</button>
-                <span class="habit-count">${habit.count}</span>
-                <button class="btn-plus" title="Plus">+</button>
-                <button class="btn-delete" title="Habit löschen">✕</button>
-            </div>
-        `;
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('habit-name');
+        nameSpan.textContent = habit.name;
 
-        const minusButton = li.querySelector('.btn-minus') as HTMLButtonElement;
-        const plusButton = li.querySelector('.btn-plus') as HTMLButtonElement;
-        const deleteButton = li.querySelector('.btn-delete') as HTMLButtonElement;
+        const controlsDiv = document.createElement('div');
+        controlsDiv.classList.add('habit-controls');
 
+        const minusButton = document.createElement('button');
+        minusButton.classList.add('btn-minus');
+        minusButton.title = 'Minus';
+        minusButton.textContent = '-';
+
+        const countSpan = document.createElement('span');
+        countSpan.classList.add('habit-count');
+        countSpan.textContent = String(habit.count);
+
+        const plusButton = document.createElement('button');
+        plusButton.classList.add('btn-plus');
+        plusButton.title = 'Plus';
+        plusButton.textContent = '+';
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.title = 'Habit löschen';
+        deleteButton.textContent = '🗑️';
+
+        // Event-Listener direkt an die erstellten Buttons hängen
         minusButton.addEventListener('click', () => {
             updateHabit(habit.id, -1, 'minus');
             renderHabitList();
@@ -90,6 +120,8 @@ function renderHabitList(): void {
             updateHeatmap();
         });
 
+        controlsDiv.append(minusButton, countSpan, plusButton, deleteButton);
+        li.append(nameSpan, controlsDiv);
         habitList.appendChild(li);
     }
 }
@@ -110,7 +142,7 @@ function initHeatmap(): void {
         scale: {
             color: {
                 type: 'threshold',
-                range: ['#ef4444', '#f97316', '#22c55e'],
+                range: ['#f01b1b', '#f5a802', '#22c55e'],
                 domain: [0, 0.5],
             },
         },
