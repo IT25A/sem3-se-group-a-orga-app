@@ -167,6 +167,13 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             }
         });
     },
+    eventMouseLeave: (info) => {
+        const tooltips = document.getElementsByClassName('fc-event-tooltip')
+        //HTML collection => für jedes element remove ausführen
+        for(const element of tooltips){
+            element.classList.remove('visible');
+        }
+    },
     eventDidMount: (info) => {
         createEventTooltip(info);
     },
@@ -381,7 +388,7 @@ function undoLast() {
     console.log('Rückgängig:', action.label);
 }
 
-
+//tooltip zeugs
 function createEventTooltip(info: any) {
     const event = info.event;
 
@@ -410,7 +417,7 @@ function createEventTooltip(info: any) {
             }) ?? '';
 
         time.textContent =
-            `${format(event.start)} – ${format(event.end)}`;
+            `${format(event.start)} - ${format(event.end)}`;
     }
 
     const description = document.createElement('div');
@@ -454,7 +461,8 @@ function createEventTooltip(info: any) {
     };
 
     const hide = () => {
-        tooltip.remove();
+        tooltip.classList.remove('visible');
+        refreshCalendar();
     };
 
     info.el.addEventListener('mouseenter', show);
