@@ -2,6 +2,7 @@
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
 import type { CalendarEvent } from "../calendar";
+import type { Ziel } from "../displayZiele";
 
 import { createWelcomeData } from "./welcomeData";
 
@@ -12,6 +13,8 @@ import {
   saveData,
   saveEventlog,
   loadEventlog,
+  saveZiellog,
+  loadZiellog,
 } from "./storage";
 
 // --------------------------------
@@ -27,6 +30,8 @@ export let backlog: Backlog = {
   createdAt: new Date(),
   tasks: [],
 };
+
+export let ziellog: Ziel[];
 
 export let eventlog: CalendarEvent[] = [];
 
@@ -53,9 +58,10 @@ export async function initializeData(): Promise<void> {
       createdAt: new Date(),
       tasks: [],
     };
+    ziellog = data.ziellog ?? [];
 
     if (data.lists === undefined || data.backlog === undefined) {
-      await saveData(lists, backlog, eventlog);
+      await saveData(lists, backlog, eventlog, ziellog);
     }
 
     return;
@@ -67,15 +73,17 @@ export async function initializeData(): Promise<void> {
 
   const isFreshDatabase =
     data.lists === undefined &&
-    data.backlog === undefined;
+    data.backlog === undefined &&
+    data.ziellog === undefined;
 
   if (isFreshDatabase) {
     const initialData = createWelcomeData();
 
     lists = initialData.lists;
     backlog = initialData.backlog;
+    ziellog = initialData.ziellog;
 
-    await saveData(lists, backlog, eventlog);
+    await saveData(lists, backlog, eventlog, ziellog);
 
     return;
   }
@@ -95,7 +103,7 @@ export async function initializeData(): Promise<void> {
     tasks: [],
   };
 
-  await saveData(lists, backlog, eventlog);
+  await saveData(lists, backlog, eventlog, ziellog);
 }
 
 // --------------------------------
@@ -133,6 +141,16 @@ export async function updateEventlog(
 
   await saveEventlog(eventlog);
 }
+// --------------------------------
+// Ziellog AKTUALISIEREN
+// --------------------------------
+
+export async function updateZiellog(
+  newZiellog: Ziel[]
+): Promise<void> {
+  ziellog = newZiellog;
+  await saveZiellog(ziellog);
+}
 
 // --------------------------------
 // Eventlog LADEN
@@ -140,7 +158,14 @@ export async function updateEventlog(
 
 export async function getEventlog(): Promise<CalendarEvent[]|undefined> {
   return await loadEventlog()
+}
 
+// --------------------------------
+// Ziellog LADEN
+// --------------------------------
+
+export async function getZiellog(): Promise<Ziel[]|undefined> {
+  return await loadZiellog()
 }
 
 
@@ -152,12 +177,14 @@ export async function updateAppData(
   newLists: List[],
   newBacklog: Backlog,
   newEventlog: CalendarEvent[],
+  newZiellog: Ziel[],
 ): Promise<void> {
-  await saveData(newLists, newBacklog, newEventlog);
+  await saveData(newLists, newBacklog, newEventlog, newZiellog);
 
   lists = newLists;
   backlog = newBacklog;
   eventlog = newEventlog;
+  ziellog = newZiellog;
 }
 
 // --------------------------------

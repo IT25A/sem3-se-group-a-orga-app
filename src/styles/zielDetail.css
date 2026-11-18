@@ -1,0 +1,392 @@
+
+/* ==========================================
+   ZIEL DETAILSEITE
+========================================== */
+
+#app .ziel-detail-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+
+    width: 100%;
+    max-width: 90%;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+#app .ziel-detail-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+}
+
+#app .ziel-detail-page .ziel-back-button {
+    padding: 9px 14px;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border: 1px solid #e4d8f7;
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#app .ziel-detail-page .ziel-back-button:hover {
+    background-color: #e4d8f7;
+}
+
+/* ==========================================
+   ZIELKOPF
+========================================== */
+
+#app .ziel-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    background: linear-gradient(135deg, #f5efff, #eee5ff);
+    border: 1px solid #e4d8f7;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 10px rgba(121, 82, 179, 0.10);
+}
+
+#app .ziel-detail-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 62px;
+    height: 62px;
+
+    background-color: #ffffff;
+    border-radius: 14px;
+
+    font-size: 2rem;
+}
+
+#app .ziel-detail-heading-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    min-width: 0;
+}
+
+#app .ziel-detail-eyebrow {
+    color: #9585a8;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+}
+
+#app .ziel-detail-heading-content h1 {
+    margin: 0;
+
+    color: #7952b3;
+    font-size: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+#app .ziel-created-at {
+    margin: 0;
+
+    color: #9585a8;
+    font-size: 0.8rem;
+}
+
+/* ==========================================
+   BESCHREIBUNG
+========================================== */
+
+#app .ziel-description-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    background-color: #ffffff;
+    border: 1px solid #e4d8f7;
+    border-radius: 12px;
+
+    box-shadow: 0 2px 8px rgba(121, 82, 179, 0.07);
+}
+
+#app .ziel-description-section h2 {
+    margin: 0;
+
+    color: #7952b3;
+    font-size: 1.05rem;
+}
+
+#app .ziel-description-section p {
+    margin: 0;
+
+    color: #6f647c;
+    font-size: 0.92rem;
+    line-height: 1.7;
+
+    overflow-wrap: anywhere;
+}
+
+#app .ziel-description-section .ziel-description-placeholder {
+    color: #a69ab5;
+    font-style: italic;
+}
+
+/* ==========================================
+   GEMEINSAME SEKTIONSKÖPFE
+========================================== */
+
+#app .ziel-detail-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+}
+
+#app .ziel-detail-section-header h2 {
+    margin: 0;
+
+    color: #443653;
+    font-size: 1.15rem;
+}
+
+#app .ziel-detail-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    min-height: 27px;
+    padding: 4px 11px;
+    box-sizing: border-box;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border-radius: 20px;
+
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* ==========================================
+   LISTENBEREICH
+========================================== */
+
+#app .ziel-lists-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#app .ziel-lists-slider-container {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Vorhandener Card-Slider innerhalb eines Ziels */
+
+#app .ziel-card-slider {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    margin: 0;
+    padding: 16px;
+
+    background-color: #f8f5fc;
+    border: 1px solid #e4d8f7;
+    border-radius: 12px;
+}
+
+/* Leerer Listenbereich */
+
+#app .ziel-detail-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 30px 20px;
+
+    background-color: #f8f5fc;
+    border: 1px dashed #c7b3e6;
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+#app .ziel-detail-empty span {
+    font-size: 2rem;
+}
+
+#app .ziel-detail-empty p {
+    margin: 0;
+
+    color: #9585a8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   HABITBEREICH
+========================================== */
+
+#app .ziel-habits-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#app .ziel-habit-container {
+    width: 100%;
+}
+
+#app .ziel-habit-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 28px 20px;
+
+    background: linear-gradient(135deg, #faf8fd, #f4effb);
+    border: 1px dashed #c7b3e6;
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+#app .ziel-habit-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    background-color: #eee5ff;
+    border-radius: 14px;
+
+    font-size: 1.7rem;
+}
+
+#app .ziel-habit-empty h3 {
+    margin: 0;
+
+    color: #7952b3;
+    font-size: 1rem;
+}
+
+#app .ziel-habit-empty > p {
+    max-width: 340px;
+    margin: 0;
+
+    color: #9585a8;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+/* Gesamtscore */
+
+#app .ziel-habit-total-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 10px;
+    padding: 13px 15px;
+
+    background-color: #ffffff;
+    border: 1px solid #e4d8f7;
+    border-radius: 8px;
+}
+
+#app .ziel-habit-total-score span {
+    color: #6f647c;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+#app .ziel-habit-total-score strong {
+    color: #7952b3;
+    font-size: 1.3rem;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+    #app .ziel-detail-page {
+        max-width: 100%;
+        gap: 17px;
+    }
+
+    #app .ziel-detail-header {
+        gap: 12px;
+        padding: 16px;
+    }
+
+    #app .ziel-detail-flag {
+        width: 48px;
+        height: 48px;
+        font-size: 1.6rem;
+    }
+
+    #app .ziel-detail-heading-content h1 {
+        font-size: 1.2rem;
+    }
+
+    #app .ziel-description-section {
+        padding: 16px;
+    }
+
+    #app .ziel-card-slider {
+        padding: 10px;
+    }
+
+    #app .ziel-habit-empty {
+        padding: 22px 14px;
+    }
+}

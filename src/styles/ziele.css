@@ -1,0 +1,539 @@
+
+/* =================================
+   ZIELE - HAUPTBEREICH
+================================= */
+
+#app .ziele-heading {
+    width: 100%;
+    max-width: 90%;
+    margin: 0;
+    color: #7952b3;
+    font-size: 1.8rem;
+}
+
+#app .ziele-description {
+    width: 100%;
+    max-width: 90%;
+    margin: -12px 0 5px;
+    color: #6f647c;
+    line-height: 1.5;
+}
+
+/* =================================
+   NEUES ZIEL
+================================= */
+
+#app .ziel-create-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    width: 100%;
+    max-width: 90%;
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    background: linear-gradient(135deg, #f5efff, #eee5ff);
+    border: 1px solid #e4d8f7;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(121, 82, 179, 0.10);
+}
+
+#app .ziel-create-card h2 {
+    margin: 0;
+    color: #7952b3;
+    font-size: 1.05rem;
+}
+
+#app .ziel-create-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+#app #new-ziel-input {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    color: #443653;
+    background-color: #ffffff;
+    border: 1px solid #d8c9ed;
+    border-radius: 8px;
+
+    font: inherit;
+    outline: none;
+}
+
+#app #new-ziel-input:focus {
+    border-color: #7952b3;
+    box-shadow: 0 0 0 3px #e4d8f7;
+}
+
+#app .ziel-add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 48px;
+    height: 48px;
+
+    color: #ffffff;
+    background-color: #7952b3;
+    border: none;
+    border-radius: 8px;
+
+    font-size: 1.7rem;
+    cursor: pointer;
+
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#app .ziel-add-button:hover {
+    background-color: #674399;
+    transform: translateY(-2px);
+}
+
+/* =================================
+   ZIELBEREICH
+================================= */
+
+#app .ziel-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    width: 100%;
+    max-width: 90%;
+}
+
+#app .ziel-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#app .ziel-section-header h2 {
+    margin: 0;
+    color: #443653;
+    font-size: 1.15rem;
+}
+
+#app .ziel-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    box-sizing: border-box;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border-radius: 20px;
+
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* =================================
+   ZIELLISTE
+================================= */
+
+#app .ziel-container {
+    width: 100%;
+}
+
+#app .ziel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+/* Einzelnes Ziel */
+
+#app .ziel-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    background-color: #ffffff;
+    border: 1px solid #e4d8f7;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(121, 82, 179, 0.08);
+
+    transition: box-shadow 0.2s ease,
+                transform 0.2s ease,
+                border-color 0.2s ease;
+}
+
+#app .ziel-item:hover {
+    border-color: #c7b3e6;
+    box-shadow: 0 4px 12px rgba(121, 82, 179, 0.14);
+    transform: translateY(-2px);
+}
+
+/* Klickbarer Bereich */
+
+#app .ziel-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex: 1;
+    min-width: 0;
+    min-height: 52px;
+
+    cursor: pointer;
+    outline: none;
+}
+
+#app .ziel-main:focus-visible {
+    border-radius: 6px;
+    outline: 2px solid #7952b3;
+    outline-offset: 3px;
+}
+
+#app .ziel-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 38px;
+    height: 38px;
+
+    background-color: #f5efff;
+    border-radius: 10px;
+
+    font-size: 1.25rem;
+}
+
+#app .ziel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    flex: 1;
+    min-width: 0;
+}
+
+#app .ziel-title {
+    margin: 0;
+
+    color: #443653;
+    font-size: 0.98rem;
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+}
+
+#app .ziel-list-info {
+    margin: 0;
+
+    color: #9585a8;
+    font-size: 0.78rem;
+
+    overflow-wrap: anywhere;
+}
+
+#app .ziel-arrow {
+    flex-shrink: 0;
+
+    color: #a994c5;
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+/* =================================
+   VERWALTUNG
+================================= */
+
+#app .ziel-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+/* Bestehende Button-Klassen weiterverwenden */
+
+#app .ziel-actions .edit-button,
+#app .ziel-actions .delete-button {
+    width: 32px;
+    height: 32px;
+}
+
+/* =================================
+   LEERER ZUSTAND
+================================= */
+
+#app .ziel-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 35px 20px;
+
+    background-color: #f8f5fc;
+    border: 1px dashed #c7b3e6;
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+#app .ziel-empty-icon {
+    font-size: 2.5rem;
+}
+
+#app .ziel-empty-state h3 {
+    margin: 0;
+    color: #7952b3;
+}
+
+#app .ziel-empty-state p {
+    max-width: 300px;
+    margin: 0;
+
+    color: #9585a8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* =================================
+   DETAILANSICHT
+================================= */
+
+#app .ziel-back-button {
+    align-self: flex-start;
+
+    padding: 9px 14px;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border: 1px solid #e4d8f7;
+    border-radius: 8px;
+
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#app .ziel-back-button:hover {
+    background-color: #e4d8f7;
+}
+
+#app .ziel-detail-container {
+    width: 100%;
+    max-width: 90%;
+    min-height: 200px;
+}
+
+/* =================================
+   BEARBEITEN-DIALOG
+================================= */
+
+.ziel-dialog {
+    width: min(450px, calc(100% - 40px));
+    max-height: 85vh;
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    background-color: #ffffff;
+    border: 1px solid #e4d8f7;
+    border-radius: 14px;
+
+    box-shadow: 0 10px 35px rgba(68, 54, 83, 0.2);
+}
+
+.ziel-dialog::backdrop {
+    background-color: rgba(45, 34, 58, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.ziel-dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ziel-dialog-form h2 {
+    margin: 0;
+    color: #7952b3;
+}
+
+.ziel-dialog-form h3 {
+    margin: 5px 0 0;
+    color: #443653;
+    font-size: 0.95rem;
+}
+
+.ziel-dialog-form > label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    color: #6f647c;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.ziel-dialog-form > label input,
+.ziel-dialog-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 11px;
+
+    color: #443653;
+    background-color: #faf8fd;
+    border: 1px solid #e4d8f7;
+    border-radius: 7px;
+
+    font: inherit;
+    outline: none;
+}
+
+.ziel-dialog-form textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.ziel-dialog-form > label input:focus,
+.ziel-dialog-form textarea:focus {
+    border-color: #7952b3;
+    box-shadow: 0 0 0 3px #eee5ff;
+}
+
+.ziel-list-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.ziel-list-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px;
+
+    color: #443653;
+    background-color: #f8f5fc;
+    border: 1px solid #eee5ff;
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+.ziel-list-option input {
+    width: 17px;
+    height: 17px;
+    accent-color: #7952b3;
+    cursor: pointer;
+}
+
+.ziel-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 8px;
+}
+
+.ziel-dialog-actions button {
+    padding: 10px 15px;
+
+    border: none;
+    border-radius: 7px;
+
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ziel-cancel-button {
+    color: #6f647c;
+    background-color: #f0ecf5;
+}
+
+.ziel-save-button {
+    color: white;
+    background-color: #7952b3;
+}
+
+.ziel-save-button:hover {
+    background-color: #674399;
+}
+
+.ziel-save-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 600px) {
+
+    #app .ziele-heading,
+    #app .ziele-description,
+    #app .ziel-create-card,
+    #app .ziel-section,
+    #app .ziel-detail-container {
+        max-width: 100%;
+    }
+
+    #app .ziel-item {
+        padding: 10px;
+        gap: 4px;
+    }
+
+    #app .ziel-main {
+        gap: 8px;
+    }
+
+    #app .ziel-flag {
+        width: 32px;
+        height: 32px;
+    }
+
+    #app .ziel-title {
+        font-size: 0.9rem;
+    }
+
+    #app .ziel-actions .edit-button,
+    #app .ziel-actions .delete-button {
+        width: 27px;
+        height: 30px;
+    }
+}

@@ -70,3 +70,48 @@ export function cardSliderNavigation(): void {
 
     showCard(currentIndex);
 }
+//ganz obere Funktion kann evtl später weg, falls slider nur noch auf displayZiel
+
+import type { List } from './taskAndListLogik';
+
+export function showCardSliderForZielInContainer(
+    container: HTMLDivElement,
+    zielLists: List[]
+): void {
+
+    container.classList.add('card-slider', 'ziel-card-slider');
+
+    const heading = document.createElement('h2');
+    heading.textContent = 'Meine Listen';
+
+    const leftArrow = document.createElement('button');
+    leftArrow.id = 'previous-card';
+    leftArrow.className = 'card-slider-arrow';
+    leftArrow.textContent = '<';
+    leftArrow.setAttribute('aria-label', 'Vorherige Liste');
+
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'card-container';
+
+    zielLists.forEach(list => {
+        const card = document.createElement('div');
+        card.className = 'slidable-card';
+
+        renderListByIdInContainer(list.id, card, false);
+
+        cardContainer.appendChild(card);
+    });
+
+    const rightArrow = document.createElement('button');
+    rightArrow.id = 'next-card';
+    rightArrow.className = 'card-slider-arrow';
+    rightArrow.textContent = '>';
+    rightArrow.setAttribute('aria-label', 'Nächste Liste');
+
+    container.append(
+        heading,
+        leftArrow,
+        cardContainer,
+        rightArrow
+    );
+}

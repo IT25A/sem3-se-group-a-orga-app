@@ -4,11 +4,12 @@ import { openDB, type IDBPDatabase } from "idb";
 import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
 import type { CalendarEvent } from "../calendar";
+import type { Ziel } from "../displayZiele";
 
 interface AppDatabase {
   "app-state": {
     key: string;
-    value: List[] | Backlog | boolean | CalendarEvent[];
+    value: List[] | Backlog | boolean | CalendarEvent[] | Ziel[];
   };
 }
 
@@ -39,7 +40,8 @@ function getDatabase() {
 export async function saveData(
   lists: List[],
   backlog: Backlog,
-  eventlog:CalendarEvent[]
+  eventlog:CalendarEvent[],
+  ziellog:Ziel[],
 ): Promise<void> {
   const db = await getDatabase();
 
@@ -50,6 +52,7 @@ export async function saveData(
     tx.store.put(backlog, "backlog"),
     tx.store.put(true, "hasInitialized"),
     tx.store.put(eventlog, "eventlog"),
+    tx.store.put(ziellog, "ziellog"),
   ]);
   await tx.done;
 }
@@ -74,6 +77,11 @@ export async function saveEventlog(eventlog: CalendarEvent[]): Promise<void> {
   await db.put("app-state", eventlog, "eventlog");
 }
 
+export async function saveZiellog(ziellog: Ziel[]): Promise<void> {
+  const db = await getDatabase();
+  await db.put("app-state", ziellog, "ziellog");
+}
+
 // --------------------------------
 // DATEN LADEN
 // --------------------------------
@@ -84,15 +92,18 @@ export async function loadData(): Promise<{
   backlog: Backlog | undefined;
   hasInitialized: boolean | undefined;
   eventlog: CalendarEvent[] | undefined;
+  ziellog: Ziel[] |undefined;
 }> {
   const db = await getDatabase();
 
   // Alle drei Einträge parallel aus der Datenbank laden.
-  const [lists, backlog, hasInitialized, eventlog] = await Promise.all([
+  const [lists, backlog, hasInitialized, eventlog, ziellog] = await Promise.all([
     db.get("app-state", "lists"),
     db.get("app-state", "backlog"),
     db.get("app-state", "hasInitialized"),
     db.get("app-state", "eventlog"),
+    db.get("app-state", "ziellog"),
+
   ]);
 
   return {
@@ -100,6 +111,7 @@ export async function loadData(): Promise<{
     backlog: backlog as Backlog | undefined,
     hasInitialized: hasInitialized as boolean | undefined,
     eventlog: eventlog as CalendarEvent[] | undefined,
+    ziellog: ziellog as Ziel[] | undefined,
   };
 }
 
@@ -122,6 +134,12 @@ export async function loadEventlog(): Promise<CalendarEvent[] | undefined> {
   const db = await getDatabase();
 
   return db.get("app-state", "eventlog") as Promise<CalendarEvent[] | undefined>;
+}
+
+// Nur Eventlog laden
+export async function loadZiellog(): Promise<Ziel[] | undefined> {
+  const db = await getDatabase();
+  return db.get("app-state", "ziellog") as Promise<Ziel[] | undefined>;
 }
 
 // Nur den Initialisierungsmarker laden.
