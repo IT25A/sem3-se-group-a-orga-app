@@ -97,6 +97,7 @@ export async function saveEventlog(eventlog: CalendarEvent[]): Promise<void> {
 export async function saveZiellog(ziellog: Ziel[]): Promise<void> {
   const db = await getDatabase();
   await db.put("app-state", ziellog, "ziellog");
+}
 // Habits speichern
 export async function saveHabits(habits: Habit[]): Promise<void> {
   const db = await getDatabase();
@@ -185,7 +186,9 @@ export async function loadEventlog(): Promise<CalendarEvent[] | undefined> {
 export async function loadZiellog(): Promise<Ziel[] | undefined> {
   const db = await getDatabase();
   return db.get("app-state", "ziellog") as Promise<Ziel[] | undefined>;
+}
 // Nur Habits laden
+
 export async function loadHabits(): Promise<Habit[] | undefined> {
   const db = await getDatabase();
   return db.get("app-state", "habits") as Promise<Habit[] | undefined>;
