@@ -17,6 +17,7 @@ import { displayListPage, renderListByIdInContainer } from './displayEditingList
 import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
 import { renderHabitsPage } from './habits';
+import { displayZielePage } from './displayZiele.ts';
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -55,6 +56,10 @@ async function main() {
     document.getElementById("planung-link")?.addEventListener("click", () =>{
         currentPage = "planung-page";
         displayPlanungsPage()
+    })
+    document.getElementById("ziele-link")?.addEventListener("click", () =>{
+        currentPage = "ziele-page";
+        displayZielePage()
     })
    
 

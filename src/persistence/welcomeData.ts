@@ -1,10 +1,12 @@
 
 import type { List, Backlog, Task } from "../taskAndListLogik";
+import type { Ziel } from "../displayZiele";
 
 
 export function createWelcomeData(): {
   lists: List[];
   backlog: Backlog;
+  ziellog: Ziel[];
 } {
 
   const welcomeListId = crypto.randomUUID();
@@ -83,8 +85,19 @@ export function createWelcomeData(): {
     tasks: tasks,
   };
 
+  const welcomeZiel: Ziel = {
+    id: 'welcomeZielId',
+    title: "Willkommen!",
+    description: "Lerne die wichtigsten Funktionen deiner Aufgaben-App kennen.",
+    createdAt: new Date(),
+    lists: [welcomeList.id],
+    habits: [],
+  };
+  
+
   return {
     lists: [welcomeList],
     backlog: backlog,
+    ziellog:[welcomeZiel]
   };
 }
