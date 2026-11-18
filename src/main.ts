@@ -1,6 +1,6 @@
 import './style.css'
 
-import { renderBacklogPage } from './backlog';
+import {benachrichtige, renderBacklogPage} from './backlog';
 import 'fullcalendar/skeleton.css'; // ALWAYS NEED SKELETON
 import 'fullcalendar/themes/monarch/theme.css'; // YOUR THEME
 import 'fullcalendar/themes/monarch/palettes/purple.css';
@@ -143,8 +143,9 @@ export function renderHomePage(): void {
         <form method="dialog">
             <button class="btnbenachrichtigung">OK</button>
         </form>
-    </dialog>
+      </dialog>
     `;
+
     app.append(generalContent)
 
     const listenBereich = document.createElement('div');
@@ -179,4 +180,5 @@ export function renderHomePage(): void {
     app.append(calenderSection);
 
     showCalender(calenderElement);
+    benachrichtige();
 }

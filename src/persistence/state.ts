@@ -156,7 +156,7 @@ export async function updateZiellog(
 // Eventlog LADEN
 // --------------------------------
 
-export async function getEventlog(): Promise<CalendarEvent[]|undefined> {
+export async function getEventlog(): Promise<CalendarEvent[] | undefined> {
   return await loadEventlog()
 }
 
@@ -216,7 +216,7 @@ export function getCalendarEvents() {
 
       // Fälligkeitsdatum
       if (task.dueDate instanceof Date &&
-          !Number.isNaN(task.dueDate.getTime())) {
+        !Number.isNaN(task.dueDate.getTime())) {
         events.push({
           id: `task-${task.id}-deadline`,
           title: task.title,
