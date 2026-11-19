@@ -21,8 +21,6 @@ export function renderBacklogPage(): void {
     </dialog>
   `;
   renderBacklogInContainer(app);
-
-
 }
 
 export function renderBacklogInContainer(container: HTMLDivElement): void {
