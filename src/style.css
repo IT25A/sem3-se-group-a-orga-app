@@ -85,28 +85,33 @@ main,
   flex: 1;
   box-sizing: border-box;
 }
+/* 1. Container: Immer rechts auf der Seite, ohne Verformung */
 .benachrichtigung-optionen {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-
-  width: 90%;
-  margin: 24px auto 32px;
-  box-sizing: border-box;
-}
-
-/* Einzelne Karte */
-.benachrichtigung-option {
-  display: flex;
+  flex-direction: row;
+  justify-content: flex-end; /* Schiebt den Inhalt ganz nach rechts */
   align-items: center;
   gap: 12px;
 
-  width: 100%;
-  max-width: 400px;
-  min-height: 64px;
+  width: 100%;               /* Nutzt die volle Breite statt 10% */
+  padding: 20px;
+  margin: 24px 0 32px 0;     /* Kein 'auto', damit es nicht zentriert wird */
   box-sizing: border-box;
+}
+
+/* 2. Einzelne Karte: Feste Form, schrumpft nicht bei kleinen Bildschirmen */
+.benachrichtigung-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  width: auto;               /* Passt sich sauber an Checkbox + Emoji an */
+  flex-shrink: 0;            /* Verhindert das Quetschen/Verformen */
+  min-height: 64px;
   padding: 15px 20px;
+  box-sizing: border-box;
 
   background: linear-gradient(135deg, #ffffff, #f3edff);
   color: #594378;
@@ -115,17 +120,36 @@ main,
 
   font-size: 14px;
   font-weight: 600;
-  line-height: 1.5;
   cursor: pointer;
 
   box-shadow: 0 4px 12px rgba(121, 79, 181, 0.08);
-  transition:
-          background 0.2s,
-          border-color 0.2s,
-          box-shadow 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Beim Darüberfahren */
+/* 3. Hover-Text: Erscheint sauber darunter, rechtsbündig (ragt nicht aus dem Bild) */
+.hover-text {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);     /* 8px unterhalb der Karte */
+  right: 0;                  /* Schließt bündig mit der rechten Kante ab */
+  z-index: 10;               /* Liegt immer über anderen Elementen */
+
+  background-color: #8b7a9e;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-family: sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Zeigt den Text beim Hover an */
+.benachrichtigung-option:hover .hover-text {
+  display: block;
+}
+
+/* Beim Darüberfahren über die Karte */
 .benachrichtigung-option:hover {
   border-color: #a47bd7;
   box-shadow: 0 6px 18px rgba(121, 79, 181, 0.16);
@@ -161,3 +185,27 @@ main,
   filter: drop-shadow(0 2px 3px rgba(121, 79, 181, 0.2));
 }
 
+/* Neu: Stellt Überschrift (links) und Optionen (rechts) auf dieselbe Ebene */
+.kopfzeile {
+  display: flex;
+  justify-content: space-between; /* Schiebt Titel nach links, Buttons nach rechts */
+  align-items: center;            /* Zentriert beide vertikal auf exakt derselben Linie */
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.kopfzeile h1 {
+  margin: 0; /* Entfernt den Standard-Außenabstand der Überschrift für exakte Ausrichtung */
+}
+
+/* Angepasst: Nimmt nur noch so viel Platz ein wie nötig */
+.benachrichtigung-optionen {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: auto;       /* Nicht mehr 100%, da es jetzt neben der Überschrift steht */
+  margin: 0;         /* Abstände übernimmt jetzt .kopfzeile */
+  padding: 0;
+}

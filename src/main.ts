@@ -131,27 +131,30 @@ export function renderHomePage(): void {
     generalContent.className = 'app';
 
     generalContent.innerHTML = `
-    <h1>Meine OrgaAPP</h1>
-      <dialog id="aufgaben-popup">
-        <p id="popup-text"></p>
+  <header class="kopfzeile">
+  <h1>Meine OrgaAPP</h1>
 
-        <form method="dialog">
-            <button class="btnbenachrichtigung">OK</button>
-        </form>
-      </dialog>
-    <div class="benachrichtigung-optionen">
-        <label class="benachrichtigung-option">
-            <input type="checkbox" id="benachrichtigung-stumm">
-                <span class="option-emoji" aria-hidden="true">🔕</span>
-                <span>Benachrichtigungen ausschalten</span>
-        </label>
+  <div class="benachrichtigung-optionen">
+    <label class="benachrichtigung-option">
+      <input type="checkbox" id="benachrichtigung-stumm">
+      <span class="option-emoji" aria-hidden="true">🔕</span>
+      <span class="hover-text">Benachrichtigungen ausschalten</span>
+    </label>
 
-        <label class="benachrichtigung-option">
-            <input type="checkbox" id="benachrichtigung-ohneTon">
-                 <span class="option-emoji" aria-hidden="true">🔇</span>
-                 <span>Benachrichtigungen ohne Ton</span>
-        </label>
-</div>
+    <label class="benachrichtigung-option">
+      <input type="checkbox" id="benachrichtigung-ohneTon">
+      <span class="option-emoji" aria-hidden="true">🔇</span>
+      <span class="hover-text">Benachrichtigungen ohne Ton</span>
+    </label>
+  </div>
+</header>
+
+<dialog id="aufgaben-popup">
+  <p id="popup-text"></p>
+  <form method="dialog">
+    <button class="btnbenachrichtigung">OK</button>
+  </form>
+</dialog>
     `;
 
     app.append(generalContent)
