@@ -98,7 +98,7 @@ function renderZieleOverview(app: HTMLDivElement): void {
     sectionHeader.className = 'ziel-section-header';
 
     const listHeading = document.createElement('h2');
-    listHeading.textContent = 'Deine Ziele';
+    listHeading.textContent = 'Meine Ziele';
 
     const zielCount = document.createElement('span');
     zielCount.className = 'ziel-count';
@@ -220,6 +220,7 @@ function renderZielListInContainer(
         }
 
         content.append(title, listInfo);
+        // Verwaltungsbuttons > wird eigentlich nicht gebraucht momentan... Hab ich aber erstmal von den Aufgaben übernommen falls wir ihn noch brauchen... Außerdem weiß man dann das man noch mehr anzeigen kann
 
         const arrow = document.createElement('span');
         arrow.className = 'ziel-arrow';
@@ -227,7 +228,6 @@ function renderZielListInContainer(
 
         zielMain.append(flag, content, arrow);
 
-        // Verwaltungsbuttons > wird eigentlich nicht gebraucht momentan... Hab ich aber erstmal von den Aufgaben übernommen falls wir ihn noch brauchen... Außerdem weiß man dann das man noch mehr anzeigen kann
         const actions = document.createElement('div');
         actions.className = 'ziel-actions';
 

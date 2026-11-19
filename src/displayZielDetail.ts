@@ -136,7 +136,7 @@ function createZielHeader(
     const editButton = document.createElement('button');
     editButton.type = 'button';
     editButton.className = 'ziel-detail-edit-button';
-    editButton.textContent = '✏️ Ziel bearbeiten';
+    editButton.textContent = '✏️';
 
     editButton.addEventListener('click', () => {
         onEdit(ziel, () => {

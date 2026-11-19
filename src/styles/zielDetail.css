@@ -65,6 +65,30 @@
     box-shadow: 0 3px 10px rgba(121, 82, 179, 0.10);
 }
 
+#app .ziel-detail-header .ziel-detail-edit-button {
+    margin-left: auto;
+    margin-bottom: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    filter: hue-rotate(210deg);
+
+    background-color: transparent;
+    border: none;
+
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
 #app .ziel-detail-flag {
     display: flex;
     align-items: center;
