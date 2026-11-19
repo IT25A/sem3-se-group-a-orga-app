@@ -1,14 +1,6 @@
 import {lists, backlog, eventlog, updateAppData, ziellog} from './persistence/state';
 import { refreshCalendar } from './calendar';
 import { saveData, saveEventlog } from './persistence/storage';
-//export let lists: List[] = []
-/*export let backlog: Backlog = {
-  id: "backlog",
-  title: 'Backlog',
-  description: 'This is the backlog list',
-  createdAt: new Date(),
-  tasks: []
-};*/
 
 export type Backlog = {
   id: string;

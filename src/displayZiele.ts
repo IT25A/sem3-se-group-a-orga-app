@@ -7,7 +7,7 @@ import { lists, ziellog, updateZiellog } from './persistence/state';
 import { habitState } from './persistence/habitsState';
 
 // --------------------------------
-// DATENTYP
+// DATENTYP 
 // --------------------------------
 
 export type ZielHabitSettings = {
@@ -49,7 +49,7 @@ export function displayZielePage(zielId?: string): void {
 }
 
 // --------------------------------
-// ÜBERSICHT
+// ÜBERSICHT (Liste mit Zielen)
 // --------------------------------
 
 function renderZieleOverview(app: HTMLDivElement): void {
@@ -90,7 +90,7 @@ function renderZieleOverview(app: HTMLDivElement): void {
     createForm.append(newZielInput, addZielBtn);
     createCard.append(createTitle, createForm);
 
-    // Zielliste
+    // Zielliste erzeugen
     const zielSection = document.createElement('section');
     zielSection.className = 'ziel-section';
 
@@ -227,7 +227,7 @@ function renderZielListInContainer(
 
         zielMain.append(flag, content, arrow);
 
-        // Verwaltungsbuttons
+        // Verwaltungsbuttons > wird eigentlich nicht gebraucht momentan... Hab ich aber erstmal von den Aufgaben übernommen falls wir ihn noch brauchen... Außerdem weiß man dann das man noch mehr anzeigen kann
         const actions = document.createElement('div');
         actions.className = 'ziel-actions';
 
