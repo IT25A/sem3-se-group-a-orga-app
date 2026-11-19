@@ -38,6 +38,22 @@ export function refreshHomeList(listId: string, sourceElement: HTMLElement): voi
     renderListByIdInContainer(idToRender, appContainer, true);
   }
 }
+export function refreshZielCardSliderList(listId: string, sourceElement: HTMLElement): void {
+  const sliderCard = sourceElement.closest<HTMLDivElement>('.slidable-card');
+  const listStillExists = lists.some(list => list.id === listId);
+
+  if (sliderCard) {
+    if (listStillExists) {
+      renderListByIdInContainer(listId, sliderCard, true);
+    } else {
+      sliderCard.remove();
+      destroySortables();
+      initializeSortables();
+    }
+    return;
+  }
+}
+
 function renderLists(): void {
   const container = document.querySelector<HTMLDivElement>('#app',);
   if (!container) {
@@ -223,8 +239,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               displayPlanungsPage();
               break;
             case "ziele-page":
-              refreshZielDetailPage();
-              break;
+              refreshZielCardSliderList(listId, taskItem);              break;
             default:
               break;
           }
