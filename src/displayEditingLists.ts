@@ -8,6 +8,7 @@ import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
 import { displayPlanungsPage } from './wochePlanen';
+import { refreshZielDetailPage } from './displayZielDetail';
 
 
 export function displayListPage(): void {
@@ -106,7 +107,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
         `Aufgabe ${taskId} existiert nicht mehr im Backlog.`
     );
     return;
-}
+  }
   const taskItem = document.createElement('li');
     taskItem.id = taskId;
     taskItem.classList.add('task-item');
@@ -165,6 +166,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
             case "planung-page":
               displayPlanungsPage();
               break;
+            case "ziele-page":
+              refreshZielDetailPage();
+              break;
             default:
               break;
           }
@@ -193,6 +197,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
             case "planung-page":
               displayPlanungsPage();
               break;
+            case "ziele-page":
+              refreshZielDetailPage();
+              break;
             default:
               break;
           }
@@ -214,6 +221,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               break;
             case "planung-page":
               displayPlanungsPage();
+              break;
+            case "ziele-page":
+              refreshZielDetailPage();
               break;
             default:
               break;
@@ -346,6 +356,11 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                 case "list-page":
                     renderLists();
                     break;
+                case "ziele-page":
+                    refreshZielDetailPage();
+                    break;
+                default:
+                  break;
             }
         }
     );
@@ -360,6 +375,9 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         case "list-page":
           renderLists();
           break;
+        case "ziele-page":
+              refreshZielDetailPage();
+              break;
         default:
           break;
       }
@@ -379,6 +397,9 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         case "list-page":
           renderLists();
           break;
+        case "ziele-page":
+              refreshZielDetailPage();
+              break;
         default:
           break;
       }

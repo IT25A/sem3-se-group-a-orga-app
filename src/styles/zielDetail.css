@@ -272,6 +272,7 @@
 
 #app .ziel-habit-container {
     width: 100%;
+
 }
 
 #app .ziel-habit-empty {
@@ -352,41 +353,52 @@
     font-size: 1.3rem;
 }
 
-/* ==========================================
-   MOBILE
-========================================== */
 
-@media (max-width: 600px) {
+.ziel-habit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    gap: 16px;
+    margin-top: 20px;
+}
 
-    #app .ziel-detail-page {
-        max-width: 100%;
-        gap: 17px;
-    }
+.ziel-habit-card {
+    background: #fff;
+    border: 1px solid #e4d8f7;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(68, 54, 83, 0.08);
+}
 
-    #app .ziel-detail-header {
-        gap: 12px;
-        padding: 16px;
-    }
+.ziel-habit-name {
+    color: #443653;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
 
-    #app .ziel-detail-flag {
-        width: 48px;
-        height: 48px;
-        font-size: 1.6rem;
-    }
+.ziel-habit-score {
+    color: #7952b3;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
 
-    #app .ziel-detail-heading-content h1 {
-        font-size: 1.2rem;
-    }
+.ziel-habit-progress-track {
+    height: 9px;
+    background: #eee5ff;
+    border-radius: 20px;
+    overflow: hidden;
+}
 
-    #app .ziel-description-section {
-        padding: 16px;
-    }
+.ziel-habit-progress-bar {
+    height: 100%;
+    background: #7952b3;
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
 
-    #app .ziel-card-slider {
-        padding: 10px;
-    }
-
-    #app .ziel-habit-empty {
-        padding: 22px 14px;
-    }
+.ziel-habit-progress-text {
+    color: #6f647c;
+    font-size: 0.85rem;
+    margin-top: 8px;
 }

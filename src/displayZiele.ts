@@ -4,10 +4,16 @@ import { displayZielDetailPage } from './displayZielDetail';
 
 import type { List } from './taskAndListLogik';
 import { lists, ziellog, updateZiellog } from './persistence/state';
+import { habitState } from './persistence/habitsState';
 
 // --------------------------------
 // DATENTYP
 // --------------------------------
+
+export type ZielHabitSettings = {
+    target: number;
+    endDate?: string;
+};
 
 export type Ziel = {
     id: string;
@@ -16,6 +22,7 @@ export type Ziel = {
     createdAt: Date;
     lists: string[];
     habits: string[];
+    habitGoals?: Record<string, ZielHabitSettings>;
 };
 
 // --------------------------------
@@ -30,9 +37,13 @@ export function displayZielePage(zielId?: string): void {
     app.replaceChildren();
 
     if (zielId) {
-    displayZielDetailPage(zielId, () => displayZielePage());
-    return;
-}
+        displayZielDetailPage(
+            zielId,
+            () => displayZielePage(),
+            (ziel, onSaved) => showZielDialog(ziel, onSaved)
+        );
+        return;
+    }
 
     renderZieleOverview(app);
 }
@@ -281,7 +292,11 @@ function renderZielListInContainer(
 // ZIEL BEARBEITEN
 // --------------------------------
 
-function showZielDialog(ziel: Ziel): void {
+
+function showZielDialog(
+    ziel: Ziel,
+    onSaved: () => void = () => displayZielePage()
+): void {
 
     const dialog = document.createElement('dialog');
     dialog.className = 'ziel-dialog';
@@ -292,7 +307,11 @@ function showZielDialog(ziel: Ziel): void {
     const heading = document.createElement('h2');
     heading.textContent = 'Ziel bearbeiten';
 
-    // Titel
+
+    // ================================================
+    // TITEL
+    // ================================================
+
     const titleLabel = document.createElement('label');
     titleLabel.textContent = 'Ziel';
 
@@ -304,17 +323,26 @@ function showZielDialog(ziel: Ziel): void {
 
     titleLabel.appendChild(titleInput);
 
-    // Beschreibung
+
+    // ================================================
+    // BESCHREIBUNG
+    // ================================================
+
     const descriptionLabel = document.createElement('label');
     descriptionLabel.textContent = 'Beschreibung';
 
     const descriptionInput = document.createElement('textarea');
     descriptionInput.value = ziel.description ?? '';
-    descriptionInput.placeholder = 'Was möchtest du mit diesem Ziel erreichen?';
+    descriptionInput.placeholder =
+        'Was möchtest du mit diesem Ziel erreichen?';
 
     descriptionLabel.appendChild(descriptionInput);
 
-    // Listen zuordnen
+
+    // ================================================
+    // LISTEN ZUORDNEN
+    // ================================================
+
     const listHeading = document.createElement('h3');
     listHeading.textContent = 'Zugeordnete Listen';
 
@@ -344,7 +372,120 @@ function showZielDialog(ziel: Ziel): void {
         listContainer.appendChild(label);
     });
 
-    // Buttons
+
+    // ================================================
+    // HABITS ZUORDNEN
+    // ================================================
+
+    const habitHeading = document.createElement('h3');
+    habitHeading.textContent = 'Zugeordnete Habits';
+
+    const habitDescription = document.createElement('p');
+    habitDescription.className = 'ziel-dialog-habit-description';
+    habitDescription.textContent =
+        'Wähle deine Habits aus und lege für dieses Ziel eigene Fortschrittswerte fest.';
+
+    const habitContainer = document.createElement('div');
+    habitContainer.className = 'ziel-habit-selection';
+
+    const habitInputs: HTMLInputElement[] = [];
+
+    const habitTargetInputs = new Map<
+        string,
+        HTMLInputElement
+    >();
+
+    const habitEndDateInputs = new Map<
+        string,
+        HTMLInputElement
+    >();
+
+    if (habitState.habits.length === 0) {
+
+        const noHabits = document.createElement('p');
+        noHabits.textContent =
+            'Du hast noch keine Habits angelegt.';
+
+        habitContainer.appendChild(noHabits);
+    }
+
+    habitState.habits.forEach(habit => {
+
+        const settings = ziel.habitGoals?.[habit.id];
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'ziel-habit-option';
+
+        // Checkbox
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = habit.id;
+        checkbox.checked = (ziel.habits ?? []).includes(habit.id);
+
+        // Habit-Name
+        const name = document.createElement('span');
+        name.className = 'ziel-habit-option-name';
+        name.textContent = habit.name;
+
+        // Zielwert
+        const targetLabel = document.createElement('label');
+        targetLabel.className = 'ziel-habit-input-label';
+        targetLabel.textContent = 'Anzahl';
+
+        const targetInput = document.createElement('input');
+        targetInput.type = 'number';
+        targetInput.min = '1';
+        targetInput.step = '1';
+        targetInput.placeholder = 'z. B. 50';
+
+        if (settings?.target !== undefined) {
+            targetInput.value = String(settings.target);
+        }
+
+        targetLabel.appendChild(targetInput);
+
+        // Optionales Enddatum
+        const dateLabel = document.createElement('label');
+        dateLabel.className = 'ziel-habit-input-label';
+        dateLabel.textContent = 'Enddatum (optional)';
+
+        const dateInput = document.createElement('input');
+        dateInput.type = 'date';
+
+        if (settings?.endDate) {
+            dateInput.value = settings.endDate;
+        }
+
+        dateLabel.appendChild(dateInput);
+
+        // Eingabefelder nur bei ausgewähltem Habit aktivieren
+        targetInput.disabled = !checkbox.checked;
+        dateInput.disabled = !checkbox.checked;
+
+        checkbox.addEventListener('change', () => {
+            targetInput.disabled = !checkbox.checked;
+            dateInput.disabled = !checkbox.checked;
+        });
+
+        habitInputs.push(checkbox);
+        habitTargetInputs.set(habit.id, targetInput);
+        habitEndDateInputs.set(habit.id, dateInput);
+
+        wrapper.append(
+            checkbox,
+            name,
+            targetLabel,
+            dateLabel
+        );
+
+        habitContainer.appendChild(wrapper);
+    });
+
+
+    // ================================================
+    // BUTTONS
+    // ================================================
+
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'ziel-dialog-actions';
 
@@ -360,35 +501,107 @@ function showZielDialog(ziel: Ziel): void {
 
     buttonContainer.append(cancelButton, saveButton);
 
+
+    // ================================================
+    // FORM ZUSAMMENBAUEN
+    // ================================================
+
     form.append(
         heading,
         titleLabel,
         descriptionLabel,
         listHeading,
         listContainer,
+        habitHeading,
+        habitDescription,
+        habitContainer,
         buttonContainer
     );
 
     dialog.appendChild(form);
     document.body.appendChild(dialog);
 
-    cancelButton.addEventListener('click', () => dialog.close());
 
-    dialog.addEventListener('close', () => dialog.remove());
+    // ================================================
+    // ABBRECHEN
+    // ================================================
+
+    cancelButton.addEventListener('click', () => {
+        dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+        dialog.remove();
+    });
+
+
+    // ================================================
+    // SPEICHERN
+    // ================================================
 
     form.addEventListener('submit', async event => {
+
         event.preventDefault();
 
         const newTitle = titleInput.value.trim();
 
         if (!newTitle) return;
 
+        // Listen
         const selectedLists = Array.from(
             listContainer.querySelectorAll<HTMLInputElement>(
                 'input[type="checkbox"]:checked'
             )
         ).map(checkbox => checkbox.value);
 
+
+        // Habits
+        const selectedHabits = habitInputs
+            .filter(input => input.checked)
+            .map(input => input.value);
+
+        const habitGoals: NonNullable<Ziel['habitGoals']> = {};
+
+        for (const habitId of selectedHabits) {
+
+            const targetInput = habitTargetInputs.get(habitId);
+            const dateInput = habitEndDateInputs.get(habitId);
+
+            const targetValue = targetInput?.value.trim() ?? '';
+            const endDateValue = dateInput?.value ?? '';
+
+            // Ohne Zielwert wird für dieses Habit kein Fortschrittsziel gespeichert.
+            if (targetValue === '') continue;
+
+            const target = Number(targetValue);
+
+            if (
+                !Number.isInteger(target) ||
+                target <= 0
+            ) {
+                targetInput?.setCustomValidity(
+                    'Bitte gib eine positive ganze Zahl ein.'
+                );
+                targetInput?.reportValidity();
+                return;
+            }
+
+            const settings: {
+                target: number;
+                endDate?: string;
+            } = {
+                target
+            };
+
+            if (endDateValue) {
+                settings.endDate = endDateValue;
+            }
+
+            habitGoals[habitId] = settings;
+        }
+
+
+        // Alle Ziele aktualisieren
         const updatedZiele = (ziellog ?? []).map(entry => {
 
             if (entry.id !== ziel.id) return entry;
@@ -397,7 +610,9 @@ function showZielDialog(ziel: Ziel): void {
                 ...entry,
                 title: newTitle,
                 description: descriptionInput.value.trim(),
-                lists: selectedLists
+                lists: selectedLists,
+                habits: selectedHabits,
+                habitGoals
             };
         });
 
@@ -405,12 +620,26 @@ function showZielDialog(ziel: Ziel): void {
 
         try {
             await updateZiellog(updatedZiele);
+
             dialog.close();
-            displayZielePage();
+            onSaved();
+
         } catch (error) {
-            console.error('Ziel konnte nicht gespeichert werden:', error);
+            console.error(
+                'Ziel konnte nicht gespeichert werden:',
+                error
+            );
+
             saveButton.disabled = false;
         }
+    });
+
+
+    // Validierung nach Änderungen wieder zurücksetzen
+    habitTargetInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            input.setCustomValidity('');
+        });
     });
 
     dialog.showModal();

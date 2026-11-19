@@ -1,28 +1,41 @@
 
 import './styles/zielDetail.css';
+
 import { cardSliderNavigation } from './cardSlider';
+import { showCardSliderForZielInContainer } from './cardSlider';
 
 import type { Ziel } from './displayZiele';
 import type { List } from './taskAndListLogik';
+
+import { habitState } from './persistence/habitsState';
 
 import {
     ziellog,
     lists
 } from './persistence/state';
 
-import {
-    showCardSliderForZielInContainer
-} from './cardSlider';
-
 
 // ================================================
 // ZIEL DETAILSEITE
 // ================================================
 
+let currentZielDetail: {
+    zielId: string;
+    onBack: () => void;
+    onEdit: (ziel: Ziel, onSaved: () => void) => void;
+} | null = null;
+
 export function displayZielDetailPage(
     zielId: string,
-    onBack: () => void
+    onBack: () => void,
+    onEdit: (ziel: Ziel, onSaved: () => void) => void
 ): void {
+
+    currentZielDetail = {
+        zielId,
+        onBack,
+        onEdit
+    };
 
     const app = document.getElementById('app') as HTMLDivElement | null;
 
@@ -39,23 +52,13 @@ export function displayZielDetailPage(
 
     app.replaceChildren();
 
-    // Hauptcontainer
     const page = document.createElement('div');
     page.className = 'ziel-detail-page';
 
-    // Navigation
     const navigation = createNavigation(onBack);
-
-    // Zielkopf
-    const header = createZielHeader(ziel);
-
-    // Beschreibung
+    const header = createZielHeader(ziel, onEdit, onBack);
     const description = createDescriptionSection(ziel);
-
-    // Zugeordnete Listen
     const listSection = createListSection(ziel);
-
-    // Habits
     const habitSection = createHabitSection(ziel);
 
     page.append(
@@ -67,6 +70,7 @@ export function displayZielDetailPage(
     );
 
     app.appendChild(page);
+
     cardSliderNavigation();
 }
 
@@ -96,7 +100,11 @@ function createNavigation(onBack: () => void): HTMLElement {
 // ZIELKOPF
 // ================================================
 
-function createZielHeader(ziel: Ziel): HTMLElement {
+function createZielHeader(
+    ziel: Ziel,
+    onEdit: (ziel: Ziel, onSaved: () => void) => void,
+    onBack: () => void
+): HTMLElement {
 
     const header = document.createElement('section');
     header.className = 'ziel-detail-header';
@@ -120,10 +128,23 @@ function createZielHeader(ziel: Ziel): HTMLElement {
 
     const date = new Date(ziel.createdAt);
 
-    createdAt.textContent = `Erstellt am ${date.toLocaleDateString('de-DE')}`;
+    createdAt.textContent =
+        `Erstellt am ${date.toLocaleDateString('de-DE')}`;
 
     content.append(eyebrow, title, createdAt);
-    header.append(flag, content);
+
+    const editButton = document.createElement('button');
+    editButton.type = 'button';
+    editButton.className = 'ziel-detail-edit-button';
+    editButton.textContent = '✏️ Ziel bearbeiten';
+
+    editButton.addEventListener('click', () => {
+        onEdit(ziel, () => {
+            displayZielDetailPage(ziel.id, onBack, onEdit);
+        });
+    });
+
+    header.append(flag, content, editButton);
 
     return header;
 }
@@ -145,7 +166,7 @@ function createDescriptionSection(ziel: Ziel): HTMLElement {
 
     description.textContent = ziel.description?.trim()
         ? ziel.description
-        : 'Hier kannst du später deine Motivation und deine Gedanken zu diesem Ziel festhalten.';
+        : 'Hier kannst du deine Motivation und deine Gedanken zu diesem Ziel festhalten.';
 
     if (!ziel.description?.trim()) {
         description.classList.add('ziel-description-placeholder');
@@ -178,7 +199,8 @@ function createListSection(ziel: Ziel): HTMLElement {
 
     const count = document.createElement('span');
     count.className = 'ziel-detail-count';
-    count.textContent = `${assignedLists.length} ${assignedLists.length === 1 ? 'Liste' : 'Listen'}`;
+    count.textContent =
+        `${assignedLists.length} ${assignedLists.length === 1 ? 'Liste' : 'Listen'}`;
 
     header.append(heading, count);
 
@@ -222,6 +244,16 @@ function createHabitSection(ziel: Ziel): HTMLElement {
     const section = document.createElement('section');
     section.className = 'ziel-habits-section';
 
+    // Zugeordnete Habits anhand ihrer IDs suchen
+    const assignedHabits = (ziel.habits ?? [])
+        .map(habitId =>
+            habitState.habits.find(habit => habit.id === habitId)
+        )
+        .filter(
+            (habit): habit is typeof habitState.habits[number] =>
+                habit !== undefined
+        );
+
     const header = document.createElement('div');
     header.className = 'ziel-detail-section-header';
 
@@ -230,50 +262,142 @@ function createHabitSection(ziel: Ziel): HTMLElement {
 
     const count = document.createElement('span');
     count.className = 'ziel-detail-count';
-    count.textContent = `${(ziel.habits ?? []).length} Habits`;
+
+    count.textContent =
+        `${assignedHabits.length} ${
+            assignedHabits.length === 1 ? 'Habit' : 'Habits'
+        }`;
 
     header.append(heading, count);
 
-    // Vorbereiteter Habit-Bereich
     const habitContainer = document.createElement('div');
-    habitContainer.className = 'ziel-habit-container';
+    habitContainer.className = 'ziel-habit-grid';
 
-    const emptyState = document.createElement('div');
-    emptyState.className = 'ziel-habit-empty';
+    if (assignedHabits.length === 0) {
 
-    const icon = document.createElement('div');
-    icon.className = 'ziel-habit-icon';
-    icon.textContent = '🔥';
+        const emptyState = document.createElement('div');
+        emptyState.className = 'ziel-habit-empty';
 
-    const title = document.createElement('h3');
-    title.textContent = 'Deine Gewohnheiten';
+        const icon = document.createElement('div');
+        icon.className = 'ziel-habit-icon';
+        icon.textContent = '🔥';
 
-    const description = document.createElement('p');
-    description.textContent =
-        'Hier erscheinen später deine zugeordneten Habits und ihre Scores.';
+        const title = document.createElement('h3');
+        title.textContent = 'Noch keine Habits zugeordnet';
 
-    // Platzhalter für späteren Gesamtscore
-    const score = document.createElement('div');
-    score.className = 'ziel-habit-total-score';
+        const description = document.createElement('p');
+        description.textContent =
+            'Bearbeite dein Ziel, um passende Gewohnheiten hinzuzufügen.';
 
-    const scoreLabel = document.createElement('span');
-    scoreLabel.textContent = 'Gesamtscore';
+        emptyState.append(icon, title, description);
+        habitContainer.appendChild(emptyState);
 
-    const scoreValue = document.createElement('strong');
-    scoreValue.textContent = '—';
+    } else {
 
-    score.append(scoreLabel, scoreValue);
+        assignedHabits.forEach(habit => {
 
-    emptyState.append(
-        icon,
-        title,
-        description,
-        score
-    );
+            const settings = ziel.habitGoals?.[habit.id];
+            const target = settings?.target;
+            const currentCount = Math.max(0, habit.count);
 
-    habitContainer.appendChild(emptyState);
+            const card = document.createElement('article');
+            card.className = 'ziel-habit-card';
+
+            // Habit-Name
+            const name = document.createElement('h3');
+            name.className = 'ziel-habit-name';
+            name.textContent = habit.name;
+
+            // Score
+            const score = document.createElement('div');
+            score.className = 'ziel-habit-score';
+
+            const current = document.createElement('strong');
+            current.textContent = String(currentCount);
+
+            score.appendChild(current);
+
+            const progressTrack = document.createElement('div');
+            progressTrack.className = 'ziel-habit-progress-track';
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'ziel-habit-progress-bar';
+
+            const progressText = document.createElement('p');
+            progressText.className = 'ziel-habit-progress-text';
+
+            if (target !== undefined && target > 0) {
+
+                const percentage = Math.min(
+                    100,
+                    (currentCount / target) * 100
+                );
+
+                const targetText = document.createElement('span');
+                targetText.textContent = `/ ${target}`;
+
+                score.appendChild(targetText);
+
+                progressBar.style.width = `${percentage}%`;
+
+                progressText.textContent =
+                    `${Math.round(percentage)} % erreicht`;
+
+                if (currentCount >= target) {
+                    card.classList.add('ziel-habit-completed');
+                    progressText.textContent = '🎉 Ziel erreicht!';
+                }
+
+            } else {
+
+                progressText.textContent =
+                    'Noch kein persönliches Ziel festgelegt';
+
+                progressBar.style.width = '0%';
+            }
+
+            progressTrack.appendChild(progressBar);
+
+            card.append(
+                name,
+                score,
+                progressTrack,
+                progressText
+            );
+
+            // Optionales Enddatum
+            if (settings?.endDate) {
+
+                const endDate = document.createElement('p');
+                endDate.className = 'ziel-habit-end-date';
+
+                const date = new Date(`${settings.endDate}T00:00:00`);
+
+                endDate.textContent =
+                    `Bis ${date.toLocaleDateString('de-DE')}`;
+
+                card.appendChild(endDate);
+            }
+
+            habitContainer.appendChild(card);
+        });
+    }
 
     section.append(header, habitContainer);
 
     return section;
+}
+
+export function refreshZielDetailPage(): void {
+    if (!currentZielDetail) {
+        console.error('Kein aktuelles Ziel gespeichert!');
+        return;
+    }
+
+    const { zielId, onBack, onEdit } = currentZielDetail;
+
+    console.log('Rendere Ziel erneut:', zielId);
+    console.log('Gefundene Ziele:', ziellog);
+
+    displayZielDetailPage(zielId, onBack, onEdit);
 }

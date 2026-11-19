@@ -246,6 +246,11 @@ export function getCalendarEvents() {
 
 export function validateData(): void {
   for (const list of lists) {
+      list.tasks = list.tasks.filter(taskId =>
+          backlog.tasks.some(task => task.id === taskId)
+      );
+  }
+  for (const list of lists) {
     for (const taskId of list.tasks) {
       const task = backlog.tasks.find(task => task.id === taskId);
 
@@ -278,4 +283,5 @@ export function validateData(): void {
       }
     }
   }
+  
 }
