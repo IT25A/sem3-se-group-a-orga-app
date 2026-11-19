@@ -3,6 +3,7 @@ import type { List } from "../taskAndListLogik";
 import type { Backlog } from "../taskAndListLogik";
 import type { CalendarEvent } from "../calendar";
 import type { Ziel } from "../displayZiele";
+import { initializeHabitsData } from "./habitsState";
 
 import { createWelcomeData } from "./welcomeData";
 
@@ -42,6 +43,7 @@ export let eventlog: CalendarEvent[] = [];
 export async function initializeData(): Promise<void> {
   // Zuerst alle gespeicherten Daten aus der IndexedDB laden.
   const data = await loadData();
+  await initializeHabitsData();
 
   // --------------------------------
   // FALL 1: Ersteinrichtung wurde bereits durchgeführt
@@ -84,6 +86,7 @@ export async function initializeData(): Promise<void> {
     ziellog = initialData.ziellog;
 
     await saveData(lists, backlog, eventlog, ziellog);
+    
 
     return;
   }
