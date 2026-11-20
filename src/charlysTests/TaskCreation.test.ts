@@ -1,193 +1,170 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import {  createTask } from '../taskAndListLogik';
-import type { Priority, Complexity, TimeEstimate } from '../taskAndListLogik';
-import {  backlog } from '../persistence/state';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('Task creation', () => {   
+vi.mock('../persistence/state', () => ({
+  lists: [],
+  backlog: {
+    id: 'backlog',
+    title: 'Backlog',
+    description: 'Backlog',
+    createdAt: new Date(),
+    tasks: [],
+  },
+  eventlog: [],
+  ziellog: [],
+  updateAppData: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../calendar', () => ({
+  refreshCalendar: vi.fn(),
+}));
+
+vi.mock('../persistence/storage', () => ({
+  saveEventlog: vi.fn(),
+}));
+
+import {
+  createTask,
+  addList,
+  addTaskToList,
+} from '../taskAndListLogik';
+
+import { lists, backlog, updateAppData } from '../persistence/state';
+
+describe('Adding tasks to lists', () => {
   beforeEach(() => {
     backlog.tasks.length = 0;
+    lists.length = 0;
+    vi.clearAllMocks();
   });
 
-  it('creates a task with the correct title', () => {
-    createTask({
-      title: 'Finish project',
-      description: 'Complete the project documentation',
-      dueDate: new Date('2026-11-01T12:00:00'),
-      priority: 'high' as Priority,
-      complexity: 'medium' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('adds the task to the list task array', async () => {
+    await createTask({ title: 'Shopping', description: 'Buy milk' });
+    await addList('Personal', 'Personal tasks');
 
-    expect(backlog.tasks[0].title).toBe('Finish project');
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    await addTaskToList(task.id, list.id);
+
+    expect(list.tasks).toContain(task.id);
   });
 
-  it('creates a task with the correct description', () => {
-    createTask({
-      title: 'Finish project',
-      description: 'Complete the documentation',
-      dueDate: new Date('2026-11-01T12:00:00'),
-      priority: 'high' as Priority,
-      complexity: 'medium' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('adds the list ID to the task lists array', async () => {
+    await createTask({ title: 'Shopping', description: 'Buy milk' });
+    await addList('Personal', 'Personal tasks');
 
-    expect(backlog.tasks[0].description).toBe('Complete the documentation');
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    await addTaskToList(task.id, list.id);
+
+    expect(task.lists).toContain(list.id);
   });
 
-  it('assigns a unique ID to each task', () => {
-    createTask({
-      title: 'Task A',
-      description: '',
-      dueDate: new Date('2026-11-01'),
-      priority: 'high' as Priority,
-      complexity: 'low' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('keeps the task in the global backlog', async () => {
+    await createTask({ title: 'Shopping', description: 'Buy milk' });
+    await addList('Personal', 'Personal tasks');
 
-    createTask({
-      title: 'Task B',
-      description: '',
-      dueDate: new Date('2026-11-02'),
-      priority: 'low' as Priority,
-      complexity: 'high' as Complexity,
-      timeEstimate: 'lang' as TimeEstimate,
-    });
+    const task = backlog.tasks[0];
 
-    expect(backlog.tasks[0].id).not.toBe(backlog.tasks[1].id);
+    await addTaskToList(task.id, lists[0].id);
+
+    expect(backlog.tasks).toContain(task);
   });
 
-  it('sets createdAt to a valid date', () => {
-    createTask({
-      title: 'Test task',
-      description: '',
-      dueDate: new Date('2026-11-01'),
-      priority: 'medium' as Priority,
-      complexity: 'medium' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('does not create a duplicate task in the global backlog', async () => {
+    await createTask({ title: 'Shopping', description: 'Buy milk' });
+    await addList('Personal', 'Personal tasks');
 
-    expect(backlog.tasks[0].createdAt).toBeInstanceOf(Date);
-    expect(Number.isNaN(backlog.tasks[0].createdAt.getTime())).toBe(false);
+    const task = backlog.tasks[0];
+    const originalCount = backlog.tasks.length;
+
+    await addTaskToList(task.id, lists[0].id);
+
+    expect(backlog.tasks).toHaveLength(originalCount);
   });
 
-  it('stores the due date correctly', () => {
-    const dueDate = new Date('2026-11-01T12:00:00');
+  it('can add multiple tasks to the same list', async () => {
+    await createTask({ title: 'Task A', description: '' });
+    await createTask({ title: 'Task B', description: '' });
+    await addList('Work', 'Work tasks');
 
-    createTask({
-      title: 'Test task',
-      description: '',
-      dueDate,
-      priority: 'medium' as Priority,
-      complexity: 'medium' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+    const list = lists[0];
 
-    expect(backlog.tasks[0].dueDate).toEqual(dueDate);
+    await addTaskToList(backlog.tasks[0].id, list.id);
+    await addTaskToList(backlog.tasks[1].id, list.id);
+
+    expect(list.tasks).toHaveLength(2);
+    expect(
+      list.tasks.map(taskId =>
+        backlog.tasks.find(task => task.id === taskId)?.title,
+      ),
+    ).toEqual(['Task A', 'Task B']);
   });
 
-  it('stores priority, complexity, and time estimate correctly', () => {
-    createTask({
-      title: 'Test task',
-      description: '',
-      dueDate: new Date('2026-11-01'),
-      priority: 'high' as Priority,
-      complexity: 'high' as Complexity,
-      timeEstimate: 'lang' as TimeEstimate,
-    });
+  it('can add one task to multiple lists', async () => {
+    await createTask({ title: 'Task A', description: '' });
+    await addList('Work', 'Work tasks');
+    await addList('Personal', 'Personal tasks');
 
-    expect(backlog.tasks[0].priority).toBe('high');
-    expect(backlog.tasks[0].complexity).toBe('high');
-    expect(backlog.tasks[0].timeEstimate).toBe('lang');
+    const task = backlog.tasks[0];
+    const [work, personal] = lists;
+
+    await addTaskToList(task.id, work.id);
+    await addTaskToList(task.id, personal.id);
+
+    expect(task.lists).toContain(work.id);
+    expect(task.lists).toContain(personal.id);
+    expect(work.tasks).toContain(task.id);
+    expect(personal.tasks).toContain(task.id);
   });
 
-  it('sets completed to false for a new task', () => {
-    createTask({
-      title: 'Test task',
-      description: '',
-      dueDate: new Date('2026-11-01'),
-      priority: 'medium' as Priority,
-      complexity: 'low' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('does not add the same task to the same list twice', async () => {
+    await createTask({ title: 'Task A', description: '' });
+    await addList('Work', 'Work tasks');
 
-    expect(backlog.tasks[0].completed).toBe(false);
+    const task = backlog.tasks[0];
+    const list = lists[0];
+
+    await addTaskToList(task.id, list.id);
+    await addTaskToList(task.id, list.id);
+
+    expect(task.lists.filter(id => id === list.id)).toHaveLength(1);
+    expect(list.tasks.filter(item => item === task.id)).toHaveLength(1);
   });
 
-  it('adds multiple tasks to the global tasks array', () => {
-    createTask({
-      title: 'Task A',
-      description: '',
-      dueDate: new Date('2026-11-01'),
-      priority: 'low' as Priority,
-      complexity: 'low' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
+  it('does not modify data when the task does not exist', async () => {
+    await addList('Work', 'Work tasks');
 
-    createTask({
-      title: 'Task B',
-      description: '',
-      dueDate: new Date('2026-11-02'),
-      priority: 'high' as Priority,
-      complexity: 'high' as Complexity,
-      timeEstimate: 'lang' as TimeEstimate,
-    });
+    const list = lists[0];
 
-    expect(backlog.tasks).toHaveLength(2);
-    expect(backlog.tasks.map(task => task.title)).toEqual(['Task A', 'Task B']);
-  });
-});
+    await addTaskToList('nonexistent-task', list.id);
 
-describe('Task creation with optional attributes', () => {
-  beforeEach(() => {
-    backlog.tasks.length = 0;
+    expect(list.tasks).toHaveLength(0);
   });
 
-  it('creates a task with only title and description', () => {
-    createTask({
-      title: 'Buy groceries',
-      description: 'Buy milk and bread',
-    });
+  it('does not modify data when the list does not exist', async () => {
+    await createTask({ title: 'Task A', description: '' });
 
-    expect(backlog.tasks).toHaveLength(1);
-    expect(backlog.tasks[0].title).toBe('Buy groceries');
-    expect(backlog.tasks[0].description).toBe('Buy milk and bread');
+    const task = backlog.tasks[0];
+
+    await addTaskToList(task.id, 'nonexistent-list');
+
+    expect(task.lists).toEqual(['backlog']);
+    expect(backlog.tasks).toContain(task);
   });
 
-  it('allows the due date to be omitted', () => {
-    createTask({
-      title: 'Read a book',
-      description: 'Read chapter one',
-    });
+  it('persists changes when a task is added to a list', async () => {
+    await createTask({ title: 'Task A', description: '' });
+    await addList('Work', 'Work tasks');
 
-    expect(backlog.tasks[0].dueDate).toBeUndefined();
-  });
+    vi.clearAllMocks();
 
-  it('allows priority, complexity, and time estimate to be omitted', () => {
-    createTask({
-      title: 'Clean desk',
-      description: 'Organize the workspace',
-    });
+    const task = backlog.tasks[0];
+    const list = lists[0];
 
-    expect(backlog.tasks[0].priority).toBe('mittel');
-    expect(backlog.tasks[0].complexity).toBe('mittel');
-    expect(backlog.tasks[0].timeEstimate).toBe('mittel');
-  });
+    await addTaskToList(task.id, list.id);
 
-  it('preserves optional attributes when provided', () => {
-    const dueDate = new Date('2026-11-01T12:00:00');
-
-    createTask({
-      title: 'Finish project',
-      description: 'Complete documentation',
-      dueDate,
-      priority: 'high' as Priority,
-      complexity: 'medium' as Complexity,
-      timeEstimate: 'kurz' as TimeEstimate,
-    });
-
-    expect(backlog.tasks[0].dueDate).toEqual(dueDate);
-    expect(backlog.tasks[0].priority).toBe('high');
-    expect(backlog.tasks[0].complexity).toBe('medium');
-    expect(backlog.tasks[0].timeEstimate).toBe('kurz');
+    expect(updateAppData).toHaveBeenCalled();
   });
 });

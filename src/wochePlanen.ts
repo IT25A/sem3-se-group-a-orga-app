@@ -39,6 +39,7 @@ export function displayPlanungsPage() {
     // Backlog links
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
+    taskContainer.id="backlog-container";
 
     // Kalender rechts
     const calenderContainer = document.createElement("div");
@@ -52,7 +53,7 @@ export function displayPlanungsPage() {
 
     container.appendChild(planningPage);
 
-    renderBacklogInContainer(taskContainer);
+    renderBacklogInContainer(taskContainer, true);
     showCalender(calenderContainer);
 
     initializeCalendarDraggable();

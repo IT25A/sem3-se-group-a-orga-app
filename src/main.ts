@@ -21,7 +21,37 @@ import { displayZielePage } from './displayZiele.ts';
 export let currentPage = "home-page";
 export const app = document.querySelector<HTMLDivElement>('#app')!;
 
+interface NavigatorUAData extends Navigator {
+    userAgentData?: {
+        platform: string;
+    };
+}
 
+const nav = navigator as NavigatorUAData;
+
+const ua = nav.userAgent;
+const platform = nav.userAgentData?.platform || nav.platform;
+
+const isFirefox = ua.includes("Firefox");
+
+let os = "unknown";
+
+if (/Win/i.test(platform)) {
+    os = "windows";
+} else if (/Mac/i.test(platform)) {
+    os = "macos";
+} else if (/Linux/i.test(platform)) {
+    os = "linux";
+} else if (/Android/i.test(platform)) {
+    os = "android";
+} else if (/iPhone|iPad|iPod/i.test(ua)) {
+    os = "ios";
+}
+
+document.documentElement.classList.add(
+    `os-${os}`,
+    isFirefox ? "browser-firefox" : "browser-chromium"
+);
 async function main() {
   try {
     // Daten aus IndexedDB laden
