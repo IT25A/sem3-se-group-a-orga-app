@@ -252,14 +252,13 @@ export function renderBacklogPage(): void {
 
 
 export function renderBacklogInContainer(
-  container: HTMLDivElement
+  container: HTMLDivElement,
+  enableSortable = false
 ): void {
-
-  destroySortables();
-
-  const backlogContainer = container.querySelector(
-    '#backlog-container'
-  ) as HTMLDivElement | null;
+  const backlogContainer =
+    container.id === 'backlog-container'
+      ? container
+      : container.querySelector<HTMLDivElement>('#backlog-container');
 
   if (!backlogContainer) return;
 
@@ -267,18 +266,17 @@ export function renderBacklogInContainer(
   backlogContainer.replaceChildren();
 
   const backlogList = document.createElement('ul');
-
   backlogList.id = 'backlog-list';
   backlogList.classList.add('sortable-list');
-
   backlogContainer.appendChild(backlogList);
 
   for (const task of backlog.tasks) {
-    renderTaskByIdInContainer(
-      task.id,
-      'backlog',
-      backlogList
-    );
+    renderTaskByIdInContainer(task.id, 'backlog', backlogList);
+  }
+
+  // Sortable nur initialisieren, wenn es ausdrücklich gewünscht ist
+  if (enableSortable) {
+    initializeSortables();
   }
 }
 
