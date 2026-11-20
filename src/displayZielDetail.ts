@@ -3,6 +3,8 @@ import './styles/zielDetail.css';
 
 import { cardSliderNavigation } from './cardSlider';
 import { showCardSliderForZielInContainer } from './cardSlider';
+import { displayProgressBar } from './displayEditingLists';
+import { calculateZielListsProgress } from './ziele';
 
 import type { Ziel } from './displayZiele';
 import type { List } from './taskAndListLogik';
@@ -11,7 +13,8 @@ import { habitState } from './persistence/habitsState';
 
 import {
     ziellog,
-    lists
+    lists,
+    updateZiellog
 } from './persistence/state';
 
 
@@ -57,13 +60,27 @@ export function displayZielDetailPage(
 
     const navigation = createNavigation(onBack);
     const header = createZielHeader(ziel, onEdit, onBack);
+    const achievementButton = createAchievementButton(ziel, onBack, onEdit);
+    const congratulationsMessage = ziel.completed
+        ? createCongratulationsMessage(ziel)
+        : null;
     const description = createDescriptionSection(ziel);
     const listSection = createListSection(ziel);
     const habitSection = createHabitSection(ziel);
+    const joinedSuperHeader = document.createElement('div');
+    joinedSuperHeader.append(navigation, achievementButton);
+    joinedSuperHeader.className = 'ziel-detail-navigation';
+
+   page.append(
+        joinedSuperHeader,
+        header
+    );
+
+    if (congratulationsMessage) {
+        page.appendChild(congratulationsMessage);
+    }
 
     page.append(
-        navigation,
-        header,
         description,
         listSection,
         habitSection
@@ -82,7 +99,6 @@ export function displayZielDetailPage(
 function createNavigation(onBack: () => void): HTMLElement {
 
     const navigation = document.createElement('div');
-    navigation.className = 'ziel-detail-navigation';
 
     const backButton = document.createElement('button');
     backButton.className = 'ziel-back-button';
@@ -90,9 +106,48 @@ function createNavigation(onBack: () => void): HTMLElement {
 
     backButton.addEventListener('click', onBack);
 
-    navigation.appendChild(backButton);
 
-    return navigation;
+    navigation.append(backButton);
+    return backButton;
+}
+
+// ================================================
+// ZIEL ALS ERREICHT MARKIEREN
+// ================================================
+
+function createAchievementButton(
+    ziel: Ziel,
+    onBack: () => void,
+    onEdit: (ziel: Ziel, onSaved: () => void) => void
+): HTMLElement {
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ziel-achievement-button';
+
+    button.textContent = ziel.completed
+        ? '✓ Ziel wieder öffnen'
+        : '⚑ Ziel als erreicht markieren';
+
+    if (ziel.completed) {
+        button.classList.add('ziel-achievement-button-completed');
+    }
+
+    button.addEventListener('click', async () => {
+
+        const updatedZiele = (ziellog ?? []).map(entry =>
+            entry.id === ziel.id
+                ? { ...entry, completed: !ziel.completed }
+                : entry
+        );
+
+        await updateZiellog(updatedZiele);
+
+        // Detailseite mit dem neuen Status neu anzeigen
+        displayZielDetailPage(ziel.id, onBack, onEdit);
+    });
+
+    return button;
 }
 
 
@@ -109,9 +164,17 @@ function createZielHeader(
     const header = document.createElement('section');
     header.className = 'ziel-detail-header';
 
-    const flag = document.createElement('div');
-    flag.className = 'ziel-detail-flag';
-    flag.textContent = '🚩';
+    const flag = document.createElement('span');
+        flag.className = ziel.completed
+            ? 'ziel-detail-flag ziel-detail-flag-completed'
+            : 'ziel-detail-flag';
+
+        flag.textContent = ziel.completed ? '⚑' : '🚩';
+
+        flag.setAttribute(
+            'aria-label',
+            ziel.completed ? 'Ziel erreicht' : 'Ziel noch offen'
+        );
 
     const content = document.createElement('div');
     content.className = 'ziel-detail-heading-content';
@@ -197,12 +260,15 @@ function createListSection(ziel: Ziel): HTMLElement {
     const heading = document.createElement('h2');
     heading.textContent = 'Meine Listen';
 
+
     const count = document.createElement('span');
     count.className = 'ziel-detail-count';
     count.textContent =
         `${assignedLists.length} ${assignedLists.length === 1 ? 'Liste' : 'Listen'}`;
 
     header.append(heading, count);
+
+    const progress = displayProgressBar(calculateZielListsProgress(ziel));
 
     const sliderContainer = document.createElement('div');
     sliderContainer.className = 'ziel-lists-slider-container';
@@ -229,7 +295,7 @@ function createListSection(ziel: Ziel): HTMLElement {
         );
     }
 
-    section.append(header, sliderContainer);
+    section.append(header, progress, sliderContainer);
 
     return section;
 }
@@ -400,4 +466,38 @@ export function refreshZielDetailPage(): void {
     console.log('Gefundene Ziele:', ziellog);
 
     displayZielDetailPage(zielId, onBack, onEdit);
+}
+
+// ================================================
+// GLÜCKWUNSCH-NACHRICHT
+// ================================================
+
+function createCongratulationsMessage(ziel: Ziel): HTMLElement {
+
+    const message = document.createElement('section');
+    message.className = 'ziel-congratulations';
+
+    const icon = document.createElement('div');
+    icon.className = 'ziel-congratulations-icon';
+    icon.textContent = '🎉';
+
+    const heading = document.createElement('h2');
+    heading.textContent = 'Herzlichen Glückwunsch!';
+
+    const title = document.createElement('p');
+    title.className = 'ziel-congratulations-title';
+    title.textContent = `Du hast dein Ziel „${ziel.title}“ erreicht!`;
+
+    const text = document.createElement('p');
+    text.className = 'ziel-congratulations-text';
+    text.textContent =
+        'Du kannst unglaublich stolz auf dich sein. Du hast dir etwas vorgenommen und es geschafft! Jeder Schritt, jede Anstrengung und jedes kleine Durchhalten haben dich hierhergebracht.';
+
+    const closing = document.createElement('strong');
+    closing.className = 'ziel-congratulations-closing';
+    closing.textContent = 'Feiere deinen Erfolg – du hast es verdient! 💜';
+
+    message.append(icon, heading, title, text, closing);
+
+    return message;
 }

@@ -15,6 +15,7 @@ export type ZielHabitSettings = {
     endDate?: string;
 };
 
+
 export type Ziel = {
     id: string;
     title: string;
@@ -23,6 +24,7 @@ export type Ziel = {
     lists: string[];
     habits: string[];
     habitGoals?: Record<string, ZielHabitSettings>;
+    completed?: boolean;
 };
 
 // --------------------------------
@@ -136,7 +138,8 @@ function renderZieleOverview(app: HTMLDivElement): void {
             description: '',
             createdAt: new Date(),
             lists: [],
-            habits: []
+            habits: [],
+            completed: false
         };
 
         const newZiele = [...(ziellog ?? []), newZiel];
@@ -194,8 +197,16 @@ function renderZielListInContainer(
         zielMain.setAttribute('aria-label', `Details zu ${ziel.title} öffnen`);
 
         const flag = document.createElement('span');
-        flag.className = 'ziel-flag';
-        flag.textContent = '🚩';
+        flag.className = ziel.completed
+            ? 'ziel-detail-flag ziel-detail-flag-completed'
+            : 'ziel-detail-flag';
+
+        flag.textContent = ziel.completed ? '⚑' : '🚩';
+
+        flag.setAttribute(
+            'aria-label',
+            ziel.completed ? 'Ziel erreicht' : 'Ziel noch offen'
+        );
 
         const content = document.createElement('div');
         content.className = 'ziel-content';

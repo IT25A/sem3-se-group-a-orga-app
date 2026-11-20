@@ -183,7 +183,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               displayPlanungsPage();
               break;
             case "ziele-page":
-              refreshZielDetailPage();
+              refreshZielCardSliderList(listId, taskItem);
               break;
             default:
               break;
@@ -214,7 +214,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               displayPlanungsPage();
               break;
             case "ziele-page":
-              refreshZielDetailPage();
+              refreshZielCardSliderList(listId, taskItem);
               break;
             default:
               break;
@@ -239,7 +239,8 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               displayPlanungsPage();
               break;
             case "ziele-page":
-              refreshZielCardSliderList(listId, taskItem);              break;
+              refreshZielCardSliderList(listId, taskItem);              
+              break;
             default:
               break;
           }
@@ -362,8 +363,6 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
             });
 
             await addTaskToList(newTask.id, listId);
-
-
             switch (currentPage) {
                 case "home-page":
                     refreshHomeList(listId, taskList);
@@ -372,7 +371,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                     renderLists();
                     break;
                 case "ziele-page":
-                    refreshZielDetailPage();
+                    refreshZielCardSliderList(listId, taskList);
                     break;
                 default:
                   break;
@@ -391,7 +390,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           renderLists();
           break;
         case "ziele-page":
-              refreshZielDetailPage();
+              refreshZielCardSliderList(list.id, listElement);
               break;
         default:
           break;
@@ -413,7 +412,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
           renderLists();
           break;
         case "ziele-page":
-              refreshZielDetailPage();
+              refreshZielCardSliderList(listId, listElement);
               break;
         default:
           break;

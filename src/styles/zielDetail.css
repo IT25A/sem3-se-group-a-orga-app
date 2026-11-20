@@ -13,6 +13,50 @@
     max-width: 90%;
     box-sizing: border-box;
 }
+/* ================================================
+   ZIEL ALS ERREICHT MARKIEREN
+================================================ */
+
+#app .ziel-achievement-button {
+    align-self: flex-end;
+    margin-left: auto;
+
+    padding: 11px 18px;
+
+    color: #7952b3;
+    background-color: #eee5ff;
+    border: 1px solid #c7b3e6;
+    border-radius: 9px;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#app .ziel-achievement-button:hover {
+    background-color: #e4d8f7;
+}
+
+#app .ziel-achievement-button-completed {
+    color: #218838;
+    background-color: #e3f5e8;
+    border-color: #a8d8b2;
+}
+
+#app .ziel-achievement-button-completed:hover {
+    background-color: #d2edda;
+}
+
+/* Grüne Flagge bei erreichtem Ziel */
+
+#app .ziel-detail-flag-completed {
+    color: #218838;
+    background-color: #e3f5e8;
+    font-size: 2.2rem;
+    font-weight: bold;
+}
 
 /* ==========================================
    NAVIGATION
@@ -425,4 +469,88 @@
     color: #6f647c;
     font-size: 0.85rem;
     margin-top: 8px;
+}
+
+
+/* ================================================
+   GLÜCKWUNSCH-NACHRICHT
+================================================ */
+
+#app .ziel-congratulations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 30px 24px;
+
+    background: linear-gradient(135deg, #f0faef, #e3f5e8);
+    border: 1px solid #b8dfbf;
+    border-radius: 16px;
+
+    box-shadow: 0 4px 14px rgba(46, 125, 50, 0.08);
+
+    text-align: center;
+
+    animation: congratulations-appear 0.5s ease;
+}
+
+#app .ziel-congratulations-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 65px;
+    height: 65px;
+
+    background-color: #ffffff;
+    border-radius: 50%;
+
+    font-size: 2.3rem;
+}
+
+#app .ziel-congratulations h2 {
+    margin: 4px 0 0;
+
+    color: #218838;
+    font-size: 1.45rem;
+}
+
+#app .ziel-congratulations-title {
+    margin: 0;
+
+    color: #356b40;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+#app .ziel-congratulations-text {
+    max-width: 600px;
+    margin: 0;
+
+    color: #52745a;
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+#app .ziel-congratulations-closing {
+    margin-top: 5px;
+
+    color: #218838;
+    font-size: 0.95rem;
+}
+
+@keyframes congratulations-appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

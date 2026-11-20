@@ -231,6 +231,14 @@
     font-size: 1.25rem;
 }
 
+
+#app .ziel-flag-completed {
+    color: #218838;
+    background-color: #e3f5e8;
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
 #app .ziel-content {
     display: flex;
     flex-direction: column;

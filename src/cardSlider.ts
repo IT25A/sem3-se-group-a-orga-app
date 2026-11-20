@@ -1,7 +1,8 @@
-import { lists} from './persistence/state'
+import { lists, backlog} from './persistence/state'
 import { renderListByIdInContainer } from './displayEditingLists'
 import { app } from './main';
 import './styles/cardSlider.css'
+import type { List } from './taskAndListLogik';
 
 export function showCardSliderForListsInContainer(container: HTMLDivElement): void {
     container.classList.add('card-slider');
@@ -72,13 +73,11 @@ export function cardSliderNavigation(): void {
 }
 //ganz obere Funktion kann evtl später weg, falls slider nur noch auf displayZiel
 
-import type { List } from './taskAndListLogik';
 
 export function showCardSliderForZielInContainer(
     container: HTMLDivElement,
     zielLists: List[]
 ): void {
-
     container.classList.add('card-slider', 'ziel-card-slider');
 
     const heading = document.createElement('h2');
@@ -97,7 +96,48 @@ export function showCardSliderForZielInContainer(
         const card = document.createElement('div');
         card.className = 'slidable-card';
 
-        renderListByIdInContainer(list.id, card, false);
+        // Prüfen, ob alle Aufgaben dieser Liste erledigt sind
+        const isCompleted =
+            list.tasks.length > 0 &&
+            list.tasks.every(taskId => {
+                const task = backlog.tasks.find(
+                    task => task.id === taskId
+                );
+
+                return task?.completed === true;
+            });
+
+        if (isCompleted) {
+            const successCard = document.createElement('article');
+            successCard.className = 'ziel-list-completed-content';
+
+            const icon = document.createElement('div');
+            icon.className = 'ziel-list-completed-icon';
+            icon.textContent = '🎉';
+
+            const message = document.createElement('h3');
+            message.textContent = 'Geschafft!';
+
+            const title = document.createElement('h4');
+            title.textContent = list.title;
+
+            const motivation = document.createElement('p');
+            motivation.textContent =
+                'Du hast alle Aufgaben dieser Liste erledigt. Sei stolz auf dich und mach weiter so!';
+
+            successCard.append(icon, message, title, motivation);
+
+            if (list.description?.trim()) {
+                const description = document.createElement('p');
+                description.className = 'ziel-list-completed-description';
+                description.textContent = list.description;
+                successCard.appendChild(description);
+            }
+
+            card.appendChild(successCard);
+        } else {
+            renderListByIdInContainer(list.id, card, false);
+        }
 
         cardContainer.appendChild(card);
     });
@@ -108,10 +148,5 @@ export function showCardSliderForZielInContainer(
     rightArrow.textContent = '>';
     rightArrow.setAttribute('aria-label', 'Nächste Liste');
 
-    container.append(
-        heading,
-        leftArrow,
-        cardContainer,
-        rightArrow
-    );
+    container.append(heading, leftArrow, cardContainer, rightArrow);
 }
