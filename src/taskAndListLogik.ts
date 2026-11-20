@@ -2,6 +2,8 @@ import {lists, backlog, eventlog, updateAppData, ziellog} from './persistence/st
 import { refreshCalendar } from './calendar';
 import { saveData, saveEventlog } from './persistence/storage';
 
+let wejf = 0;
+
 export type Backlog = {
   id: string;
   title: string;
@@ -231,7 +233,7 @@ export async function editTaskTitle(taskId: string, newTitle: string): Promise<v
   }
 }
   
-export async function editTaskDescription(taskId: string, newDescription: string): Promise<void> {
+export async function editTaskDescription(taskId: string, newDescription?: string): Promise<void> {
   const task = backlog.tasks.find(task => task.id === taskId);
   if (task) {
     task.description = newDescription;
