@@ -1,42 +1,89 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+
 import {
-  
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+} from 'vitest';
+
+// --------------------------------
+// MOCKS
+// --------------------------------
+
+vi.mock('../persistence/state', () => ({
+  lists: [],
+  backlog: {
+    id: 'backlog',
+    title: 'Backlog',
+    description: 'Backlog',
+    createdAt: new Date(),
+    tasks: [],
+  },
+  eventlog: [],
+  ziellog: [],
+  updateAppData: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../calendar', () => ({
+  refreshCalendar: vi.fn(),
+}));
+
+vi.mock('../persistence/storage', () => ({
+  saveEventlog: vi.fn(),
+}));
+
+// --------------------------------
+// IMPORTS
+// --------------------------------
+
+import {
   addList,
   renameList,
   changeListDescription,
 } from '../taskAndListLogik';
-import { lists } from '../persistence/state';
+
+import {
+  lists,
+  updateAppData,
+} from '../persistence/state';
+
+// --------------------------------
+// TESTS
+// --------------------------------
 
 describe('Editing lists', () => {
+
   beforeEach(() => {
     lists.length = 0;
+    vi.clearAllMocks();
   });
 
-  it('renames a list', () => {
-    addList('Shopping', 'Einkaufen');
+  it('renames a list', async () => {
+    await addList('Shopping', 'Einkaufen');
     const id = lists[0].id;
 
-    renameList(id, 'Groceries');
+    await renameList(id, 'Groceries');
 
     expect(lists[0].title).toBe('Groceries');
   });
 
-  it('changes a list description', () => {
-    addList('Shopping', 'Einkaufen');
+  it('changes a list description', async () => {
+    await addList('Shopping', 'Einkaufen');
     const id = lists[0].id;
 
-    changeListDescription(id, 'Things to buy');
+    await changeListDescription(id, 'Things to buy');
 
     expect(lists[0].description).toBe('Things to buy');
   });
 
-  it('only renames the selected list', () => {
-    addList('Shopping', 'Einkaufen');
-    addList('Work', 'Arbeiten');
+  it('only renames the selected list', async () => {
+    await addList('Shopping', 'Einkaufen');
+    await addList('Work', 'Arbeiten');
 
     const shoppingId = lists[0].id;
 
-    renameList(shoppingId, 'Groceries');
+    await renameList(shoppingId, 'Groceries');
 
     expect(lists.map(list => list.title)).toEqual([
       'Groceries',
@@ -44,41 +91,86 @@ describe('Editing lists', () => {
     ]);
   });
 
-  it('only changes the selected list description', () => {
-    addList('Shopping', 'Einkaufen');
-    addList('Work', 'Arbeiten');
+  it('only changes the selected list description', async () => {
+    await addList('Shopping', 'Einkaufen');
+    await addList('Work', 'Arbeiten');
 
     const shoppingId = lists[0].id;
 
-    changeListDescription(shoppingId, 'Weekly shopping');
+    await changeListDescription(shoppingId, 'Weekly shopping');
 
     expect(lists[0].description).toBe('Weekly shopping');
     expect(lists[1].description).not.toBe('Weekly shopping');
   });
 
-  it('does nothing when renaming a nonexistent list', () => {
-    addList('Shopping', 'Einkaufen');
+  it('does nothing when renaming a nonexistent list', async () => {
+    await addList('Shopping', 'Einkaufen');
 
-    renameList('nonexistent-id', 'Groceries');
+    const originalTitle = lists[0].title;
 
-    expect(lists[0].title).toBe('Shopping');
+    await renameList('nonexistent-id', 'Groceries');
+
+    expect(lists[0].title).toBe(originalTitle);
   });
 
-  it('does nothing when changing a nonexistent list description', () => {
-    addList('Shopping', 'Einkaufen');
+  it('does nothing when changing a nonexistent list description', async () => {
+    await addList('Shopping', 'Einkaufen');
 
-    changeListDescription('nonexistent-id', 'New description');
+    const originalDescription = lists[0].description;
 
-    expect(lists[0].description).not.toBe('New description');
+    await changeListDescription(
+      'nonexistent-id',
+      'New description'
+    );
+
+    expect(lists[0].description).toBe(originalDescription);
   });
 
-  it('allows clearing a list description', () => {
-    addList('Shopping', 'Einkaufen');
+  it('allows clearing a list description', async () => {
+    await addList('Shopping', 'Einkaufen');
     const id = lists[0].id;
 
-    changeListDescription(id, 'Things to buy');
-    changeListDescription(id, '');
+    await changeListDescription(id, 'Things to buy');
+    await changeListDescription(id, '');
 
     expect(lists[0].description).toBe('');
+  });
+
+  it('calls updateAppData when renaming a list', async () => {
+    await addList('Shopping', 'Einkaufen');
+
+    vi.clearAllMocks();
+
+    await renameList(lists[0].id, 'Groceries');
+
+    expect(updateAppData).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls updateAppData when changing a description', async () => {
+    await addList('Shopping', 'Einkaufen');
+
+    vi.clearAllMocks();
+
+    await changeListDescription(
+      lists[0].id,
+      'New description'
+    );
+
+    expect(updateAppData).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call updateAppData when renaming a nonexistent list', async () => {
+    await renameList('nonexistent-id', 'Groceries');
+
+    expect(updateAppData).not.toHaveBeenCalled();
+  });
+
+  it('does not call updateAppData when changing a nonexistent list description', async () => {
+    await changeListDescription(
+      'nonexistent-id',
+      'New description'
+    );
+
+    expect(updateAppData).not.toHaveBeenCalled();
   });
 });

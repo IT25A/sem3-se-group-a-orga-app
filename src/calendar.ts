@@ -76,8 +76,8 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
 
         headerToolbar: {
             left: 'title',
-            center: '',
-            right: 'prev,next today undo zoomIn zoomOut dayGridMonth,timeGridWeek,timeGridDay'
+            center: 'dayGridMonth,timeGridWeek,timeGridDay',
+            right: 'today prev,next undo zoomIn zoomOut'
         },
         displayEventTime: false,
         eventSources: [
