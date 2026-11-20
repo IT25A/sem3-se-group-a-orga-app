@@ -55,15 +55,19 @@ export function displayZielePage(zielId?: string): void {
 // --------------------------------
 
 function renderZieleOverview(app: HTMLDivElement): void {
-
+    
     // Seitenkopf
+    const pageHeading = document.createElement('div');
+    pageHeading.className = 'ziele-page-heading';
+
     const heading = document.createElement('h1');
     heading.textContent = 'Meine Ziele';
-    heading.className = 'ziele-heading';
 
     const description = document.createElement('p');
-    description.textContent = 'Was möchtest du erreichen? Hier behältst du deine Ziele im Blick.';
-    description.className = 'ziele-description';
+    description.textContent = 'Nur wer sein Ziel kennt, findet den Weg.';
+
+    pageHeading.append(heading, description);
+
 
     // Neues Ziel
     const createCard = document.createElement('section');
@@ -117,9 +121,9 @@ function renderZieleOverview(app: HTMLDivElement): void {
     zielContainer.appendChild(zielList);
     zielSection.append(sectionHeader, zielContainer);
 
+    
     app.append(
-        heading,
-        description,
+        pageHeading,
         createCard,
         zielSection
     );

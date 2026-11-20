@@ -12,6 +12,7 @@ import { refreshZielDetailPage } from './displayZielDetail';
 
 
 export function displayListPage(): void {
+  
   renderLists();
 }
 
@@ -62,6 +63,20 @@ function renderLists(): void {
 
   destroySortables();
   container.replaceChildren();
+
+  const pageHeading = document.createElement('div');
+  pageHeading.className = 'list-page-heading';
+
+  const heading = document.createElement('h1');
+  heading.textContent = 'Meine Listen';
+
+  const subtitle = document.createElement('p');
+  subtitle.textContent = 'Schritt für Schritt zum Häkchen-Glück';
+
+  pageHeading.append(heading, subtitle);
+  container.appendChild(pageHeading);
+
+
 
   const newListItem = document.createElement('div');
   newListItem.id = "neue-liste-erstellen-feld";

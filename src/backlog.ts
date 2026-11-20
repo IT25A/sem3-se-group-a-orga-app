@@ -10,8 +10,10 @@ import { initializeSortables, destroySortables } from './sortable'
 export function renderBacklogPage(): void {
   const app = document.getElementById('app') as HTMLDivElement;
   app.innerHTML = `
+  <div class='list-page-heading'>
     <h1>Backlog</h1>
-    <p>Hier sind alle deine Aufgaben, unabhängig von ihren Listenzugehörigkeiten.</p>
+    <p>Deine Aufgaben, dein kleines Chaos! <br> Hier sind alle deine Aufgaben, unabhängig von ihren Listenzugehörigkeiten aufgeführt.</p>
+  </div>
     <div id="backlog-container"></div>
      <dialog id="aufgaben-popup">
       <p id="popup-text"></p>
