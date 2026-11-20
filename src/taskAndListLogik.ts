@@ -1,8 +1,6 @@
 import {lists, backlog, eventlog, updateAppData, ziellog} from './persistence/state';
 import { refreshCalendar } from './calendar';
-import { saveData, saveEventlog } from './persistence/storage';
-
-let wejf = 0;
+import { saveEventlog } from './persistence/storage';
 
 export type Backlog = {
   id: string;
