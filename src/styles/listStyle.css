@@ -248,7 +248,7 @@
 
 /* Windows  */
 .os-windows #app .delete-button {
-    filter: hue-rotate(270deg);
+    filter: sepia(100%) saturate(400%) hue-rotate(220deg);
 }
 
 /* Linux */
@@ -291,7 +291,7 @@
 
 /* Windows  */
 .os-windows #app .delete-button:hover {
-    filter: hue-rotate(220deg);
+    filter: sepia(100%) saturate(400%) hue-rotate(220deg);
 }
 
 /* Linux */
@@ -301,7 +301,7 @@
 
 /* Windows  */
 .os-windows #app .edit-button:hover {
-    filter: hue-rotate(20deg);
+    filter: hue-rotate(270deg);
 }
 
 /* Linux */
@@ -701,4 +701,5 @@
   border-color: #9670c9;
   box-shadow: 0 0 0 3px rgba(121, 82, 179, 0.12);
 }
+
 
