@@ -38,6 +38,10 @@ ul, #neue-liste-erstellen-feld {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  max-height: 100vh;
 }
 
 .navbar ul {
@@ -208,4 +212,9 @@ main,
   width: auto;       /* Nicht mehr 100%, da es jetzt neben der Überschrift steht */
   margin: 0;         /* Abstände übernimmt jetzt .kopfzeile */
   padding: 0;
+}
+.navbar,
+.navbar * {
+    user-select: none;
+    -webkit-user-drag: none;
 }
