@@ -319,3 +319,17 @@ function updateEventTitleRelatedToTaskTitleChange(taskId: string, title:string){
     saveEventlog(eventlog);
     refreshCalendar();
 }
+
+//fuer sortable benoetigt
+export async function reorderTasksInList(
+  listId: string,
+  orderedTaskIds: string[]
+): Promise<void> {
+  const list = lists.find(list => list.id === listId);
+
+  if (!list) return;
+
+  list.tasks = orderedTaskIds;
+
+  await updateAppData(lists, backlog, eventlog, ziellog);
+}

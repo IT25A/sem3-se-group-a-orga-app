@@ -345,7 +345,7 @@ export function showDialogEditTask(
                     value="${task.title}" required />
 
                 <label for="task-description">Beschreibung</label>
-                <textarea id="task-description" name="description" required>${task.description}</textarea>
+                <textarea id="task-description" name="description" value=""required>${task.description}</textarea>
 
                 <label for="task-dueDate">Fälligkeit</label>
                 <input id="task-dueDate" name="dueDate"
@@ -456,8 +456,9 @@ export function showDialogEditList(
             <input id="task-title" name="title" value="${list.title}" required />
 
             <label for="task-description">Beschreibung</label>
-            <textarea id="task-description" name="description"  required>
-            ${list.description}</textarea>
+            
+            <textarea id="task-description" name="description" required>${list.description}</textarea>
+
 
             <div class="dialog-actions">
                 <button type="button" id="cancel-task">
