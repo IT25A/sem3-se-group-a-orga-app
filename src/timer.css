@@ -1,245 +1,334 @@
-.timer-container {
-    text-align: center;
-    padding: 30px;
-    background: rgba(20, 20, 30, 0.65);
-
-    backdrop-filter: blur(8px);
-
-    border: 1px solid rgba(255, 200, 210, 0.5);
-    border-radius: 25px;
-
-    padding: 35px;
-
-    width: 750px;
-    max-width: 100%;
-    box-sizing: border-box;
-
-    margin: 30px auto;
-
-    text-align: center;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-
-.timer-display {
-    font-size: 50px;
-    color: purple;
-}
-
-.hero{
-    text-align: center;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    color: #f3e2e7;
-    background-size: cover ;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-}
-.timebox{
-    text-align: center;
-    box-sizing: border-box;
-    display: flex ;
-    justify-content: center;
-    gap: 50px;
-    background: rgba(20, 20, 30, 0.65);
-
-    backdrop-filter: blur(8px);
-
-    border: 1px solid rgba(255, 200, 210, 0.5);
-    border-radius: 25px;
-
-    padding: 35px;
-
-    width: 750px;
-    max-width: 100%;
-    box-sizing: border-box;
-
-    margin: 30px auto;
-
-    text-align: center;
-    color: #f3e2e7;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.timebody {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./assets/time_timer_large_jac5000_1.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    width: 100%;
-    box-sizing: border-box;
-
-}
-html, body {
+/* Timerseite – einheitliches weiß-lila Design */
+html,
+body {
     margin: 0;
     padding: 0;
 }
 
-.wecker {
-    background: rgba(20, 20, 30, 0.65);
+.timebody {
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 16px;
+    background: #f8f5ff;
+}
 
-    backdrop-filter: blur(8px);
+.timebody .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: #33283f;
+}
 
-    border: 1px solid rgba(255, 200, 210, 0.5);
-    border-radius: 25px;
-
-    padding: 35px;
-
+/* Gemeinsames Aussehen aller Karten */
+.timebody .timebox,
+.timebody .wecker,
+.timebody .timer-container {
     width: 750px;
     max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
-
-    margin: 30px auto;
-
-    text-align: center;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    margin: 20px auto;
+    padding: 24px;
+    background: #ffffff;
+    color: #33283f;
+    border: 1px solid #ded0ef;
+    border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(121, 79, 181, 0.10);
 }
-#aufgabeWecker{
-    background-color: #f3e2e7;
-    color: #333;
 
-    padding: 15px;
-
-    border: none;
-    border-radius: 15px;
-
-    font-size: 16px;
+.timebody .ueberschrift {
+    color: #8050bd;
+    overflow-wrap: anywhere;
 }
-#selbstdefiniert1 {
-    background-color: #f3e2e7;
-    color: #333;
 
-    padding: 15px;
-
-    border: none;
-    border-radius: 15px;
-
-    font-size: 16px;
+.timebody .hero > .ueberschrift {
+    margin: 8px 0 16px;
 }
-#selbstdefiniert {
-    background-color: #f3e2e7;
-    color: #333;
 
-    padding: 15px;
-
-    border: none;
-    border-radius: 15px;
-
-    font-size: 16px;
+.timebody .wecker > .ueberschrift,
+.timebody .timer-container > .ueberschrift {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 20px;
 }
-#countdown-display-eigen {
-    font-size: 45px;
-    font-weight: bold;
-    color: #0dc89c;
 
-    margin-top: 25px;
-    margin-bottom: 0;
-}
-#countdown-display-eigen1 {
-    font-size: 45px;
-    font-weight: bold;
-    color: #0dc89c;
-
-    margin-top: 25px;
-    margin-bottom: 0;
-}
-.btn-65 {
-    display: inline-flex;
+/* Datum und Uhrzeit: kleine helllila Felder */
+.timebody .timebox {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-
-    padding: 15px 32px;
-    border: 1px solid #e9b8c8;
-    border-radius: 50px;
-
-    background-color: #e9b8c8;
-    color: #442b36;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
-
-    transition: background-color 0.2s, color 0.2s,
-    transform 0.2s, box-shadow 0.2s;
+    gap: 12px;
 }
 
-/* Deutlich sichtbarer Hover */
-.btn-65:hover:not(:disabled) {
-    background-color: #0dc89c;
-    border-color: #0dc89c;
-    color: #102c25;
-
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(13, 200, 156, 0.35);
+.timebody .timebox .time {
+    flex: 1 1 90px;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px 10px;
+    background: #eee5ff;
+    border-radius: 12px;
 }
 
-.btn-65:active {
-    transform: translateY(1px);
-    box-shadow: none;
+.timebody .timebox .time h2 {
+    margin: 0 0 8px;
+    color: #8050bd;
+    font-variant-numeric: tabular-nums;
 }
 
-.btn-65:disabled {
-    opacity: 0.65;
-    cursor: default;
+.timebody .timebox .time p {
+    margin: 0;
+    color: #74617f;
 }
 
-.wecker{
-    color: #0dc89c;
-}
-
-/* Timer-Buttons */
-.timer-container button {
-    background-color: #f1dede;
-    border: none;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-    width: 10em;
-    border-radius: 1rem;
-    color: lightcoral;
-    box-shadow: 0 0.4rem #f4a0a0;
-    cursor: pointer;
-}
-
-/* Beim Klicken */
-.timer-container button:active {
-    color: white;
-    box-shadow: 0 0.2rem #dfd9d9;
-    transform: translateY(0.2rem);
-}
-
-/* Maus über Button */
-.timer-container button:hover:not(:disabled) {
-    background: lightcoral;
-    color: white;
-    text-shadow: 0 0.1rem #bcb4b4;
-}
-
-/* Deaktivierter Button */
-.timer-container button:disabled {
-    cursor: auto;
-    color: grey;
-}
-
-
-.ueberschrift{
-    color: palevioletred;
-}
-
-.wecker-bedienung {
+/* Aufgabenwecker */
+.timebody .wecker,
+.timebody .wecker-bedienung,
+.timebody .timer-display1,
+.timebody .timer-display2,
+.timebody .timer-display3 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
+.timebody .wecker > h2,
+.timebody .wecker-bedienung {
+    flex-basis: 100%;
+    min-width: 0;
+}
+
+/* Helllila Bedienbereiche */
+.timebody .wecker-bedienung,
+.timebody .timer-display1,
+.timebody .timer-display2,
+.timebody .timer-display3 {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    background: #eee5ff;
+    border-radius: 12px;
+}
+
+/* Beide Felder oben, die drei Buttons darunter */
+#wecker1 .wecker-bedienung > select,
+#wecker1 .wecker-bedienung > input {
+    flex: 0 1 calc(50% - 6px);
+}
+
+/* Normaler Wecker: helllila Fläche ohne HTML-Änderung */
+.timebody #wecker {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    position: relative;
+    isolation: isolate;
+}
+
+.timebody #wecker::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 2 / 4;
+    align-self: stretch;
+    background: #eee5ff;
+    border-radius: 12px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.timebody #wecker > * {
+    position: relative;
+    z-index: 1;
+}
+
+.timebody #wecker > .ueberschrift {
+    grid-column: 1 / -1;
+    grid-row: 1;
+}
+
+.timebody #wecker #selbstdefiniert {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    max-width: calc(100% - 32px);
+    margin-top: 16px;
+}
+
+.timebody #btn {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.timebody #stoppeneiegner {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.timebody #reset-eigen {
+    grid-column: 3;
+    grid-row: 3;
+}
+
+.timebody #wecker > .btn-65 {
+    justify-self: center;
+    margin-bottom: 16px;
+}
+
+.timebody #countdown-display-eigen {
+    grid-column: 1 / -1;
+    grid-row: 4;
+}
+
+/* Eingabefelder und Aufgabenauswahl */
+.timebody #aufgabeWecker,
+.timebody #selbstdefiniert,
+.timebody #selbstdefiniert1 {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    color: #442b64;
+    border: 1px solid #d9c8ec;
+    border-radius: 12px;
+    padding: 13px 15px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+/* Zeitangaben */
+.timebody .timer-display,
+.timebody #countdown-display-eigen,
+.timebody #countdown-display-eigen1 {
+    font-size: 45px;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    color: #7950b5;
+    margin: 16px 0 0;
+}
+
+.timebody .timer-container > h2 {
+    color: #442b64;
+    font-variant-numeric: tabular-nums;
+    margin: 24px 0 16px;
+}
+
+/* Einheitliche Buttons */
+.timebody .btn-65,
+.timebody .timer-container button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 46px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 13px 22px;
+    border: 1px solid #7950b5;
+    border-radius: 12px;
+    background: #7950b5;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s,
+    transform 0.2s, box-shadow 0.2s;
+}
+
+.timebody .btn-65:hover:not(:disabled),
+.timebody .timer-container button:hover:not(:disabled) {
+    background: #613b96;
+    border-color: #613b96;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(97, 59, 150, 0.24);
+}
+
+.timebody .btn-65:active:not(:disabled),
+.timebody .timer-container button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.timebody .btn-65:disabled,
+.timebody .timer-container button:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.timebody .btn-65:focus-visible,
+.timebody .timer-container button:focus-visible,
+.timebody #aufgabeWecker:focus-visible,
+.timebody #selbstdefiniert:focus-visible,
+.timebody #selbstdefiniert1:focus-visible {
+    outline: 3px solid #b89adc;
+    outline-offset: 3px;
+}
+
+/* Kleine Bildschirme */
+@media (max-width: 600px) {
+    .timebody {
+        padding: 16px 12px;
+    }
+
+    .timebody .timebox,
+    .timebody .wecker,
+    .timebody .timer-container {
+        padding: 16px;
+        margin: 14px auto;
+    }
+
+    .timebody .hero > .ueberschrift {
+        font-size: 26px;
+    }
+
+    #wecker1 .wecker-bedienung > select,
+    #wecker1 .wecker-bedienung > input {
+        flex-basis: 100%;
+        width: 100%;
+    }
+
+    .timebody #wecker {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .timebody #wecker::before {
+        grid-row: 2 / 6;
+    }
+
+    .timebody #btn {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .timebody #stoppeneiegner {
+        grid-column: 1;
+        grid-row: 4;
+    }
+
+    .timebody #reset-eigen {
+        grid-column: 1;
+        grid-row: 5;
+    }
+
+    .timebody #wecker > .btn-65 {
+        margin-bottom: 0;
+    }
+
+    .timebody #reset-eigen {
+        margin-bottom: 16px;
+    }
+
+    .timebody #countdown-display-eigen {
+        grid-row: 6;
+    }
+}
