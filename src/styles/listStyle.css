@@ -595,3 +595,81 @@
     }
 
 }
+
+
+.backlog-filter-bar {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 14px;
+  z-index: 5;
+}
+
+.backlog-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 15px;
+  border: 1px solid #e4d8f7;
+  border-radius: 14px;
+  background: #f7f2ff;
+  color: #7952b3;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backlog-filter-button:hover,
+.backlog-filter-button.active {
+  background: #eee5ff;
+  border-color: #c9b4eb;
+  box-shadow: 0 3px 10px rgba(121, 82, 179, 0.12);
+}
+
+.backlog-filter-panel {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  width: min(280px, 90vw);
+  padding: 17px;
+  border: 1px solid #e4d8f7;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(75, 48, 110, 0.15);
+}
+
+.backlog-filter-panel[hidden] {
+  display: none;
+}
+
+.backlog-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 13px;
+  color: #60458a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.backlog-filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.backlog-filter-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e4d8f7;
+  border-radius: 10px;
+  background: #faf8ff;
+  color: #45345e;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.backlog-filter-group select:focus {
+  border-color: #9670c9;
+  box-shadow: 0 0 0 3px rgba(121, 82, 179, 0.12);
+}
+

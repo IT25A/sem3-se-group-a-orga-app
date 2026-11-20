@@ -3,6 +3,7 @@ import {backlog, updateBacklog} from './persistence/state'
 import'./style.css'
 import './styles/listStyle.css'
 import { initializeSortables, destroySortables } from './sortable'
+import type { Complexity, Priority, TimeEstimate, Task } from './taskAndListLogik'
 
 
 /**********************
@@ -92,8 +93,8 @@ function sortiereBacklog(): void {
 
 }
 
-function aktualisiereBacklogAnzeige(): void {
 
+function aktualisiereBacklogAnzeige(): void {
   const backlogList = document.getElementById(
     'backlog-list'
   ) as HTMLUListElement | null;
@@ -102,7 +103,9 @@ function aktualisiereBacklogAnzeige(): void {
 
   backlogList.replaceChildren();
 
-  for (const task of backlog.tasks) {
+  const gefilterteAufgaben = filterBacklogTasks();
+
+  for (const task of gefilterteAufgaben) {
     renderTaskByIdInContainer(
       task.id,
       'backlog',
@@ -110,6 +113,7 @@ function aktualisiereBacklogAnzeige(): void {
     );
   }
 }
+
 function setzeBacklogZurueck(): void {
 
   if (!urspruenglicheBacklogReihenfolge) return;
@@ -193,6 +197,132 @@ export function initialisiereSortierung(): void {
 
   });
 }
+/**********************
+ * Filtern
+ **********************/
+
+type BacklogFilter = {
+  completed: 'alle' | 'offen' | 'erledigt';
+  priority: 'alle' | Priority;
+  complexity: 'alle' | Complexity;
+  timeEstimate: 'alle' | TimeEstimate;
+};
+
+let backlogFilter: BacklogFilter = {
+  completed: 'alle',
+  priority: 'alle',
+  complexity: 'alle',
+  timeEstimate: 'alle'
+};
+
+function filterBacklogTasks(): Task[] {
+  return backlog.tasks.filter(task => {
+    const matchesCompleted =
+      backlogFilter.completed === 'alle' ||
+      (backlogFilter.completed === 'offen' && !task.completed) ||
+      (backlogFilter.completed === 'erledigt' && task.completed);
+
+    const matchesPriority =
+      backlogFilter.priority === 'alle' ||
+      task.priority === backlogFilter.priority;
+
+    const matchesComplexity =
+      backlogFilter.complexity === 'alle' ||
+      task.complexity === backlogFilter.complexity;
+
+    const matchesTimeEstimate =
+      backlogFilter.timeEstimate === 'alle' ||
+      task.timeEstimate === backlogFilter.timeEstimate;
+
+    return (
+      matchesCompleted &&
+      matchesPriority &&
+      matchesComplexity &&
+      matchesTimeEstimate
+    );
+  });
+}
+
+function createBacklogFilterBar(): HTMLDivElement {
+  const filterBar = document.createElement('div');
+  filterBar.className = 'backlog-filter-bar';
+
+  const filterButton = document.createElement('button');
+  filterButton.className = 'backlog-filter-button';
+  filterButton.innerHTML = `
+    <span>☷</span>
+    <span>Filtern</span>
+    <span>⌄</span>
+  `;
+
+  const filterPanel = document.createElement('div');
+  filterPanel.className = 'backlog-filter-panel';
+  filterPanel.hidden = true;
+
+  const filterOptions = [
+    {
+      key: 'completed',
+      label: 'Status',
+      options: ['alle', 'offen', 'erledigt']
+    },
+    {
+      key: 'priority',
+      label: 'Priorität',
+      options: ['alle', 'klein', 'mittel', 'hoch']
+    },
+    {
+      key: 'complexity',
+      label: 'Komplexität',
+      options: ['alle', 'einfach', 'mittel', 'schwierig']
+    },
+    {
+      key: 'timeEstimate',
+      label: 'Zeitaufwand',
+      options: ['alle', 'kurz', 'mittel', 'lang']
+    }
+  ] as const;
+
+  for (const filter of filterOptions) {
+    const group = document.createElement('label');
+    group.className = 'backlog-filter-group';
+
+    const label = document.createElement('span');
+    label.textContent = filter.label;
+
+    const select = document.createElement('select');
+    select.dataset.filter = filter.key;
+
+    for (const option of filter.options) {
+      const optionElement = document.createElement('option');
+      optionElement.value = option;
+      optionElement.textContent =
+        option === 'alle' ? 'Alle' :
+        option.charAt(0).toUpperCase() + option.slice(1);
+
+      select.appendChild(optionElement);
+    }
+    
+
+    select.value = backlogFilter[filter.key];
+
+    select.addEventListener('change', () => {
+      backlogFilter[filter.key] = select.value as never;
+      aktualisiereBacklogAnzeige();
+    });
+
+    group.append(label, select);
+    filterPanel.appendChild(group);
+  }
+
+  filterButton.addEventListener('click', () => {
+    filterPanel.hidden = !filterPanel.hidden;
+    filterButton.classList.toggle('active', !filterPanel.hidden);
+  });
+
+  filterBar.append(filterButton, filterPanel);
+
+  return filterBar;
+}
 
 /**********************
  * Anzeigen
@@ -246,6 +376,13 @@ export function renderBacklogPage(): void {
       </form>
     </dialog>
   `;
+
+  backlogFilter = {
+    completed: 'alle',
+    priority: 'alle',
+    complexity: 'alle',
+    timeEstimate: 'alle'
+  };
   renderBacklogInContainer(app);
   initialisiereSortierung();
 }
@@ -264,15 +401,18 @@ export function renderBacklogInContainer(
 
   backlogContainer.classList.add('list-card');
   backlogContainer.replaceChildren();
+  
 
   const backlogList = document.createElement('ul');
   backlogList.id = 'backlog-list';
   backlogList.classList.add('sortable-list');
+
+  backlogContainer.appendChild(createBacklogFilterBar());
   backlogContainer.appendChild(backlogList);
 
-  for (const task of backlog.tasks) {
-    renderTaskByIdInContainer(task.id, 'backlog', backlogList);
-  }
+  for (const task of filterBacklogTasks()) {
+  renderTaskByIdInContainer(task.id, 'backlog', backlogList);
+}
 
   // Sortable nur initialisieren, wenn es ausdrücklich gewünscht ist
   if (enableSortable) {
