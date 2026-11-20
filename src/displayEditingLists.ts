@@ -12,6 +12,7 @@ import { refreshZielDetailPage } from './displayZielDetail';
 
 
 export function displayListPage(): void {
+  
   renderLists();
 }
 
@@ -63,14 +64,28 @@ function renderLists(): void {
   destroySortables();
   container.replaceChildren();
 
+  const pageHeading = document.createElement('div');
+  pageHeading.className = 'list-page-heading';
+
+  const heading = document.createElement('h1');
+  heading.textContent = 'Meine Listen';
+
+  const subtitle = document.createElement('p');
+  subtitle.textContent = 'Schritt für Schritt zum Häkchen-Glück';
+
+  pageHeading.append(heading, subtitle);
+  container.appendChild(pageHeading);
+
+
+
   const newListItem = document.createElement('div');
   newListItem.id = "neue-liste-erstellen-feld";
   newListItem.textContent = "neue Liste";
   container.appendChild(newListItem);
   newListItem.addEventListener('click', () => {
     showDialogNewList(
-      (title, description) => {
-        addList(title, description)
+      (title, description?) => {
+        addList(title, description);
         renderLists();
       }
     );
@@ -190,7 +205,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
           }
         })
         }  
-      });
+      }); //test
 
       editButton.addEventListener('click', () => {
         showDialogEditTask(task.id, async (taskId, title, description, priority, complexity, timeEstimate, dueDate) => {
@@ -253,7 +268,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
       details.hidden = true;
 
       const description = document.createElement('p');
-      description.textContent = task.description;
+      description.textContent = task.description ?? '';
 
       const priority = document.createElement('p');
       priority.textContent = `Priorität: ${task.priority}`;
@@ -319,7 +334,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   title.textContent = list.title;
 
   const description = document.createElement('p');
-  description.textContent = list.description;
+  description.textContent = list.description ?? '';
 
   const taskCount = document.createElement('p');
   taskCount.textContent = `Tasks: ${list.tasks.length}`;

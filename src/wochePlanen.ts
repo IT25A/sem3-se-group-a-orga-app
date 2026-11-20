@@ -28,7 +28,7 @@ export function displayPlanungsPage() {
 
     const description = document.createElement("p");
     description.textContent =
-        "Plane deine Aufgaben und behalte deine Zeit im Blick.";
+        "Was steht heute auf dem Zettelchen?";
 
     header.append(title, description);
 
@@ -55,5 +55,5 @@ export function displayPlanungsPage() {
     renderBacklogInContainer(taskContainer);
     showCalender(calenderContainer);
 
-    initializeCalendarDraggable(taskContainer);
+    initializeCalendarDraggable();
 }
