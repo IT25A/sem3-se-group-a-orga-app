@@ -8,6 +8,7 @@ import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
 import { displayPlanungsPage } from './wochePlanen';
+import { refreshZielDetailPage } from './displayZielDetail';
 
 
 export function displayListPage(): void {
@@ -37,6 +38,22 @@ export function refreshHomeList(listId: string, sourceElement: HTMLElement): voi
     renderListByIdInContainer(idToRender, appContainer, true);
   }
 }
+export function refreshZielCardSliderList(listId: string, sourceElement: HTMLElement): void {
+  const sliderCard = sourceElement.closest<HTMLDivElement>('.slidable-card');
+  const listStillExists = lists.some(list => list.id === listId);
+
+  if (sliderCard) {
+    if (listStillExists) {
+      renderListByIdInContainer(listId, sliderCard, true);
+    } else {
+      sliderCard.remove();
+      destroySortables();
+      initializeSortables();
+    }
+    return;
+  }
+}
+
 function renderLists(): void {
   const container = document.querySelector<HTMLDivElement>('#app',);
   if (!container) {
@@ -106,7 +123,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
         `Aufgabe ${taskId} existiert nicht mehr im Backlog.`
     );
     return;
-}
+  }
   const taskItem = document.createElement('li');
     taskItem.id = taskId;
     taskItem.classList.add('task-item');
@@ -165,6 +182,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
             case "planung-page":
               displayPlanungsPage();
               break;
+            case "ziele-page":
+              refreshZielCardSliderList(listId, taskItem);
+              break;
             default:
               break;
           }
@@ -193,6 +213,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
             case "planung-page":
               displayPlanungsPage();
               break;
+            case "ziele-page":
+              refreshZielCardSliderList(listId, taskItem);
+              break;
             default:
               break;
           }
@@ -214,6 +237,9 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               break;
             case "planung-page":
               displayPlanungsPage();
+              break;
+            case "ziele-page":
+              refreshZielCardSliderList(listId, taskItem);              
               break;
             default:
               break;
@@ -337,8 +363,6 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
             });
 
             await addTaskToList(newTask.id, listId);
-
-
             switch (currentPage) {
                 case "home-page":
                     refreshHomeList(listId, taskList);
@@ -346,6 +370,11 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
                 case "list-page":
                     renderLists();
                     break;
+                case "ziele-page":
+                    refreshZielCardSliderList(listId, taskList);
+                    break;
+                default:
+                  break;
             }
         }
     );
@@ -360,6 +389,9 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         case "list-page":
           renderLists();
           break;
+        case "ziele-page":
+              refreshZielCardSliderList(list.id, listElement);
+              break;
         default:
           break;
       }
@@ -379,6 +411,9 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
         case "list-page":
           renderLists();
           break;
+        case "ziele-page":
+              refreshZielCardSliderList(listId, listElement);
+              break;
         default:
           break;
       }
