@@ -231,8 +231,6 @@
     height: 28px;
     padding: 0;
 
-    filter: hue-rotate(90deg);
-
     background-color: transparent;
     border: none;
 
@@ -241,6 +239,21 @@
 
     transition: background-color 0.2s ease,
         transform 0.2s ease;
+}
+
+/* Standard */
+#app .delete-button {
+    filter: hue-rotate(90deg);
+}
+
+/* Windows  */
+.os-windows #app .delete-button {
+    filter: hue-rotate(270deg);
+}
+
+/* Linux */
+.os-linux #app .delete-button {
+    filter: hue-rotate(90deg);
 }
 
 #app .edit-button {
@@ -253,8 +266,6 @@
     height: 28px;
     padding: 0;
 
-    filter: hue-rotate(210deg) brightness(0.9);
-
     background-color: transparent;
     border: none;
 
@@ -264,20 +275,38 @@
     transition: background-color 0.2s ease,
         transform 0.2s ease;
 }
+/* Windows  */
+.os-windows #app .edit-button {
+    filter: hue-rotate(270deg);
+}
 
-
-
+/* Linux */
+.os-linux #app .edit-button {
+    filter: hue-rotate(210deg);
+}
 
 #app .toggle-button:hover {
     font-weight: bold;
 }
 
-#app .delete-button:hover {
+/* Windows  */
+.os-windows #app .delete-button:hover {
+    filter: hue-rotate(220deg);
+}
+
+/* Linux */
+.os-linux #app .delete-button:hover {
     filter: hue-rotate(150deg);
 }
 
-#app .edit-button:hover {
-    filter: hue-rotate(270deg);
+/* Windows  */
+.os-windows #app .edit-button:hover {
+    filter: hue-rotate(20deg);
+}
+
+/* Linux */
+.os-linux #app .edit-button:hover {
+    filter: hue-rotate(250deg);
 }
 
 /* Ausklappbarer Detailbereich */

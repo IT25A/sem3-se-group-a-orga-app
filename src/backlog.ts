@@ -376,13 +376,6 @@ export function renderBacklogPage(): void {
       </form>
     </dialog>
   `;
-
-  backlogFilter = {
-    completed: 'alle',
-    priority: 'alle',
-    complexity: 'alle',
-    timeEstimate: 'alle'
-  };
   renderBacklogInContainer(app);
   initialisiereSortierung();
 }
