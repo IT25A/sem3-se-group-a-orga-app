@@ -20,7 +20,7 @@ export function generateUniqueId(): string {
 export type List = {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   createdAt: Date;
   tasks: string[];
 }
@@ -30,17 +30,17 @@ export type Complexity = 'einfach' | 'mittel' | 'schwierig';
 export type TimeEstimate = 'kurz' | 'mittel' | 'lang';
 
 
-function createList(title: string, description: string): List {
+function createList(title: string, description?: string): List {
   let newList: List = {
     id: generateUniqueId(),
     title,
-    description,
+    description: description ?? undefined,
     createdAt: new Date(),
     tasks: []
   }
   return newList;
 }
-export async function addList(title: string, description: string): Promise<void> {
+export async function addList(title: string, description?: string): Promise<void> {
   const newList = createList(title, description);
   lists.push(newList);
   await updateAppData(lists, backlog, eventlog, ziellog);
@@ -127,7 +127,7 @@ export function calculateProgress(listId: string){
 export type Task = {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   dueDate?: Date;
   startDate?: Date;
   endDate?: Date;
@@ -148,7 +148,7 @@ export async function createTask({
   dueDate
 }: {
   title: string;
-  description: string;
+  description?: string;
   priority?: Priority;
   complexity?: Complexity;
   timeEstimate?: TimeEstimate;
@@ -157,7 +157,7 @@ export async function createTask({
   const newTask: Task = {
     id: generateUniqueId(),
     title,
-    description,
+    description: description ?? undefined,
     dueDate: dueDate ?? undefined,
     createdAt: new Date(),
     priority: priority ?? 'mittel',

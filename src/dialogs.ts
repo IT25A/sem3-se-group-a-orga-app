@@ -8,7 +8,7 @@ export function showDialogNewTask(
     onCreate: (
         listId: string,
         title: string,
-        description: string,
+        description: string | undefined,
         priority: 'klein' | 'mittel' | 'hoch',
         complexity: 'einfach' | 'mittel' | 'schwierig',
         timeEstimate: 'kurz' | 'mittel' | 'lang',
@@ -25,7 +25,7 @@ export function showDialogNewTask(
             <input id="task-title" name="title" placeholder="Was möchtest du erledigen?" required />
 
             <label for="task-description">Beschreibung</label>
-            <textarea id="task-description" name="description" placeholder="Beschreibe deine Aufgabe etwas genauer..."required></textarea>
+            <textarea id="task-description" name="description" placeholder="Beschreibe deine Aufgabe etwas genauer..."></textarea>
 
             <label for="task-dueDate">Fälligkeit</label>
             <input id="task-dueDate" name="dueDate" type="date" />
@@ -105,9 +105,9 @@ export function showDialogNewTask(
             | 'lang';
 
         if (!title) return;
-        if (!description) return;
+        const optionalDescription = description.trim() || undefined;
 
-        await onCreate(listId, title, description, priority, complexity, timeEstimate, dueDate);
+        await onCreate(listId, title, optionalDescription, priority, complexity, timeEstimate, dueDate);
 
         addingTaskDialog.close();
         addingTaskDialog.remove();
@@ -121,7 +121,7 @@ export function showDialogNewTask(
 export function showDialogNewList(
     onCreate: (
         title: string,
-        description: string,
+        description?: string,
     ) => void
 ): void {
     const addingTaskDialog = document.createElement('dialog');
@@ -134,7 +134,7 @@ export function showDialogNewList(
             <input id="task-title" name="title" placeholder="Wofür möchtest du eine Liste erstellen?" required />
 
             <label for="task-description">Beschreibung</label>
-            <textarea id="task-description" name="description" placeholder="Beschreibe etwas genauer, was in dieser Liste für Aufgaben stehen sollen..."required></textarea>
+            <textarea id="task-description" name="description" placeholder="Beschreibe etwas genauer, was in dieser Liste für Aufgaben stehen sollen..."></textarea>
 
             <div class="dialog-actions">
                 <button type="button" id="cancel-task">
@@ -169,9 +169,9 @@ export function showDialogNewList(
         );
 
         if (!title) return;
-        if (!description) return;
+        const optionalDescription = description.trim() || undefined;
 
-        onCreate( title, description);
+        onCreate( title, optionalDescription);
 
         addingTaskDialog.close();
         addingTaskDialog.remove();
@@ -316,7 +316,7 @@ export function showDialogEditTask(
     onCreate: (  
         taskId: string,  
         title: string,
-        description: string,
+        description: string | undefined,
         priority: 'klein' | 'mittel' | 'hoch',
         complexity: 'einfach' | 'mittel' | 'schwierig',
         timeEstimate: 'kurz' | 'mittel' | 'lang',
@@ -345,7 +345,7 @@ export function showDialogEditTask(
                     value="${task.title}" required />
 
                 <label for="task-description">Beschreibung</label>
-                <textarea id="task-description" name="description" value=""required>${task.description}</textarea>
+                <textarea id="task-description" name="description">${task.description ?? ''}</textarea>
 
                 <label for="task-dueDate">Fälligkeit</label>
                 <input id="task-dueDate" name="dueDate"
@@ -424,9 +424,9 @@ const form = editingTaskDialog.querySelector('form')!;
             | 'lang';
 
         if (!title) return;
-        if (!description) return;
+        const optionalDescription = description.trim() || undefined;
 
-        await onCreate(taskId, title, description, priority, complexity, timeEstimate, dueDate);
+        await onCreate(taskId, title, optionalDescription, priority, complexity, timeEstimate, dueDate);
 
         editingTaskDialog.close();
         editingTaskDialog.remove();
@@ -443,7 +443,7 @@ export function showDialogEditList(
     onCreate: (
         listId: string,
         title: string,
-        description: string,
+        description: string | undefined,
     ) => void
 ): void {
     const editingTaskDialog = document.createElement('dialog');
@@ -457,7 +457,7 @@ export function showDialogEditList(
 
             <label for="task-description">Beschreibung</label>
             
-            <textarea id="task-description" name="description" required>${list.description}</textarea>
+            <textarea id="task-description" name="description">${list.description ?? ''}</textarea>
 
 
             <div class="dialog-actions">
@@ -493,9 +493,9 @@ export function showDialogEditList(
         );
 
         if (!title) return;
-        if (!description) return;
+        const optionalDescription = description.trim() || undefined;
 
-        onCreate( listId,title, description);
+        onCreate( listId,title, optionalDescription);
 
         editingTaskDialog.close();
         editingTaskDialog.remove();

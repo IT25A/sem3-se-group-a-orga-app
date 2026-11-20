@@ -84,8 +84,8 @@ function renderLists(): void {
   container.appendChild(newListItem);
   newListItem.addEventListener('click', () => {
     showDialogNewList(
-      (title, description) => {
-        addList(title, description)
+      (title, description?) => {
+        addList(title, description);
         renderLists();
       }
     );
@@ -268,7 +268,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
       details.hidden = true;
 
       const description = document.createElement('p');
-      description.textContent = task.description;
+      description.textContent = task.description ?? '';
 
       const priority = document.createElement('p');
       priority.textContent = `Priorität: ${task.priority}`;
@@ -334,7 +334,7 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   title.textContent = list.title;
 
   const description = document.createElement('p');
-  description.textContent = list.description;
+  description.textContent = list.description ?? '';
 
   const taskCount = document.createElement('p');
   taskCount.textContent = `Tasks: ${list.tasks.length}`;
