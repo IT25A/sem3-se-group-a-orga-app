@@ -14,6 +14,7 @@ export function initializeCalendarDraggable(): void {
         const draggable = new Draggable(container, {
             itemSelector: '.fc-draggable-task',
             appendTo: container,
+            
 
             eventData: (eventEl) => {
                 const originTask = backlog.tasks.find(t => t.id === eventEl.id);
@@ -59,6 +60,7 @@ export function initializeCalendarDraggable(): void {
                         taskId: eventEl.id
                     }
                 };
+                
             }
         });
 

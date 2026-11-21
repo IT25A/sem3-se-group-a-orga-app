@@ -2,13 +2,14 @@ import './style.css'
 import './styles/listStyle.css'
 
 import { initializeSortables, destroySortables } from './sortable';
-import {  createTask, deleteTask, addTaskToList, editTaskCompleted, addList, removeTaskFromList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
+import {  createTask, deleteTask, addTaskToList, editTaskCompleted, addList, calculateProgress, editTaskComplexity, editTaskDescription, editTaskDueDate, editTaskPriority, editTaskTimeEstimate, editTaskTitle } from './taskAndListLogik'
 import { showDialogNewTask, showDialogNewList, showDialogDeleteTask, showDialogDeleteList, showDialogEditTask, showDialogEditList } from './dialogs';
 import { currentPage } from './main';
 import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
 import { displayPlanungsPage } from './wochePlanen';
-import { refreshZielDetailPage } from './displayZielDetail';
+import { aktualisiereBacklogAnzeige } from './backlog';
+
 
 
 export function displayListPage(): void {
@@ -251,7 +252,7 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               renderBacklogPage();
               break;
             case "planung-page":
-              displayPlanungsPage();
+              aktualisiereBacklogAnzeige();
               break;
             case "ziele-page":
               refreshZielCardSliderList(listId, taskItem);              
@@ -337,11 +338,11 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   description.textContent = list.description ?? '';
 
   const taskCount = document.createElement('p');
-  taskCount.textContent = `Tasks: ${list.tasks.length}`;
+  taskCount.textContent = `Aufgaben: ${list.tasks.length}`;
 
   //Progressbar
   const taskProgress = document.createElement('p');
-  taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+  taskProgress.textContent = `Fortschritt: ${calculateProgress(list.id)}%`;
 
   const progressBar =displayProgressBar(calculateProgress(list.id));
 

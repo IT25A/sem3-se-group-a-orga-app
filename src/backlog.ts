@@ -2,7 +2,7 @@ import {renderTaskByIdInContainer} from './displayEditingLists'
 import {backlog, updateBacklog} from './persistence/state'
 import'./style.css'
 import './styles/listStyle.css'
-import { initializeSortables, destroySortables } from './sortable'
+import { initializeSortables} from './sortable'
 import type { Complexity, Priority, TimeEstimate, Task } from './taskAndListLogik'
 
 
@@ -19,15 +19,6 @@ type SortierKriterium =
 let aktuellesKriterium: SortierKriterium | null = null;
 let sortierRichtung: 'asc' | 'desc' = 'asc';
 let urspruenglicheBacklogReihenfolge: string[] | null = null;
-
-function sortierWert(
-  wert: string,
-  reihenfolge: string[]
-): number {
-  return reihenfolge.indexOf(wert);
-}
-
-
 
 function sortiereBacklog(): void {
 
@@ -94,7 +85,7 @@ function sortiereBacklog(): void {
 }
 
 
-function aktualisiereBacklogAnzeige(): void {
+export function aktualisiereBacklogAnzeige(): void {
   const backlogList = document.getElementById(
     'backlog-list'
   ) as HTMLUListElement | null;
@@ -484,7 +475,7 @@ export function renderBacklogInContainer(
 
       popupText.textContent =
           `Achtung: Du hast insgesamt ${anzahloffene} offene Aufgaben. ` +
-          `achte bitte auf deine Gesundheit! 🔔`;
+          `Achte bitte auf deine Gesundheit! 🔔`;
 
       popup.showModal();
       if (!benachrichtigungenOhneTon ) {

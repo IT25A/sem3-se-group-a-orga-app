@@ -41,17 +41,13 @@ ul, #neue-liste-erstellen-feld {
   position: sticky;
 
 }
-/* dies habe ich gelöscht :)
-  top: 0;
-  z-index: 1000;
-  max-height: 100vh;
-  */
 
 .navbar ul {
   background-color: transparent;
   margin: 0px;
   padding: 25px;
   list-style: none;
+  position:fixed;
 }
 
 li {

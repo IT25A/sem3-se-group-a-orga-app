@@ -21,16 +21,16 @@ export function displayPlanungsPage() {
 
     // Überschrift
     const header = document.createElement("div");
-    header.classList.add("planning-header");
+    header.classList.add("list-page-heading");
 
     const title = document.createElement("h1");
     title.textContent = "Meine Planung";
 
     const description = document.createElement("p");
-    description.textContent =
-        "Was steht heute auf dem Zettelchen?";
-
+    description.replaceChildren("Was hast du diese Woche vor? Ziehe die Aufgaben in den Kalender oder erstelle neue Termine, indem du in den Kalender klickst!")
+        //"Was hast du diese Woche vor? Ziehe die Aufgaben in den Kalender oder erstelle neue Termine, indem du in den Kalender klickst!";
     header.append(title, description);
+    
 
     // Flexbox-Bereich
     const planningContent = document.createElement("div");
