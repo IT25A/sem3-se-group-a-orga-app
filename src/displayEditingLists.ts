@@ -337,11 +337,11 @@ export function renderListByIdInContainer(id: string, container: HTMLDivElement,
   description.textContent = list.description ?? '';
 
   const taskCount = document.createElement('p');
-  taskCount.textContent = `Tasks: ${list.tasks.length}`;
+  taskCount.textContent = `Aufgaben: ${list.tasks.length}`;
 
   //Progressbar
   const taskProgress = document.createElement('p');
-  taskProgress.textContent = `Progress: ${calculateProgress(list.id)}%`;
+  taskProgress.textContent = `Fortschritt: ${calculateProgress(list.id)}%`;
 
   const progressBar =displayProgressBar(calculateProgress(list.id));
 

@@ -52,6 +52,7 @@ ul, #neue-liste-erstellen-feld {
   margin: 0px;
   padding: 25px;
   list-style: none;
+  position:fixed;
 }
 
 li {

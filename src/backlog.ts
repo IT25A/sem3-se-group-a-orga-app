@@ -484,7 +484,7 @@ export function renderBacklogInContainer(
 
       popupText.textContent =
           `Achtung: Du hast insgesamt ${anzahloffene} offene Aufgaben. ` +
-          `achte bitte auf deine Gesundheit! 🔔`;
+          `Achte bitte auf deine Gesundheit! 🔔`;
 
       popup.showModal();
       if (!benachrichtigungenOhneTon ) {
