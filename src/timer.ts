@@ -114,30 +114,52 @@ export function tasks() {
 }
 
 // 2. Datum anzeigen
+// Außerhalb der Funktion speichern
+let datumIntervall: ReturnType<typeof setInterval> | null = null;
+
 export function zeigeDatum() {
+    // Vorheriges Intervall beenden
+    if (datumIntervall !== null) {
+        clearInterval(datumIntervall);
+        datumIntervall = null;
+    }
+
+    const monat = document.getElementById("monat");
+    const tag = document.getElementById("tag");
+    const stunden = document.getElementById("stunden");
+    const minuten = document.getElementById("minuten");
+    const sekunden = document.getElementById("sekunden");
+
+    if (!monat || !tag || !stunden || !minuten || !sekunden) {
+        return;
+    }
 
     function aktualisieren() {
+        // Timer-Seite wurde verlassen: Intervall beenden
+        if (!monat.isConnected) {
+            if (datumIntervall !== null) {
+                clearInterval(datumIntervall);
+                datumIntervall = null;
+            }
+            return;
+        }
 
         const now = new Date();
-        document.getElementById("monat")!.textContent =
-            String(now.getMonth() +1 ).padStart(2, "0");
 
-        document.getElementById("tag")!.textContent =
+        monat.textContent =
+            String(now.getMonth() + 1).padStart(2, "0");
+        tag.textContent =
             String(now.getDate()).padStart(2, "0");
-
-        document.getElementById("stunden")!.textContent =
+        stunden.textContent =
             String(now.getHours()).padStart(2, "0");
-
-        document.getElementById("minuten")!.textContent =
+        minuten.textContent =
             String(now.getMinutes()).padStart(2, "0");
-
-        document.getElementById("sekunden")!.textContent =
+        sekunden.textContent =
             String(now.getSeconds()).padStart(2, "0");
     }
 
     aktualisieren();
-
-    setInterval(aktualisieren, 1000);
+    datumIntervall = setInterval(aktualisieren, 1000);
 }
 //Timer
 let restSekunden1 = 5 * 60;   // 5 Minuten
