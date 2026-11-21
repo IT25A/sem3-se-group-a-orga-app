@@ -209,7 +209,6 @@ export function showDialogDeleteTask(
 
     document.body.appendChild(deletingTaskDialog);
 
-    const form = deletingTaskDialog.querySelector('form')!;
     const cancelButton =
         deletingTaskDialog.querySelector<HTMLButtonElement>(
             '#cancel-task'
@@ -272,7 +271,6 @@ export function showDialogDeleteList(
 
     document.body.appendChild(deletingListDialog);
 
-    const form = deletingListDialog.querySelector('form')!;
     const cancelButton =
         deletingListDialog.querySelector<HTMLButtonElement>(
             '#cancel-task'

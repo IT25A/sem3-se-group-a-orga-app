@@ -15,6 +15,7 @@ import { loadEventlog } from './persistence/storage';
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
 let isUndoing = false;
+let isDragging = false;
 export type CalendarEvent = {
     id: string;
     taskId: string;
@@ -122,6 +123,18 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             ]
         }
     ],
+    eventDragStart: () => {
+        isDragging = true;
+
+        // Bereits sichtbare Tooltips entfernen
+        document.querySelectorAll('.fc-event-tooltip').forEach(el => {
+            el.remove();
+        });
+    },
+
+    eventDragStop: () => {
+        isDragging = false;
+    },
     eventChange: (info) => {
         const event = info.event;
 
@@ -175,7 +188,9 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
         }
     },
     eventDidMount: (info) => {
-        createEventTooltip(info);
+        if (!isDragging) {
+            createEventTooltip(info);
+        }
     },
     dateClick: (info) => {
         const title = prompt('Titel des Termins:')?.trim();

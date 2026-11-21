@@ -1,5 +1,5 @@
 
-import { ziellog, updateZiellog, lists } from "./persistence/state";
+import { ziellog, updateZiellog } from "./persistence/state";
 import type { Ziel } from "./displayZiele";
 import { calculateProgress } from "./taskAndListLogik";
 
