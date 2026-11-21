@@ -1,5 +1,5 @@
 import "./timer.css";
-import {backlog} from './persistence/state'
+import { backlog } from './persistence/state'
 // select tag : auswählbare liste , options ist die zu ausgewählten einträge
 export function renderTimer() {
     return `
@@ -134,9 +134,15 @@ export function zeigeDatum() {
         return;
     }
 
+    const monatElement = monat;
+    const tagElement = tag;
+    const stundenElement = stunden;
+    const minutenElement = minuten;
+    const sekundenElement = sekunden;
+
     function aktualisieren() {
         // Timer-Seite wurde verlassen: Intervall beenden
-        if (!monat.isConnected) {
+        if (!monatElement.isConnected) {
             if (datumIntervall !== null) {
                 clearInterval(datumIntervall);
                 datumIntervall = null;
@@ -146,15 +152,15 @@ export function zeigeDatum() {
 
         const now = new Date();
 
-        monat.textContent =
+        monatElement.textContent =
             String(now.getMonth() + 1).padStart(2, "0");
-        tag.textContent =
+        tagElement.textContent =
             String(now.getDate()).padStart(2, "0");
-        stunden.textContent =
+        stundenElement.textContent =
             String(now.getHours()).padStart(2, "0");
-        minuten.textContent =
+        minutenElement.textContent =
             String(now.getMinutes()).padStart(2, "0");
-        sekunden.textContent =
+        sekundenElement.textContent =
             String(now.getSeconds()).padStart(2, "0");
     }
 
@@ -176,46 +182,46 @@ let intervall3: ReturnType<typeof setInterval> | null = null;
 
 
 
-    export function startTimer1() {
+export function startTimer1() {
 
-        // Verhindert, dass mehrere Timer gleichzeitig laufen
-        if (intervall1 !== null || restSekunden1 <= 0) {
-            return;
+    // Verhindert, dass mehrere Timer gleichzeitig laufen
+    if (intervall1 !== null || restSekunden1 <= 0) {
+        return;
+    }
+
+    intervall1 = setInterval(() => {
+
+        restSekunden1--;
+
+        const minuten = Math.floor(restSekunden1 / 60);
+        const sekunden = restSekunden1 % 60;
+
+        document.getElementById("countdown-display1")!.textContent =
+            `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+
+        // Bei 0 stoppen
+        if (restSekunden1 <= 0) {
+            clearInterval(intervall1!);
+            intervall1 = null;
+            console.log("Timer ist abgelaufen!");
+
+            const audio = new Audio("/audio1.mp3");
+
+            audio.play()
+                .then(() => console.log("Audio gestartet!"))
+                .catch(error => console.error("Audiofehler:", error));
+
+            setTimeout(() => {
+                alert("Dein Timer ist abgelaufen!⏰");
+            }, 1500);
+
+
         }
 
-        intervall1 = setInterval(() => {
-
-            restSekunden1--;
-
-            const minuten = Math.floor(restSekunden1 / 60);
-            const sekunden = restSekunden1 % 60;
-
-            document.getElementById("countdown-display1")!.textContent =
-                `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
-
-            // Bei 0 stoppen
-            if (restSekunden1 <= 0) {
-                clearInterval(intervall1!);
-                intervall1 = null;
-                console.log("Timer ist abgelaufen!");
-
-                const audio = new Audio("/audio1.mp3");
-
-                audio.play()
-                    .then(() => console.log("Audio gestartet!"))
-                    .catch(error => console.error("Audiofehler:", error));
-
-                setTimeout(()=> {
-                    alert( "Dein Timer ist abgelaufen!⏰");
-                },1500);
-
-
-            }
-
-        }, 1000);
-    }
+    }, 1000);
+}
 export function stoppTimer1() {
-     //restSekunden1 = 0
+    //restSekunden1 = 0
     clearInterval(intervall1!);
     intervall1 = null;
     return// 5 Minuten
@@ -224,7 +230,7 @@ export function stoppTimer1() {
 }
 
 
-    export function startTimer2() {
+export function startTimer2() {
     // Verhindert, dass mehrere Timer gleichzeitig laufen
     if (intervall2 !== null || restSekunden2 <= 0) {
         return;
@@ -252,9 +258,9 @@ export function stoppTimer1() {
                 .then(() => console.log("Audio gestartet!"))
                 .catch(error => console.error("Audiofehler:", error));
 
-            setTimeout(()=> {
-                alert( "Dein Timer ist abgelaufen!⏰");
-            },1500);
+            setTimeout(() => {
+                alert("Dein Timer ist abgelaufen!⏰");
+            }, 1500);
 
             //alert("⏰ Dein 30-Minuten-Timer ist abgelaufen!");
         }
@@ -308,9 +314,9 @@ export function startTimer3() {
                 .then(() => console.log("Audio gestartet!"))
                 .catch(error => console.error("Audiofehler:", error));
 
-            setTimeout(()=> {
-                alert( "Dein Timer ist abgelaufen!⏰");
-            },1500);
+            setTimeout(() => {
+                alert("Dein Timer ist abgelaufen!⏰");
+            }, 1500);
 
 
         }
@@ -344,10 +350,10 @@ export function resetTimer3() {
 export function initEigenerWecker() {
 
     const button = document.getElementById("btn") as HTMLButtonElement;
-    button.addEventListener("click", ()=>{
+    button.addEventListener("click", () => {
         const input = document.getElementById("selbstdefiniert") as HTMLInputElement;
         const zeit = input.value;
-        const time= new Date(zeit).getTime();
+        const time = new Date(zeit).getTime();
         const differenz = time - Date.now();
         const restsekunden = Math.floor(differenz / 1000);
         // Wecker starten und Sekunden übergeben
@@ -364,7 +370,7 @@ export function initEigenerWecker() {
             document.getElementById("countdown-display-eigen")!
                 .textContent = "00:00";
         });
-    }
+}
 
 export function initEigenerWecker1() {
     tasks();
