@@ -1,5 +1,19 @@
 import "./timer.css";
 import { backlog } from './persistence/state'
+// Beim Reiterwechsel existieren die Countdown-Elemente vorübergehend nicht.
+// Der Countdown läuft weiter; nur die DOM-Aktualisierung wird übersprungen.
+function setCountdownText(id: string, text: string): void {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = text;
+    }
+}
+
+function formatZeit(sekunden: number): string {
+    const minuten = Math.floor(sekunden / 60);
+    return `${String(minuten).padStart(2, "0")}:${String(sekunden % 60).padStart(2, "0")}`;
+}
+
 // select tag : auswählbare liste , options ist die zu ausgewählten einträge
 export function renderTimer() {
     return `
@@ -100,6 +114,8 @@ export function tasks() {
         "aufgabeWecker"
     ) as HTMLSelectElement;
 
+    if (!selectelement) return;
+
     selectelement.innerHTML =
         '<option value="">Bitte wähle eine Aufgabe</option>';
 
@@ -165,8 +181,18 @@ export function zeigeDatum() {
     }
 
     aktualisieren();
+    aktualisiereTimerAnzeigen();
     datumIntervall = setInterval(aktualisieren, 1000);
 }
+// Laufende Timer nach erneutem Rendern des Reiters sofort korrekt anzeigen.
+function aktualisiereTimerAnzeigen(): void {
+    setCountdownText("countdown-display1", formatZeit(restSekunden1));
+    setCountdownText("countdown-display2", formatZeit(restSekunden2));
+    setCountdownText("countdown-display3", formatZeit(restSekunden3));
+    if (eigeneRestsekunden !== null) setCountdownText("countdown-display-eigen", formatZeit(eigeneRestsekunden));
+    if (aufgabenRestsekunden !== null) setCountdownText("countdown-display-eigen1", formatZeit(aufgabenRestsekunden));
+}
+
 //Timer
 let restSekunden1 = 5 * 60;   // 5 Minuten
 let restSekunden2 = 30 * 60;  // 30 Minuten
@@ -193,11 +219,7 @@ export function startTimer1() {
 
         restSekunden1--;
 
-        const minuten = Math.floor(restSekunden1 / 60);
-        const sekunden = restSekunden1 % 60;
-
-        document.getElementById("countdown-display1")!.textContent =
-            `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+        setCountdownText("countdown-display1", formatZeit(restSekunden1));
 
         // Bei 0 stoppen
         if (restSekunden1 <= 0) {
@@ -240,11 +262,7 @@ export function startTimer2() {
 
         restSekunden2--;
 
-        const minuten = Math.floor(restSekunden2 / 60);
-        const sekunden = restSekunden2 % 60;
-
-        document.getElementById("countdown-display2")!.textContent =
-            `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+        setCountdownText("countdown-display2", formatZeit(restSekunden2));
 
         // Bei 0 stoppen
         if (restSekunden2 <= 0) {
@@ -278,14 +296,14 @@ export function resetTimer2() {
 
     restSekunden2 = 30 * 60;
 
-    document.getElementById("countdown-display2")!.textContent = "30:00";
+    setCountdownText("countdown-display2", "30:00");
 }
 export function resetTimer1() {
     stoppTimer1();
 
     restSekunden1 = 5 * 60;
 
-    document.getElementById("countdown-display1")!.textContent = "05:00";
+    setCountdownText("countdown-display1", "05:00");
 }
 export function startTimer3() {
 
@@ -297,11 +315,7 @@ export function startTimer3() {
 
         restSekunden3--;
 
-        const minuten = Math.floor(restSekunden3 / 60);
-        const sekunden = restSekunden3 % 60;
-
-        document.getElementById("countdown-display3")!.textContent =
-            `${String(minuten).padStart(2, "0")}:${String(sekunden).padStart(2, "0")}`;
+        setCountdownText("countdown-display3", formatZeit(restSekunden3));
 
         if (restSekunden3 <= 0) {
             clearInterval(intervall3!);
@@ -338,7 +352,7 @@ export function resetTimer3() {
 
     restSekunden3 = 60 * 60;
 
-    document.getElementById("countdown-display3")!.textContent = "60:00";
+    setCountdownText("countdown-display3", "60:00");
 }
 
 
@@ -350,8 +364,10 @@ export function resetTimer3() {
 export function initEigenerWecker() {
 
     const button = document.getElementById("btn") as HTMLButtonElement;
+    if (!button) return;
     button.addEventListener("click", () => {
         const input = document.getElementById("selbstdefiniert") as HTMLInputElement;
+        if (!input) return;
         const zeit = input.value;
         const time = new Date(zeit).getTime();
         const differenz = time - Date.now();
@@ -363,24 +379,25 @@ export function initEigenerWecker() {
             alert("Bitte eine gültige Uhrzeit in der Zukunft auswählen!");
         }
     });
-    document.getElementById("reset-eigen")!
-        .addEventListener("click", () => {
-            stoppeiegener();
-
-            document.getElementById("countdown-display-eigen")!
-                .textContent = "00:00";
-        });
+    document.getElementById("reset-eigen")?.addEventListener("click", () => {
+        stoppeiegener();
+        eigeneRestsekunden = null;
+        setCountdownText("countdown-display-eigen", "00:00");
+    });
+    document.getElementById("stoppeneiegner")?.addEventListener("click", stoppeiegener);
 }
 
 export function initEigenerWecker1() {
     tasks();
     const button = document.getElementById("btn1") as HTMLButtonElement;
 
+    if (!button) return;
     button.addEventListener("click", () => {
         const input = document.getElementById(
             "selbstdefiniert1"
         ) as HTMLInputElement;
 
+        if (!input) return;
         const zeit = input.value;
         const time = new Date(zeit).getTime();
         const differenz = time - Date.now();
@@ -391,22 +408,19 @@ export function initEigenerWecker1() {
         } else {
             alert("Bitte eine gültige Uhrzeit in der Zukunft auswählen!");
         }
-        document.getElementById("reset-eigen1")!
-            .addEventListener("click", () => {
-                stoppeiegener1();
-
-                document.getElementById("countdown-display-eigen1")!
-                    .textContent = "00:00";
-            });
-
-
     });
 
-    document.getElementById("stoppeneiegner1")!
-        .addEventListener("click", stoppeiegener1);
+    // Nur einmal binden, nicht bei jedem Klick auf „Bestätigen“.
+    document.getElementById("reset-eigen1")?.addEventListener("click", () => {
+        stoppeiegener1();
+        aufgabenRestsekunden = null;
+        setCountdownText("countdown-display-eigen1", "00:00");
+    });
+    document.getElementById("stoppeneiegner1")?.addEventListener("click", stoppeiegener1);
 }
 
 let eigenerintervall: ReturnType<typeof setInterval> | null = null;
+let eigeneRestsekunden: number | null = null;
 
 export function eigenerwecker(restsekunden: number) {
 
@@ -414,16 +428,14 @@ export function eigenerwecker(restsekunden: number) {
         return;
     }
 
+    eigeneRestsekunden = restsekunden;
     eigenerintervall = setInterval(() => {
 
         restsekunden--;
-
-        const uebrigeminuten = Math.floor(restsekunden / 60);
-        const uebrigesekunden = restsekunden % 60;
+        eigeneRestsekunden = restsekunden;
 
         // Countdown-Anzeige
-        document.getElementById("countdown-display-eigen")!.textContent =
-            `${String(uebrigeminuten).padStart(2, "0")}:${String(uebrigesekunden).padStart(2, "0")}`;
+        setCountdownText("countdown-display-eigen", formatZeit(restsekunden));
 
         // Wecker stoppen
         if (restsekunden <= 0) {
@@ -451,11 +463,14 @@ export function stoppeiegener() {
 }
 
 let eigenerintervall1: ReturnType<typeof setInterval> | null = null;
+let aufgabenRestsekunden: number | null = null;
 
 export function eigenerwecker1(restsekunden: number) {
     const auswahl = document.getElementById(
         "aufgabeWecker"
     ) as HTMLSelectElement;
+
+    if (!auswahl) return;
 
     const task = backlog.tasks.find(
         task => String(task.id) === auswahl.value
@@ -479,15 +494,13 @@ export function eigenerwecker1(restsekunden: number) {
 
     //const aufgabe = aufgabenEingabe.value.trim() || "Dein Ereignis";
 
+    aufgabenRestsekunden = restsekunden;
     eigenerintervall1 = setInterval(() => {
         restsekunden--;
-
-        const uebrigeminuten = Math.floor(restsekunden / 60);
-        const uebrigesekunden = restsekunden % 60;
+        aufgabenRestsekunden = restsekunden;
 
         // Nur die Anzeige des Aufgabenweckers verändern.
-        document.getElementById("countdown-display-eigen1")!.textContent =
-            `${String(uebrigeminuten).padStart(2, "0")}:${String(uebrigesekunden).padStart(2, "0")}`;
+        setCountdownText("countdown-display-eigen1", formatZeit(restsekunden));
 
         if (restsekunden <= 0) {
             // Nur das Intervall des Aufgabenweckers beenden.
@@ -510,11 +523,3 @@ export function stoppeiegener1() {
     clearInterval(eigenerintervall1!);
     eigenerintervall1 = null;
 }
-
-
-
-
-
-
-
-
