@@ -359,13 +359,7 @@ export function renderBacklogPage(): void {
     </div>
   </div>
 
-  <div id="backlog-container"></div>
-     <dialog id="aufgaben-popup">
-      <p id="popup-text"></p>
-      <form method="dialog">
-          <button class="btnbenachrichtigung">OK</button>
-      </form>
-    </dialog>
+ 
   `;
   renderBacklogInContainer(app);
   initialisiereSortierung();
@@ -409,22 +403,19 @@ export function renderBacklogInContainer(
  /**********************
  * Benachrichtigungen
  **********************/
+ export function benachrichtige(): void {
+   if (benachrichtigungenStumm) return;
 
-  export function benachrichtige(): void {
-    if (benachrichtigungenStumm ) return;
+   const anzahloffene = backlog.tasks.filter(
+       task => task.completed === false
+   ).length;
 
-    const offeneaufgaben = backlog.tasks.filter(
-        task => task.completed === false
-    );
-
-    const anzahloffene = offeneaufgaben.length;
-
-    if (anzahloffene >= 4) {
-      pruefeanzahlgesamt();
-    } else {
-      pruefeoffeneAufgaben();
-    }
-  }
+   if (anzahloffene >= 10) {
+     pruefeanzahlgesamt();
+   } else if (anzahloffene >= 1) {
+     pruefeoffeneAufgaben();
+   }
+ }
 
   export function pruefeoffeneAufgaben(): void {
     const offeneaufgaben = backlog.tasks.filter(
