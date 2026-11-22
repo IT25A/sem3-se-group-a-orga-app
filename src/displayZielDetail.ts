@@ -10,6 +10,7 @@ import type { Ziel } from './displayZiele';
 import type { List } from './taskAndListLogik';
 
 import { habitState } from './persistence/habitsState';
+import { refreshZielCardSliderList } from './displayEditingLists';
 
 import {
     ziellog,
@@ -269,6 +270,7 @@ function createListSection(ziel: Ziel): HTMLElement {
     header.append(heading, count);
 
     const progress = displayProgressBar(calculateZielListsProgress(ziel));
+    progress.classList.add('ziel-progress-bar');
 
     const sliderContainer = document.createElement('div');
     sliderContainer.className = 'ziel-lists-slider-container';
@@ -500,4 +502,39 @@ function createCongratulationsMessage(ziel: Ziel): HTMLElement {
     message.append(icon, heading, title, text, closing);
 
     return message;
+}
+
+
+export function refreshZielDetailPageListPart(
+    listId?: string,
+    sourceElement?: HTMLElement
+): void {
+
+    if (!currentZielDetail) return;
+
+    const { zielId } = currentZielDetail;
+
+    const ziel = (ziellog ?? []).find(
+        entry => entry.id === zielId
+    );
+
+    if (!ziel) return;
+    //progress
+    const oldProgress = document.querySelector(
+        '.ziel-progress-bar'
+    );
+
+    if (oldProgress) {
+        const newProgress = displayProgressBar(
+            calculateZielListsProgress(ziel)
+        );
+
+        newProgress.classList.add('ziel-progress-bar');
+        oldProgress.replaceWith(newProgress);
+    }
+
+    // 2. Betroffene Slider-Karte aktualisieren
+    if (listId && sourceElement) {
+        refreshZielCardSliderList(listId, sourceElement);
+    }
 }

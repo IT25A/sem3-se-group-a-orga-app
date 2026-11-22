@@ -12,7 +12,7 @@ import { showCalender } from './calendar.ts';
 import { displayPlanungsPage } from './wochePlanen.ts';
 import { destroyCalendarDraggable } from './calendarDraggable.ts';
 
-import { displayListPage, renderListByIdInContainer } from './displayEditingLists';
+import { displayListPage } from './displayEditingLists';
 //import { populateTestData } from './charlysTests/TestFictures' hat nicht mehr bei mir funktioniert
 import { initializeData } from "./persistence/state.ts";
 import { cardSliderNavigation, showCardSliderForListsInContainer } from './cardSlider.ts';
@@ -93,10 +93,6 @@ async function main() {
     })
    
 
-    document.getElementById("habits-link")?.addEventListener("click", () => {
-        currentPage = "habits-page";
-        renderHabitsPage()
-    })
 
     /*
     Zitate
