@@ -91,6 +91,10 @@ async function main() {
         currentPage = "ziele-page";
         displayZielePage()
     })
+    document.getElementById("habits-link")?.addEventListener("click", () =>{
+        currentPage = "habits-page";
+        renderHabitsPage();
+    })
    
 
 
