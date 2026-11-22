@@ -230,6 +230,7 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             `Möchtest du das Event "${event.title}" wirklich löschen?`
         );
         if (!confirmed) return;
+         hideEventTooltip();
 
         const snapshot = {
             id: event.id,
