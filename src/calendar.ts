@@ -15,7 +15,6 @@ import { loadEventlog } from './persistence/storage';
 // Kalenderinstanz zentral speichern
 let calendar: Calendar | null = null;
 let isUndoing = false;
-let isDragging = false;
 export type CalendarEvent = {
     id: string;
     taskId: string;
@@ -123,17 +122,12 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             ]
         }
     ],
-    eventDragStart: () => {
-        isDragging = true;
-
-        // Bereits sichtbare Tooltips entfernen
-        document.querySelectorAll('.fc-event-tooltip').forEach(el => {
-            el.remove();
-        });
+   eventDragStart: () => {
+        hideEventTooltip();
     },
 
     eventDragStop: () => {
-        isDragging = false;
+        hideEventTooltip();
     },
     eventChange: (info) => {
         const event = info.event;
@@ -180,17 +174,12 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
             }
         });
     },
-    eventMouseLeave: (info) => {
-        const tooltips = document.getElementsByClassName('fc-event-tooltip')
-        //HTML collection => für jedes element remove ausführen
-        for(const element of tooltips){
-            element.classList.remove('visible');
-        }
+    eventMouseEnter: (info) => {
+        showEventTooltip(info);
     },
-    eventDidMount: (info) => {
-        if (!isDragging) {
-            createEventTooltip(info);
-        }
+
+    eventMouseLeave: () => {
+        hideEventTooltip();
     },
     dateClick: (info) => {
         const title = prompt('Titel des Termins:')?.trim();
@@ -257,6 +246,7 @@ export async function showCalender(container: HTMLDivElement): Promise<void> {
 
         event.remove();
         removeEventFromLog(event.id);
+        
 
         pushUndo({
             label: 'Termin löschen',
@@ -403,12 +393,26 @@ function undoLast() {
     console.log('Rückgängig:', action.label);
 }
 
-//tooltip zeugs
-function createEventTooltip(info: any) {
-    const event = info.event;
+// Tooltip-Verwaltung
+let activeTooltip: HTMLDivElement | null = null;
+let activeEventElement: HTMLElement | null = null;
 
-    const tooltip = document.createElement('div');
-    tooltip.className = 'fc-event-tooltip';
+function getTooltip(): HTMLDivElement {
+    if (!activeTooltip) {
+        activeTooltip = document.createElement('div');
+        activeTooltip.className = 'fc-event-tooltip';
+        document.body.appendChild(activeTooltip);
+    }
+
+    return activeTooltip;
+}
+
+function showEventTooltip(info: any) {
+    const event = info.event;
+    const tooltip = getTooltip();
+
+    // Inhalt neu setzen
+    tooltip.replaceChildren();
 
     const accent = document.createElement('div');
     accent.className = 'fc-event-tooltip-accent';
@@ -435,59 +439,67 @@ function createEventTooltip(info: any) {
             `${format(event.start)} - ${format(event.end)}`;
     }
 
-    const description = document.createElement('div');
-    description.className =
-        'fc-event-tooltip-description';
-
-    description.textContent =
-        event.extendedProps.description || '';
-
     tooltip.append(accent, title, time);
 
-    if (description.textContent) {
+    if (event.extendedProps.description) {
+        const description = document.createElement('div');
+        description.className = 'fc-event-tooltip-description';
+        description.textContent = event.extendedProps.description;
+
         tooltip.append(description);
     }
 
-    document.body.appendChild(tooltip);
+    // Vorherigen Listener entfernen
+    if (activeEventElement) {
+        activeEventElement.removeEventListener(
+            'mousemove',
+            moveTooltip
+        );
+    }
 
-    const moveTooltip = (e: MouseEvent) => {
-        const offset = 14;
+    activeEventElement = info.el;
+    if(activeEventElement)
+    activeEventElement.addEventListener(
+        'mousemove',
+        moveTooltip
+    );
 
-        let x = e.clientX + offset;
-        let y = e.clientY + offset;
+    moveTooltip(info.jsEvent);
 
-        const rect = tooltip.getBoundingClientRect();
+    tooltip.classList.add('visible');
+}
 
-        if (x + rect.width > window.innerWidth - 10) {
-            x = e.clientX - rect.width - offset;
-        }
+function moveTooltip(e: MouseEvent) {
+    if (!activeTooltip) return;
 
-        if (y + rect.height > window.innerHeight - 10) {
-            y = e.clientY - rect.height - offset;
-        }
+    const offset = 14;
 
-        tooltip.style.left = `${x}px`;
-        tooltip.style.top = `${y}px`;
-    };
+    let x = e.clientX + offset;
+    let y = e.clientY + offset;
 
-    const show = (e: MouseEvent) => {
-        moveTooltip(e);
-        tooltip.classList.add('visible');
-    };
+    const rect = activeTooltip.getBoundingClientRect();
 
-    const hide = () => {
-        tooltip.classList.remove('visible');
-        refreshCalendar();
-    };
+    if (x + rect.width > window.innerWidth - 10) {
+        x = e.clientX - rect.width - offset;
+    }
 
-    info.el.addEventListener('mouseenter', show);
-    info.el.addEventListener('mousemove', moveTooltip);
-    info.el.addEventListener('mouseleave', hide);
+    if (y + rect.height > window.innerHeight - 10) {
+        y = e.clientY - rect.height - offset;
+    }
 
-    return () => {
-        info.el.removeEventListener('mouseenter', show);
-        info.el.removeEventListener('mousemove', moveTooltip);
-        info.el.removeEventListener('mouseleave', hide);
-        tooltip.remove();
-    };
+    activeTooltip.style.left = `${x}px`;
+    activeTooltip.style.top = `${y}px`;
+}
+
+function hideEventTooltip() {
+    if (activeEventElement) {
+        activeEventElement.removeEventListener(
+            'mousemove',
+            moveTooltip
+        );
+
+        activeEventElement = null;
+    }
+
+    activeTooltip?.classList.remove('visible');
 }
