@@ -9,6 +9,7 @@ import { renderBacklogPage } from './backlog';
 import { lists, backlog } from './persistence/state';
 import { displayPlanungsPage } from './wochePlanen';
 import { aktualisiereBacklogAnzeige } from './backlog';
+import { refreshZielDetailPage, refreshZielDetailPageListPart } from './displayZielDetail';
 
 
 
@@ -40,21 +41,93 @@ export function refreshHomeList(listId: string, sourceElement: HTMLElement): voi
     renderListByIdInContainer(idToRender, appContainer, true);
   }
 }
-export function refreshZielCardSliderList(listId: string, sourceElement: HTMLElement): void {
-  const sliderCard = sourceElement.closest<HTMLDivElement>('.slidable-card');
-  const listStillExists = lists.some(list => list.id === listId);
 
-  if (sliderCard) {
-    if (listStillExists) {
-      renderListByIdInContainer(listId, sliderCard, true);
-    } else {
-      sliderCard.remove();
-      destroySortables();
-      initializeSortables();
+export function refreshZielCardSliderList(
+    listId: string,
+    sourceElement: HTMLElement
+): void {
+
+    const sliderCard = sourceElement.closest<HTMLDivElement>(
+        '.slidable-card'
+    );
+
+    const listStillExists = lists.some(
+        list => list.id === listId
+    );
+
+    if (sliderCard) {
+
+        if (listStillExists) {
+
+            const list = lists.find(
+                list => list.id === listId
+            );
+
+            if (!list) return;
+
+            const isCompleted =
+                list.tasks.length > 0 &&
+                list.tasks.every(taskId => {
+                    const task = backlog.tasks.find(
+                        task => task.id === taskId
+                    );
+
+                    return task?.completed === true;
+                });
+
+            if (isCompleted) {
+
+                // Geschafft-Karte anzeigen
+                sliderCard.replaceChildren();
+
+                const successCard = document.createElement('article');
+                successCard.className = 'ziel-list-completed-content';
+
+                const icon = document.createElement('div');
+                icon.className = 'ziel-list-completed-icon';
+                icon.textContent = '🎉';
+
+                const message = document.createElement('h3');
+                message.textContent = 'Geschafft!';
+
+                const title = document.createElement('h4');
+                title.textContent = list.title;
+
+                const motivation = document.createElement('p');
+                motivation.textContent =
+                    'Du hast alle Aufgaben dieser Liste erledigt. Sei stolz auf dich und mach weiter so!';
+
+                successCard.append(icon, message, title, motivation);
+
+                if (list.description?.trim()) {
+                    const description = document.createElement('p');
+                    description.className = 'ziel-list-completed-description';
+                    description.textContent = list.description;
+                    successCard.appendChild(description);
+                }
+
+                sliderCard.appendChild(successCard);
+
+            } else {
+
+                // Bestehende Listen-Refresh-Funktion aufrufen
+                renderListByIdInContainer(
+                    listId,
+                    sliderCard,
+                    true
+                );
+            }
+
+        } else {
+            sliderCard.remove();
+            destroySortables();
+            initializeSortables();
+        }
+
+        return;
     }
-    return;
-  }
 }
+
 
 function renderLists(): void {
   const container = document.querySelector<HTMLDivElement>('#app',);
@@ -255,7 +328,8 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
               aktualisiereBacklogAnzeige();
               break;
             case "ziele-page":
-              refreshZielCardSliderList(listId, taskItem);              
+              //refreshZielCardSliderList(listId, taskItem);
+              refreshZielDetailPageListPart(listId,taskItem);       
               break;
             default:
               break;
