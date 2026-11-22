@@ -53,7 +53,7 @@ export function createWelcomeData(): {
     ),
     createTask(
       "Bearbeite eine Aufgabe",
-      "Suche eine Aufgabe und klicke auf das Stift-Symbol. Jetzt kannst du beispielsweise den Titel oder die Beschreibung ändern. Speichere deine Änderungen und schau dir anschließend das Ergebnis an.",
+      "Suche eine Aufgabe und klicke auf das Stift-Symbol. Jetzt kannst du beispielsweise den Titel, die Priorität oder die Beschreibung ändern. Speichere deine Änderungen und schau dir anschließend das Ergebnis an.",
       listIds.listen
     ),
     createTask(
@@ -131,7 +131,7 @@ export function createWelcomeData(): {
     ),
     createTask(
       "Tracke den Fortschritt deiner Gewohnheit",
-      "Öffne den Reiter „Habits“ und suche deine gerade erstellte Gewohnheit. Probiere aus, ihren Zähler zu erhöhen und wieder zu verringern. So kannst du festhalten, wie oft du eine Gewohnheit ausgeführt hast, und deinen Fortschritt flexibel anpassen. Schau anschließend im Kalender nach, wie sich deine Einträge dort widerspiegeln.",
+      "Öffne den Reiter „Habits“ und suche deine gerade erstellte Gewohnheit. Probiere aus, ihren Zähler zu erhöhen und wieder zu verringern. So kannst du festhalten, wie oft du eine Gewohnheit ausgeführt hast, und deinen Fortschritt flexibel anpassen. Schau anschließend im Kalender auf der Habitseite nach, wie sich deine Einträge dort widerspiegeln.",
       listIds.habits
     ),
   ];
@@ -196,18 +196,18 @@ export function createWelcomeData(): {
       tasks: listenTasks.map(task => task.id),
     },
     {
-      id: listIds.ziele,
-      title: "Ziele & Planung",
-      description: "Lerne, wie du persönliche Ziele erstellst, mit Listen und Habits verknüpfst und deine Aufgaben im Kalender planst.",
-      createdAt: now,
-      tasks: zieleTasks.map(task => task.id),
-    },
-    {
       id: listIds.habits,
       title: "Habits",
       description: "Entdecke, wie du Gewohnheiten anlegst, deinen Fortschritt trackst und deine Entwicklung im Kalender beobachtest.",
       createdAt: now,
       tasks: habitsTasks.map(task => task.id),
+    },
+    {
+      id: listIds.ziele,
+      title: "Ziele & Planung",
+      description: "Lerne, wie du persönliche Ziele erstellst, mit Listen und Habits verknüpfst und deine Aufgaben im Kalender planst.",
+      createdAt: now,
+      tasks: zieleTasks.map(task => task.id),
     },
     {
       id: listIds.zeit,
