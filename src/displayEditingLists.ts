@@ -354,11 +354,19 @@ export  function renderTaskByIdInContainer(taskId: string, listId: string, conta
       const timeEstimate = document.createElement('p');
       timeEstimate.textContent = `Zeitaufwand: ${task.timeEstimate}`;
 
+      const duedate = document.createElement('p');
+      duedate.textContent = `Fällig am: ${
+        task.dueDate
+          ? new Date(task.dueDate).toLocaleDateString('de-DE')
+          : '-'
+      }`;
+
       details.append(
         description,
         priority,
         complexity,
-        timeEstimate
+        timeEstimate,
+        duedate
       );
 
       toggle.addEventListener('click', () => {

@@ -462,7 +462,7 @@ export function renderBacklogInContainer(
         task => task.completed === false
     ).length;
 
-    if (anzahloffene >= 4) {
+    if (anzahloffene >= 10) {
       const popup = document.getElementById(
           'aufgaben-popup'
       ) as HTMLDialogElement | null;
