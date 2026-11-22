@@ -357,7 +357,8 @@ export function renderBacklogPage(): void {
       
 
     </div>
-  </div>
+  <div id="backlog-container"></div>
+  
 
  
   `;
